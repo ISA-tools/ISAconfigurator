@@ -1,0 +1,268 @@
+<fields>
+
+    <!--for general assays!-->
+
+    <field>
+        <name>Source Name</name>
+        <appearsIn>
+            <location>Study Sample</location>
+            <location>Assay</location>
+        </appearsIn>
+        <studyDefault>true</studyDefault>
+        <defaultWizardTemplate>[INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO]</defaultWizardTemplate>
+    </field>
+
+    <field>
+        <name>Sample Name</name>
+        <appearsIn>
+            <location>Study Sample</location>
+            <location>Assay</location>
+        </appearsIn>
+        <studyDefault>true</studyDefault>
+        <assayDefault>true</assayDefault>
+         <defaultWizardTemplate>[INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT]</defaultWizardTemplate>
+    </field>
+
+    <field>
+        <name>Material Type</name>
+        <appearsIn>
+            <location>Study Sample</location>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Extract Name</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+        <defaultWizardTemplate>[INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT].Extract-[EXTRACT_COUNT]</defaultWizardTemplate>
+    </field>
+
+    <field>
+        <name>Labeled Extract Name</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+         <defaultWizardTemplate>[INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT].Extract-[EXTRACT_COUNT].LE-[LABEL_COUNT]</defaultWizardTemplate>
+    </field>
+
+    <field>
+        <name>Assay Name</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+        <assayDefault>true</assayDefault>
+    </field>
+
+    <field>
+        <name>Image File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Raw Data File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+        <assayDefault>true</assayDefault>
+    </field>
+
+    <field>
+        <name>Data Transformation Name</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Normalization Name</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Derived Data File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <!--for microarray!-->
+
+    <field>
+        <name>Hybridization Assay Name</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+        <defaultWizardTemplate>[INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT].Extract-[EXTRACT_COUNT].LE-[LABEL_COUNT].HYB-[HYB_COUNT]</defaultWizardTemplate>
+    </field>
+
+    <field>
+        <name>Scan Name</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Array Data File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Derived Array Data File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Array Data Matrix File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Derived Array Data Matrix File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Array Design File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Array Design REF</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <!--for gel electrophoresis!-->
+
+    <field>
+        <name>Gel Electrophoresis Assay Name</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Spot Picking File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <!--for mass spectrometry!-->
+
+    <field>
+        <name>MS Assay Name</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Raw Spectral Data File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Derived Spectral Data File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Peptide Assignment File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Protein Assignment File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Post Translational Modification Assignment File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+     <!--for NMR!-->
+
+    <field>
+        <name>NMR Assay Name</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Free Induction Decay Data File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Acquisition Parameter Data File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+     <field>
+        <name>Derived Spectral Data File</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+
+    <field>
+        <name>Label</name>
+        <appearsIn>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Unit</name>
+        <appearsIn>
+            <location>Study Sample</location>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Protocol REF</name>
+        <appearsIn>
+            <location>Study Sample</location>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+
+    
+</fields>
