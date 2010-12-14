@@ -75,7 +75,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     @InjectedResource
     private ImageIcon addTable, addTableOver, removeTable, removeTableOver, addElement,
             addElementOver, removeElement, removeElementOver, moveUp, moveUpOver, moveDown, moveDownOver,
-            elementListIcon, tableListIcon, informationIcon, isaConfigLogo, viewMappingsIcon, warningIcon;
+            elementListIcon, tableListIcon, informationIcon, isaConfigLogo, viewMappingsIcon, warningIcon, aboutIcon;
 
     private static final String FIELD_XML_LOC = "/std_isa_fields.xml";
     private static final String CUSTOM_XML_LOC = "/custom_isa_fields.xml";
@@ -87,6 +87,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
     private AddTableGUI atGUI;
     private AddElementGUI aeGUI;
+    private AboutPanel aboutPanel;
 
     private JList tableList;
     private DefaultListModel tableModel;
@@ -137,6 +138,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     public void createGUI() {
         atGUI = new AddTableGUI(this);
         aeGUI = new AddElementGUI(this);
+        setupAboutPanel();
         jfc = new JFileChooser();
         fieldInterface = new FieldInterface(getCurrentInstance());
         fieldInterface.createGUI();
@@ -147,6 +149,17 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         reformTableList();
         setVisible(true);
     }
+
+
+    private void setupAboutPanel() {
+        aboutPanel = new AboutPanel();
+        aboutPanel.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent event) {
+                appCont.hideGlassPane();
+            }
+        });
+    }
+
 
     public void addToUserHistory(OntologyObject oo) {
         if (!userHistory.containsKey(oo.getUniqueId())) {
@@ -286,8 +299,25 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
         mappingMenu.add(viewMappings);
 
+        JMenu helpMenu = new JMenu("Help");
+
+        JMenuItem about = new JMenuItem("About", aboutIcon);
+        about.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        appCont.setGlassPanelContents(aboutPanel);
+                    }
+                });
+
+            }
+        });
+
+        helpMenu.add(about);
+
         menu_container.add(file);
         menu_container.add(mappingMenu);
+        menu_container.add(helpMenu);
 
         topPanel.add(menu_container);
         return topPanel;
