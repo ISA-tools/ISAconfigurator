@@ -165,7 +165,7 @@ public class BioPortalOntologyListResultHandler extends DefaultHandler {
             } else if (currentReadStatus == READING_FORMAT) {
                 String trimmedSource = data.contains("-") ? data.substring(0, data.indexOf("-")).trim().toUpperCase() : data.trim().toUpperCase();
 
-                System.out.println("Ontology format for " + currentOntologyEntry.getOntologyDisplayLabel() + " is " + trimmedSource);
+//                System.out.println("Ontology format for " + currentOntologyEntry.getOntologyDisplayLabel() + " is " + trimmedSource);
                 if (isFormatSupported(trimmedSource)) {
                     currentOntologyEntry.setFormat(OntologyFormats.valueOf(trimmedSource));
                 }
