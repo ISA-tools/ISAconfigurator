@@ -1028,7 +1028,9 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
             elementModel.clear();
 
             while (fields.hasNext()) {
-                elementModel.addElement(fields.next());
+                Display d = fields.next();
+                elementModel.addElement(d);
+
             }
             if (elementList.getModel().getSize() > 0) {
                 elementList.setSelectedIndex(0);

@@ -49,9 +49,9 @@ import java.util.Map;
 
 
 public class TableConfiguration implements Serializable {
-    private MappingObject tableDetails;
-    private List<TableFieldObject> fields;
-    private Map<Integer, String[]> tableStructure;
+    private final MappingObject tableDetails;
+    private final List<TableFieldObject> fields;
+    private final Map<Integer, String[]> tableStructure;
 
     public TableConfiguration(MappingObject tableDetails, List<TableFieldObject> fields, Map<Integer, String[]> tableStructure) {
         this.tableDetails = tableDetails;

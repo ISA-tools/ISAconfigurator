@@ -383,7 +383,7 @@ public class MenuPanel extends JLayeredPane {
 
             List<Display> fields = new ArrayList<Display>();
 
-            for (Integer i : to.getTableStructure().keySet()) {
+            for (int i = 0; i < to.getTableStructure().keySet().size(); i++) {
                 String elementName = to.getTableStructure().get(i)[0];
 
                 Display ed = null;
@@ -416,7 +416,7 @@ public class MenuPanel extends JLayeredPane {
 
             List<Display> fields = new ArrayList<Display>();
 
-            for (Integer i : to.getTableStructure().keySet()) {
+            for (int i = 0; i < to.getTableStructure().keySet().size(); i++) {
                 String elementName = to.getTableStructure().get(i)[0];
 
                 Display ed = null;

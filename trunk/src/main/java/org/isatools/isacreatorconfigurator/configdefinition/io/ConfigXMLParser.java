@@ -146,7 +146,7 @@ public class ConfigXMLParser {
         List<TableFieldObject> fields = new ArrayList<TableFieldObject>();
         // todo change to ordered map
         Map<Integer, String[]> tableStructure = new HashMap<Integer, String[]>();
-
+        System.out.println("Processing " + isaConf.getTableName());
         int colNo = 0;
         int sequenceNumber = 0;
         while (sequenceNumber < getConfigurationFields(isaConf).length) {
@@ -154,6 +154,9 @@ public class ConfigXMLParser {
             // check what the obj is an instance of, and handle it accordingly!
             if (obj instanceof FieldType) {
                 FieldType stdField = (FieldType) obj;
+
+//                System.out.println("\tProcessing " + stdField.getHeader());
+
                 TableFieldObject newField = new TableFieldObject(colNo, stdField.getHeader(), StringUtils.cleanUpString(stdField.getDescription()), DataTypes.resolveDataType(stdField.getDataType()), stdField.getDefaultValue(),
                         stdField.getIsRequired(), stdField.getIsMultipleValue(),
                         stdField.getIsFileField());
@@ -185,6 +188,9 @@ public class ConfigXMLParser {
                 colNo++;
             } else if (obj instanceof ProtocolFieldType) {
                 ProtocolFieldType protocolField = (ProtocolFieldType) obj;
+
+//                System.out.println("\tProcessing PROTOCOL " + protocolField.getProtocolType());
+
                 TableFieldObject newField = new TableFieldObject(colNo, "Protocol REF", "Protocol for " + protocolField.getProtocolType(), DataTypes.STRING, protocolField.getProtocolType(),
                         protocolField.getIsRequired(), false, false);
                 newField.setWizardTemplate(newField.getWizardTemplate());
@@ -208,7 +214,10 @@ public class ConfigXMLParser {
                 tableStructure.put(colNo, new String[]{newField.getFieldName(), ""});
                 colNo++;
             } else if (obj instanceof StructuredFieldType) {
+
                 StructuredFieldType structuredField = (StructuredFieldType) obj;
+
+//                System.out.println("\tProcessing STRUCTURE Field " + structuredField.getName());
                 // we don't add it to the fields, but we do add it to the mapping object...
                 tableStructure.put(colNo, new String[]{structuredField.getName(), ""});
                 colNo++;
