@@ -57,6 +57,7 @@ public class ClearFieldUtility extends JLabel implements MouseListener {
 
     public ClearFieldUtility(JTextField toClear) {
         this.toClear = toClear;
+
         setIcon(CLEAR);
         setToolTipText("<html><b>clear</b> field</html>");
         addMouseListener(this);

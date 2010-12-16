@@ -113,13 +113,13 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     private JLabel tableInformationDisplay;
     private FieldInterface fieldInterface;
     private StructuralElementInfo structureElement = new StructuralElementInfo();
-    private String sourceFile;
+    private File sourceFile;
 
-    public DataEntryPanel(ISAcreatorConfigurator appCont, String sourceFile) {
+    public DataEntryPanel(ISAcreatorConfigurator appCont, File sourceFile) {
         this(appCont, new ListOrderedMap<MappingObject, List<Display>>(), sourceFile);
     }
 
-    public DataEntryPanel(ISAcreatorConfigurator appCont, Map<MappingObject, List<Display>> tableFields, String sourceFile) {
+    public DataEntryPanel(ISAcreatorConfigurator appCont, Map<MappingObject, List<Display>> tableFields, File sourceFile) {
         ResourceInjector.get("config-ui-package.style").inject(this);
 
         this.appCont = appCont;
@@ -253,7 +253,26 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
         JMenu file = new JMenu("File");
 
-        JMenuItem createFile = new JMenuItem("Save Configuration");
+
+        JMenuItem save = new JMenuItem("Save");
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    save(true, true);
+                    if (sourceFile == null) {
+                        createOutput();
+                    } else {
+                        save();
+                    }
+                } catch (DataNotCompleteException dce) {
+                    showMessagePane(dce.getMessage(), JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e1) {
+                    showMessagePane(e1.getMessage(), JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        JMenuItem createFile = new JMenuItem("Save As");
         createFile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -273,12 +292,12 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         JMenuItem closeSession = new JMenuItem("Close session without saving");
         closeSession.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                 tableFields.clear();
                 appCont.setCurrentPage(appCont.getMp());
             }
         });
 
+        file.add(save);
         file.add(createFile);
         file.add(closeSession);
 
@@ -348,6 +367,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
                         appCont.hideSheet();
                         try {
                             showMessagePane(Utils.createTableConfigurationXML(saveIn, tableFields), JOptionPane.INFORMATION_MESSAGE);
+                            sourceFile = new File(saveIn);
                         } catch (DataNotCompleteException e) {
                             showMessagePane(e.getMessage(), JOptionPane.ERROR_MESSAGE);
                         } catch (InvalidFieldOrderException ifoe) {
@@ -371,6 +391,18 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         });
 
         appCont.showJDialogAsSheet(exportDialog);
+    }
+
+    private void save() {
+        try {
+            showMessagePane(Utils.createTableConfigurationXML(sourceFile.getAbsolutePath(), tableFields), JOptionPane.INFORMATION_MESSAGE);
+        } catch (DataNotCompleteException e) {
+            showMessagePane(e.getMessage(), JOptionPane.ERROR_MESSAGE);
+        } catch (InvalidFieldOrderException ifoe) {
+            showMessagePane(ifoe.getMessage(), JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ioe) {
+            showMessagePane(ioe.getMessage(), JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 
@@ -583,8 +615,8 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
         if (currentTable != null) {
 
-            if (!sourceFile.equals("")) {
-                message.append("<html><div align=\"right\">Currently editing <strong>").append(sourceFile).append("</strong><br/>");
+            if (sourceFile != null) {
+                message.append("<html><div align=\"right\">Currently editing <strong>").append(sourceFile.getName()).append("</strong><br/>");
             }
 
             if (currentTable.getTableType().contains("sample")) {
@@ -669,7 +701,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
         container.add(UIHelper.wrapComponentInPanel(elementCountInfo));
         container.add(Box.createVerticalStrut(5));
-        
+
         // create button panel to add and remove tables
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));

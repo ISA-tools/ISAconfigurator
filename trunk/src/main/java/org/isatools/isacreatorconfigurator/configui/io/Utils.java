@@ -141,6 +141,7 @@ public class Utils {
                 StringBuffer xmlToWrite = fieldXMLcreator.createTableXML();
 
                 FileOutputStream fos = new FileOutputStream(outputDir + File.separator + mo.getAssayName().replace("\\s", "") + ".xml");
+
                 PrintStream ps = new PrintStream(fos);
                 ps.print(xmlToWrite);
                 ps.close();

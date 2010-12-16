@@ -66,10 +66,12 @@ import java.util.Map;
 public class MenuPanel extends JLayeredPane {
     private static final Logger log = Logger.getLogger(MenuPanel.class.getName());
 
+    private CurveEffectPanel generic;
+
     private ISAcreatorConfigurator appCont;
     private CreateMenu menu;
     private JLabel status;
-    private CurveEffectPanel generic;
+    private File toLoad;
 
     public static final ImageIcon CONFIG_LOAD = new ImageIcon(MenuPanel.class.getResource("/images/effects/load_config.gif"));
 
@@ -153,7 +155,7 @@ public class MenuPanel extends JLayeredPane {
                     EventQueue.invokeLater(new Runnable() {
                         public void run() {
                             status.setIcon(CONFIG_LOAD);
-                            DataEntryPanel dep = new DataEntryPanel(appCont, "");
+                            DataEntryPanel dep = new DataEntryPanel(appCont, null);
                             dep.createGUI();
                             appCont.hideGlassPane();
                             appCont.setCurrentPage(dep);
@@ -297,10 +299,10 @@ public class MenuPanel extends JLayeredPane {
 
             status.setIcon(CONFIG_LOAD);
 
-            final File toLoad = jfc.getSelectedFile();
+            toLoad = jfc.getSelectedFile();
 
             if (toLoad != null) {
-                DataEntryPanel dep = new DataEntryPanel(appCont, toLoad.getName());
+                DataEntryPanel dep = new DataEntryPanel(appCont, toLoad);
 
 
                 SwingUtilities.invokeLater(new Runnable() {
