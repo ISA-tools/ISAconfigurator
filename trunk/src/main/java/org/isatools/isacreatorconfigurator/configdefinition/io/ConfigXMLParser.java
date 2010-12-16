@@ -42,12 +42,16 @@ import org.isatools.isacreatorconfigurator.common.MappingObject;
 import org.isatools.isacreatorconfigurator.configdefinition.*;
 import org.isatools.isacreatorconfigurator.configurator.schema.*;
 
+import org.apache.commons.collections15.OrderedMap;
+import org.apache.commons.collections15.map.ListOrderedMap;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * This class uses the JaxB classes to load XML output from ISAcreator Config into TableConfiguration objects which
@@ -142,6 +146,7 @@ public class ConfigXMLParser {
                 isaConf.getTableName());
 
         List<TableFieldObject> fields = new ArrayList<TableFieldObject>();
+        // todo change to ordered map
         Map<Integer, String[]> tableStructure = new HashMap<Integer, String[]>();
 
         int colNo = 0;

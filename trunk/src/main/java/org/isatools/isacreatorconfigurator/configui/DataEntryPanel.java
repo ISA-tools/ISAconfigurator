@@ -584,7 +584,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         if (currentTable != null) {
 
             if (!sourceFile.equals("")) {
-                message.append("<html><div align=\"right\">Currently editing <strong>").append(sourceFile).append("</strong></div><br/>");
+                message.append("<html><div align=\"right\">Currently editing <strong>").append(sourceFile).append("</strong><br/>");
             }
 
             if (currentTable.getTableType().contains("sample")) {
@@ -597,7 +597,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
                     message.append(" using <strong>").append(technology).append("</strong>");
                 }
 
-                message.append("</html>");
+                message.append("</div></html>");
             }
 
             tableInformationDisplay.setText(message.toString());
@@ -992,14 +992,15 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         // get MappingObject corresponding to index entered.
 
         if (selectedTable != null) {
-            List<Display> fields = tableFields.get(selectedTable);
+            Iterator<Display> fields = tableFields.get(selectedTable).iterator();
             elementModel.clear();
 
-            for (Display fd : fields) {
-                elementModel.addElement(fd);
+            while (fields.hasNext()) {
+                elementModel.addElement(fields.next());
             }
-
-            elementList.setSelectedIndex(elementModel.getSize() - 1);
+            if (elementList.getModel().getSize() > 0) {
+                elementList.setSelectedIndex(0);
+            }
 
         } else {
             elementModel.clear();

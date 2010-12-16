@@ -36,6 +36,7 @@
 
 package org.isatools.isacreatorconfigurator.configui.io;
 
+import org.apache.commons.collections15.OrderedMap;
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreatorconfigurator.common.MappingObject;
 import org.isatools.isacreatorconfigurator.configdefinition.Configuration;

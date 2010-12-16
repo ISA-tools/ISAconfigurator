@@ -54,7 +54,7 @@ import java.awt.*;
 public class OntologyListRenderer extends JPanel
         implements ListCellRenderer {
     static Color listForeground = UIHelper.GREY_COLOR;
-    static Color listBackground = UIHelper.BG_COLOR;
+
 
     static ImageIcon OLS_ICON = new ImageIcon(OntologyListRenderer.class.getResource("/images/ontologyconfigurationtool/ols_ontology.png"));
     static ImageIcon BIOPORTAL_ICON = new ImageIcon(OntologyListRenderer.class.getResource("/images/ontologyconfigurationtool/bioportal_ontology.png"));

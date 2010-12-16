@@ -827,7 +827,7 @@ public class OntologySelectionTool extends JFrame implements MouseListener,
         List<RecommendedOntology> filteredOntologies = new ArrayList<RecommendedOntology>();
         for (RecommendedOntology ro : ontologies) {
             if (filter.equals("ols")) {
-                if (ro.getOntology().getOntologyVersion().contains(".")) {
+                if (ro.getOntology().getOntologyVersion().length() > 5) {
                     filteredOntologies.add(ro);
                 }
             } else {
