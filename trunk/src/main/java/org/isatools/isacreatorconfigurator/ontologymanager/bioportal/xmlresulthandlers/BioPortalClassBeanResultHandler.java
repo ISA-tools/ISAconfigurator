@@ -59,8 +59,7 @@ public class BioPortalClassBeanResultHandler {
         try {
             resultDocument = SuccessDocument.Factory.parse(new File(fileLocation));
         } catch (org.apache.xmlbeans.XmlException e) {
-            e.printStackTrace();
-            System.err.println("XML Exception encountered");
+            System.err.println("XML Exception encountered: " + e.getMessage());
         } catch (java.io.IOException e) {
             System.err.println("IO Exception: " + e.getMessage());
         }

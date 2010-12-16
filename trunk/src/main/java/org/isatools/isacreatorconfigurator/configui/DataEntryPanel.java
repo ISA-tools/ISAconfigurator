@@ -621,7 +621,6 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         headerLab.setOpaque(false);
 
         JLabel lab = UIHelper.createLabel("Table Elements", UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
-//        lab.setIcon(elementListIcon);
         headerLab.add(lab);
 
         container.add(headerLab);
@@ -670,6 +669,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
         container.add(UIHelper.wrapComponentInPanel(elementCountInfo));
         container.add(Box.createVerticalStrut(5));
+        
         // create button panel to add and remove tables
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));

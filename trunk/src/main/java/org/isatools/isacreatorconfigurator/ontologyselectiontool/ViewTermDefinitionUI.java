@@ -168,17 +168,19 @@ public class ViewTermDefinitionUI extends JPanel {
     private Map<String, String> sortMap(Map<String, String> toSort) {
         Map<String, String> sortedMap = new ListOrderedMap<String, String>();
 
-        Set<String> keys = toSort.keySet();
+        if (toSort != null) {
+            Set<String> keys = toSort.keySet();
 
-        java.util.List<String> sortedKeys = new ArrayList<String>();
-        for (String key : keys) {
-            sortedKeys.add(key);
-        }
+            java.util.List<String> sortedKeys = new ArrayList<String>();
+            for (String key : keys) {
+                sortedKeys.add(key);
+            }
 
-        Collections.sort(sortedKeys);
+            Collections.sort(sortedKeys);
 
-        for (String key : sortedKeys) {
-            sortedMap.put(key, toSort.get(key));
+            for (String key : sortedKeys) {
+                sortedMap.put(key, toSort.get(key));
+            }
         }
 
         return sortedMap;

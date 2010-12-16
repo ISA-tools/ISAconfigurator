@@ -121,7 +121,7 @@ public class FieldXMLCreator {
                 append("\" is-required=\"").append(String.valueOf(field.isRequired())).append("\">");
 
         // output field description
-        xmlRep.append("<description>").append(field.getDescription()).append("\"</description>");
+        xmlRep.append("<description>").append(StringUtils.cleanUpString(field.getDescription())).append("</description>");
 
         // output fields default value
         String defaultValue = field.getDefaultVal() == null ? "" : field.getDefaultVal();
@@ -171,7 +171,7 @@ public class FieldXMLCreator {
                 append("\" is-required=\"").append(String.valueOf(field.isRequired())).append("\">");
 
         // output field description
-        xmlRep.append("<description>").append(field.getDescription()).append("\"</description>");
+        xmlRep.append("<description>").append(StringUtils.cleanUpString(field.getDescription())).append("\"</description>");
         xmlRep.append(createValidationXMLForField(field));
         xmlRep.append("</unit-field>");
 

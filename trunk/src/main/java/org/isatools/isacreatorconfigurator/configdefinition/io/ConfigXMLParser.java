@@ -44,6 +44,8 @@ import org.isatools.isacreatorconfigurator.configurator.schema.*;
 
 import org.apache.commons.collections15.OrderedMap;
 import org.apache.commons.collections15.map.ListOrderedMap;
+import org.isatools.isacreatorconfigurator.xml.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -156,7 +158,7 @@ public class ConfigXMLParser {
             // check what the obj is an instance of, and handle it accordingly!
             if (obj instanceof FieldType) {
                 FieldType stdField = (FieldType) obj;
-                TableFieldObject newField = new TableFieldObject(colNo, stdField.getHeader(), stdField.getDescription(), DataTypes.resolveDataType(stdField.getDataType()), stdField.getDefaultValue(),
+                TableFieldObject newField = new TableFieldObject(colNo, stdField.getHeader(), StringUtils.cleanUpString(stdField.getDescription()), DataTypes.resolveDataType(stdField.getDataType()), stdField.getDefaultValue(),
                         stdField.getIsRequired(), stdField.getIsMultipleValue(),
                         stdField.getIsFileField());
 
@@ -187,7 +189,7 @@ public class ConfigXMLParser {
                 colNo++;
             } else if (obj instanceof ProtocolFieldType) {
                 ProtocolFieldType protocolField = (ProtocolFieldType) obj;
-                TableFieldObject newField = new TableFieldObject(colNo, "Protocol REF", "Protocol", DataTypes.LIST, protocolField.getProtocolType(),
+                TableFieldObject newField = new TableFieldObject(colNo, "Protocol REF", "Protocol for " + protocolField.getProtocolType(), DataTypes.STRING, protocolField.getProtocolType(),
                         protocolField.getIsRequired(), false, false);
                 newField.setWizardTemplate(newField.getWizardTemplate());
 
@@ -198,7 +200,7 @@ public class ConfigXMLParser {
             } else if (obj instanceof UnitFieldType) {
                 UnitFieldType unitField = (UnitFieldType) obj;
 
-                TableFieldObject newField = new TableFieldObject(colNo, "Unit", unitField.getDescription(), DataTypes.ONTOLOGY_TERM, "",
+                TableFieldObject newField = new TableFieldObject(colNo, "Unit", StringUtils.cleanUpString(unitField.getDescription()), DataTypes.ONTOLOGY_TERM, "",
                         unitField.getIsRequired(), false, false);
 
                 if (unitField.getRecommendedOntologies() != null) {
