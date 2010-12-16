@@ -36,7 +36,6 @@
 
 package org.isatools.isacreatorconfigurator.configdefinition;
 
-import org.apache.commons.collections15.OrderedMap;
 import org.isatools.isacreatorconfigurator.common.MappingObject;
 
 import java.io.Serializable;

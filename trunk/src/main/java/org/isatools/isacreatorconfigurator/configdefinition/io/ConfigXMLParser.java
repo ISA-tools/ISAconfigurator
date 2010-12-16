@@ -41,15 +41,11 @@ import org.apache.xmlbeans.XmlObject;
 import org.isatools.isacreatorconfigurator.common.MappingObject;
 import org.isatools.isacreatorconfigurator.configdefinition.*;
 import org.isatools.isacreatorconfigurator.configurator.schema.*;
-
-import org.apache.commons.collections15.OrderedMap;
-import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreatorconfigurator.xml.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
