@@ -57,6 +57,8 @@ public class TableListRenderer implements ListCellRenderer {
     private JPanel contents;
     private JLabel icon;
     private JLabel text;
+    private Color unselectedBG = UIHelper.BG_COLOR;
+    private Color selectedBG = UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR;
 
     @InjectedResource
     private ImageIcon sampleNode, sampleNodeNS, microarrayNode, microarrayNodeNS,
@@ -69,7 +71,7 @@ public class TableListRenderer implements ListCellRenderer {
         ResourceInjector.get("config-ui-package.style").inject(this);
 
         contents = new JPanel(new BorderLayout());
-        contents.setOpaque(false);
+        contents.setOpaque(true);
 
         icon = new JLabel();
         text = UIHelper.createLabel("", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
@@ -114,8 +116,9 @@ public class TableListRenderer implements ListCellRenderer {
 
         }
 
-        text.setForeground(selected ? UIHelper.LIGHT_GREEN_COLOR : UIHelper.GREY_COLOR);
+        text.setForeground(UIHelper.GREY_COLOR);
 
+        contents.setBackground(selected ? selectedBG : unselectedBG);
 
         text.setText(value.toString());
 
