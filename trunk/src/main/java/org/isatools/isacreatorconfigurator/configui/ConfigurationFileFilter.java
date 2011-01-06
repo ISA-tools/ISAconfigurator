@@ -47,7 +47,7 @@ public class ConfigurationFileFilter extends javax.swing.filechooser.FileFilter 
     }
 
     public String getDescription() {
-        return "TCO, TCF or directory with XML only";
+        return "Directory with XML only";
     }
 
     public static String getExtension(File f) {

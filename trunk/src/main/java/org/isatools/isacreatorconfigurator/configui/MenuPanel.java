@@ -291,7 +291,7 @@ public class MenuPanel extends JLayeredPane {
     private boolean loadSession() throws IOException, ClassNotFoundException {
         jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         jfc.setFileFilter(new ConfigurationFileFilter());
-        jfc.setDialogTitle("Select configuration file (.tcf or .tco)");
+        jfc.setDialogTitle("Select configuration file directory");
         jfc.setApproveButtonText("load configuration");
         jfc.showOpenDialog(this);
 
