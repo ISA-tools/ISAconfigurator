@@ -114,7 +114,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         }
         setUndecorated(true);
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(800, 400));
+        setPreferredSize(new Dimension(900, 400));
         setAlwaysOnTop(true);
 
         SwingUtilities.invokeLater(new Runnable() {
