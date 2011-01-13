@@ -1,17 +1,18 @@
-# ISAconfigurator -- configurator for ISAcreator and the rest of the ISAtools to determine the fields a user should report for particular communities along with restrictions on those fields such as Ontology terms etc.
-
+#### The ISAconfigurator allows for creation of XML files (configuration files) used to build spreadsheets in the ISAcreator and for validation in the creator and ISAvalidation code.
 
 - General info: <http://isa-tools.org>
+- Tools' overview in this short paper: <http://bioinformatics.oxfordjournals.org/content/26/18/2354.full.pdf+html>
 - Issue tracking and bug reporting: <https://github.com/ISA-tools/ISAconfigurator/issues>
 - Mainline source code: <https://github.com/ISA-tools/ISAconfigurator>
 - Twitter: [@isatools](http://twitter.com/isatools)
 - IRC: [irc://irc.freenode.net/#isatab](irc://irc.freenode.net/#isatab)
+- Development blog: [http://isatools.wordpress.com]
 
 ## Development
 
 **Get the source:**
 
-    git clone --recursive https://github.com/ISA-tools/ISAconfigurator.git
+    You should ***fork*** the ISAconfigurator to your own GitHub "repository". Then clone this forked repository and start developing. When you make changes to the ISAconfigurator code, we can see the changes you made, review the code and merge with the main ISAconfigurator repository code base.
 
 **Build dependencies:**
     These are all managed by Maven <http://maven.apache.org/>. 

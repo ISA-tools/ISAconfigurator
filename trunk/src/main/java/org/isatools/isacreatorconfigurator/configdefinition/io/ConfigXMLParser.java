@@ -146,7 +146,7 @@ public class ConfigXMLParser {
         List<TableFieldObject> fields = new ArrayList<TableFieldObject>();
         // todo change to ordered map
         Map<Integer, String[]> tableStructure = new HashMap<Integer, String[]>();
-        System.out.println("Processing " + isaConf.getTableName());
+
         int colNo = 0;
         int sequenceNumber = 0;
         while (sequenceNumber < getConfigurationFields(isaConf).length) {

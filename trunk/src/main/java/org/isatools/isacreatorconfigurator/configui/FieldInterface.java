@@ -659,28 +659,18 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         }
     }
 
-
-    private void showPopup(Window container, Component attachedComponent) {
-        Point pt = attachedComponent.getLocationOnScreen();
-        pt.translate(0, attachedComponent.getHeight());
-        container.setLocation(pt);
-        container.toFront();
-        container.setVisible(true);
-        container.requestFocusInWindow();
-    }
-
     private void showPopupInCenter(Window container) {
-        Container parent = this.getParent();
+        Container parent = (Container) main;
         Point parentLocation = parent.getLocationOnScreen();
+
         Dimension parentSize = parent.getSize();
 
+        int calcedXLoc = (parentLocation.x) + ((parentSize.width) /2) - (container.getWidth()/2);
+        int calcedYLoc = (parentLocation.y) + ((parentSize.height) /2) - (container.getHeight()/2);
 
-        int calcedXLoc = ((parentLocation.x / 2) + (parentSize.width / 2)) - (container.getWidth() / 2);
-        int calcedYLoc = ((parentLocation.y / 2) + (parentSize.height / 2)) - (container.getHeight() / 2);
-
+        container.setVisible(true);
         container.setLocation(calcedXLoc, calcedYLoc);
         container.toFront();
-        container.setVisible(true);
         container.requestFocusInWindow();
     }
 
