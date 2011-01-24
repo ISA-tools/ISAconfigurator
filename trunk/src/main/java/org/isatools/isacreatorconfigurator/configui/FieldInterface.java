@@ -305,6 +305,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         defaultValCont = new JPanel(new GridLayout(1, 1));
 
         defaultValStd = new JFormattedTextField();
+        defaultValStd.setSize(new Dimension(150, 19));
         defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
                 new RegExFormatter(".*", defaultValStd)));
         UIHelper.renderComponent(defaultValStd, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
@@ -474,9 +475,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         container.add(defaultValContBool);
 
         // RegExp data entry
-        isInputFormatted = new
-
-                JCheckBox("Is the input formatted?", false);
+        isInputFormatted = new JCheckBox("Is the input formatted?", false);
 
         UIHelper.renderComponent(isInputFormatted, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
         isInputFormatted.addActionListener(this);
@@ -493,20 +492,16 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         );
         inputFormatCont.setVisible(false);
         inputFormatCont.setBackground(UIHelper.BG_COLOR);
-        inputFormat = new
+        inputFormat = new JTextField(".*");
+        inputFormat.setSize(new Dimension(150, 19));
 
-                JTextField(".*");
-
-        inputFormat.setPreferredSize(new
-
-                Dimension(160, 25)
-
-        );
+        inputFormat.setPreferredSize(new Dimension(160, 25));
         inputFormat.setToolTipText(
                 "Field expects a regular expression describing the input format.");
         UIHelper.renderComponent(inputFormat, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
 
         JLabel inputFormatLab = UIHelper.createLabel("Input format:", UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
+        inputFormatLab.setVerticalAlignment(SwingConstants.TOP);
 
         inputFormatCont.add(inputFormatLab);
         inputFormatCont.add(inputFormat);
@@ -629,7 +624,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         contScroll.setBorder(null);
-        contScroll.setMinimumSize(new Dimension(400, 300));
+        contScroll.setSize(new Dimension(400, 350));
 
         IAppWidgetFactory.makeIAppScrollPane(contScroll);
 
@@ -680,7 +675,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         setBackground(UIHelper.BG_COLOR);
         instantiateFields(initFieldName);
         setBorder(new EmptyBorder(2, 10, 2, 2));
-
         setVisible(true);
     }
 

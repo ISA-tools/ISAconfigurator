@@ -112,7 +112,6 @@ public class BioPortalClassBeanResultHandler {
                     if (entryType.equalsIgnoreCase("subclass")) {
                         if (entry.getListArray().length > 0) {
                             for (ListDocument.List listItem : entry.getListArray()) {
-                                System.out.println(listItem.getClass());
                                 for (ClassBeanDocument.ClassBean classBeanItem : listItem.getClassBeanArray()) {
                                     result.put(classBeanItem.getIdArray(0), createOntologyFromClassBean(classBeanItem));
                                 }
@@ -176,7 +175,6 @@ public class BioPortalClassBeanResultHandler {
         }
 
         ClassBeanDocument.ClassBean[] classes = resultDocument.getSuccess().getData().getList().getClassBeanArray();
-
         for (ClassBeanDocument.ClassBean currentClass : classes) {
             result.put(currentClass.getIdArray(0), createOntologyFromClassBean(currentClass));
         }
@@ -207,12 +205,5 @@ public class BioPortalClassBeanResultHandler {
 
     }
 
-    public static void main(String[] args) {
-        BioPortalClassBeanResultHandler handler = new BioPortalClassBeanResultHandler();
-        Map<String, String> result = handler.parseOntologyParentPathFile("/Users/eamonnmaguire/IdeaProjects/ISAcreatorConfigurator/Data/ontologies_matching_40832-all-parents-span:TemporalRegion.xml-modified.xml");
 
-        for (String accession : result.keySet()) {
-            System.out.println(accession);
-        }
-    }
 }
