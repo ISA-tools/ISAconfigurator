@@ -140,6 +140,7 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
                                 setCurrentPage(new JLabel(LOADING));
                                 SearchOntologyDialogUI.this.validate();
                                 firePropertyChange("termSelected", "", ontologyResultList.getSelectedValue().toString());
+
                             } catch (Exception e) {
                                 System.err.println("Failed to resolve tree: " + e.getMessage());
                             } finally {
@@ -240,6 +241,7 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
                         SearchOntologyDialogUI.this.validate();
                         Map<String, String> result;
                         if (searchBy.getSelectedItem().equals("term")) {
+                            System.out.println("Search ontology is " + searchOntology.getOntologyID() + " version " + searchOntology.getOntologyVersion());
                             result = ontologyService.getTermsByPartialNameFromSource(searchField.getText(), new OntologyQueryAdapter(searchOntology).getOntologyQueryString(OntologyQueryAdapter.GET_ID), false);
                         } else {
                             result = ontologyService.getTermByAccessionId(searchField.getText());

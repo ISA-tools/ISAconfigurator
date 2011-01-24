@@ -182,7 +182,7 @@ public class WSOntologyTreeCreator implements OntologyTreeCreator, TreeSelection
 
     public void expandTreeToReachTerm(String termAccession) {
         Enumeration treeVisitor = rootNode.breadthFirstEnumeration();
-        Map<String, String> nodeParentsFromRoot = ontologyClient.getAllTermParents(termAccession, new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
+        Map<String, String> nodeParentsFromRoot = ontologyClient.getAllTermParents(termAccession, new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_ID));
         TreePath lastPath = null;
 
         for (String node : nodeParentsFromRoot.values()) {

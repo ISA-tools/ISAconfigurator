@@ -289,8 +289,9 @@ public class BioPortalClient implements OntologyService {
 
     public Map<String, String> getTermsByPartialNameFromSource(String term, String source, boolean reverseOrder) {
 
+        System.out.println("source = " + source);
         term = correctTermForHTTPTransport(term);
-        String searchString = REST_URL + "search/" + term + "/?ontologyids=" + constructSourceStringFromAllowedOntologies();
+        String searchString = REST_URL + "search/" + term + "/?ontologyids=" + (((source == null) || source.trim().equalsIgnoreCase("")) ? constructSourceStringFromAllowedOntologies() : source);
         System.out.println("search string " + searchString);
 
         Map<String, String> searchResult = downloadAndProcessBranch(term, searchString);
@@ -398,7 +399,7 @@ public class BioPortalClient implements OntologyService {
     public Map<String, String> getTermChildOrParent(String termAccession, String ontology, int type) {
         if (!cachedNodeChildrenQueries.containsKey(ontology + "-" + termAccession)) {
 
-            String searchString = REST_URL + "concepts/" + ((type == PARENTS) ? "parents" : "children") + "/" + ontology + "/" + termAccession + "?level=1";
+            String searchString = REST_URL + "concepts/" + ((type == PARENTS) ? "parents/" : "") + "" + ontology + "?conceptid=" + termAccession;
 
             String downloadLocation = DOWNLOAD_FILE_LOC + ontology + "-" + termAccession + EXT;
             resetRetryFlag();
@@ -411,7 +412,7 @@ public class BioPortalClient implements OntologyService {
 
             if (fileWithNameSpace != null) {
 
-                Map<String, BioPortalOntology> result = handler.parseParentOrChildrenConceptFile(fileWithNameSpace.getAbsolutePath());
+                Map<String, BioPortalOntology> result = handler.parseRootConceptFile(fileWithNameSpace.getAbsolutePath());
 
                 Map<String, String> processedResult = new HashMap<String, String>();
 
@@ -442,7 +443,9 @@ public class BioPortalClient implements OntologyService {
      * @return Map<String, String> representing the parents of the Term
      */
     public Map<String, String> getAllTermParents(String termAccession, String ontology) {
-        String searchString = REST_URL + "concepts/rootpath/" + ontology + "/" + termAccession;
+//        http://rest.bioontology.org/bioportal/path/45155/?source=efo:EFO_0000428&target=root
+//        /virtual/[rootpath|leafpath]/{ontologyId}/{conceptId}
+        String searchString = REST_URL + "virtual/rootpath/" + ontology + "/" + termAccession;
 
         String downloadLocation = DOWNLOAD_FILE_LOC + ontology + "-all-parents-" + termAccession + EXT;
 
@@ -503,11 +506,12 @@ public class BioPortalClient implements OntologyService {
             log.error("io exception caught" + e.getMessage());
             // we allow one retry attempt due to problems with BioPortal not always serving
             // back results on the first attempt!
-            if (allowRetry) {
-                log.info("attempting retry");
-                allowRetry = false;
-                downloadFile(fileLocation, downloadLocation);
-            }
+            // NO LONGER RETRYING. NEW SERVICE APPEARS TO BE MUCH MORE RELIABLE
+//            if (allowRetry) {
+//                log.info("attempting retry");
+//                allowRetry = false;
+//                downloadFile(fileLocation, downloadLocation);
+//            }
             return false;
         } catch (Exception e) {
             log.error(e.getMessage());
