@@ -37,7 +37,8 @@
 package org.isatools.isacreatorconfigurator.ontologymanager.bioportal.xmlresulthandlers;
 
 public enum AcceptedOntologies {
-    OBI("1123", "OBI"), EFO("1136", "EFO"), NCI_THESAURUS("1032", "NCIt"), CHEBI("1007", "CHEBI"), NPO("1083", "NPO"), SNOMED("1353", "SNOMEDCT"), MEDDRA("1422", "MDR");
+    OBI("1123", "OBI"), EFO("1136", "EFO"), NCI_THESAURUS("1032", "NCIt"), CHEBI("1007", "CHEBI"), NPO("1083", "NPO"),
+    SNOMED("1353", "SNOMEDCT"), MDR("1422", "MDR"), PATO("1107", "PATO"), UO("1112", "UO");
 
     private String ontologyID;
     private String ontologyAbbreviation;
@@ -59,5 +60,20 @@ public enum AcceptedOntologies {
 
     public String getOntologyID() {
         return ontologyID;
+    }
+
+     /**
+     * Returns say OBI when 1123 is supplied
+     *
+     * @param ontologyId e.g. 1123 for OBI
+     * @return when 1123 is supplied, OBI will be returned
+     */
+    public static String getOntologyAbbreviationFromId(String ontologyId) {
+        for (AcceptedOntologies ontology : values()) {
+            if (ontology.getOntologyID().equals(ontologyId)) {
+                return ontology.getOntologyAbbreviation();
+            }
+        }
+        return null;
     }
 }
