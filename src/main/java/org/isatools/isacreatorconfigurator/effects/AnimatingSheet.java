@@ -51,7 +51,7 @@ import java.awt.image.RasterFormatException;
  *
  * @author Marinacci, J, Adamson, C.
  */
-public class AnimatingSheet extends JComponent {
+public class AnimatingSheet extends JComponent{
     BufferedImage offscreenImage;
     Dimension animatingSize = new Dimension(0, 1);
     JComponent source;

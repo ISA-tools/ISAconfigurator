@@ -1,8 +1,12 @@
 package org.isatools.isacreatorconfigurator.configui.mappingviewer;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
+import org.isatools.isacreatorconfigurator.autofiltercombo.AutoFilterCombo;
+import org.isatools.isacreatorconfigurator.autofiltercombo.AutoFilterComboCellEditor;
 import org.isatools.isacreatorconfigurator.common.MappingObject;
 import org.isatools.isacreatorconfigurator.common.UIHelper;
+import org.isatools.isacreatorconfigurator.configdefinition.AssayTypes;
+import org.isatools.isacreatorconfigurator.configdefinition.DispatchTargets;
 import org.isatools.isacreatorconfigurator.configui.DataEntryPanel;
 import org.isatools.isacreatorconfigurator.effects.RoundedBorder;
 import org.jdesktop.fuse.InjectedResource;
@@ -30,6 +34,8 @@ import java.util.Set;
  * @author Eamonn Maguire
  */
 public class TableMappingViewer extends JDialog {
+
+
     private Set<MappingObject> mappingList;
     private DefaultTableModel subTM;
     private JLabel statusInfo;
@@ -61,13 +67,12 @@ public class TableMappingViewer extends JDialog {
      */
     private void createGUI() {
         columnNames = new Object[]{
-                "table type", "measurement type", "technology type",
-                "table"
+                "table type", "measurement type", "technology type","conversion target", "assay type", "table name"
         };
 
         subTM = new DefaultTableModel() {
             public boolean isCellEditable(int row, int col) {
-                return !getValueAt(row, 0).toString().equals("study sample") && !(col == 0) && !(col == 3);
+                return !getValueAt(row, 0).toString().equals("study sample") && !(col == 0) && !(col == 5);
             }
         };
 
@@ -77,6 +82,8 @@ public class TableMappingViewer extends JDialog {
         mappings = new JTable(subTM);
         mappings.setGridColor(UIHelper.LIGHT_GREEN_COLOR);
 
+        setupCellEditors();
+
         try {
             mappings.setDefaultRenderer(Class.forName("java.lang.Object"),
                     new MappingTableCellRenderer(UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, null));
@@ -85,17 +92,19 @@ public class TableMappingViewer extends JDialog {
         }
 
         mappings.setShowGrid(true);
-
+        mappings.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         JTableHeader header = mappings.getTableHeader();
         setHeaderProperties(header, new MappingTableHeaderRenderer());
 
+
+
         JScrollPane tableScroll = new JScrollPane(mappings,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        tableScroll.setPreferredSize(new Dimension(500, 150));
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tableScroll.setPreferredSize(new Dimension(600, 300));
         tableScroll.setBorder(new TitledBorder(
                 new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 4),
-                "table mappings", TitledBorder.DEFAULT_JUSTIFICATION,
+                "tables", TitledBorder.DEFAULT_JUSTIFICATION,
                 TitledBorder.DEFAULT_POSITION,
                 UIHelper.VER_12_BOLD, UIHelper.DARK_GREEN_COLOR));
 
@@ -146,6 +155,15 @@ public class TableMappingViewer extends JDialog {
         add(southPanel, BorderLayout.SOUTH);
     }
 
+    private void setupCellEditors() {
+
+        mappings.getColumnModel().getColumn(3).setCellEditor( new AutoFilterComboCellEditor(new AutoFilterCombo(
+                DispatchTargets.asStringArray(), false)));
+
+        mappings.getColumnModel().getColumn(4).setCellEditor( new AutoFilterComboCellEditor(new AutoFilterCombo(
+                AssayTypes.asStringArray(), false)));
+    }
+
     public List<MappingObject> convertSetToList(Set<MappingObject> toConvert) {
         List<MappingObject> converted = new ArrayList<MappingObject>();
 
@@ -172,17 +190,24 @@ public class TableMappingViewer extends JDialog {
      */
     private void saveUpdates() {
         for (int row = 0; row < mappings.getRowCount(); row++) {
-            String[] newVals = new String[3];
+            String[] newVals = new String[6];
 
-            for (int col = 1; col < mappings.getColumnCount(); col++) {
-                newVals[col - 1] = subTM.getValueAt(row, col).toString();
+            for (int col = 0; col < mappings.getColumnCount(); col++) {
+                Object value = subTM.getValueAt(row, col);
+                CellEditor editor = mappings.getCellEditor();
+                if(editor != null) {
+                    editor.stopCellEditing();
+                }
+                newVals[col] = value == null ? "" : value.toString();
             }
 
             for (MappingObject mo : dep.getTableTypeMapping()) {
-                if (mo.getAssayName().equals(newVals[2])) {
-                    if (!newVals[0].equals("") && !newVals[1].equals("")) {
-                        mo.setMeasurementEndpointType(newVals[0]);
-                        mo.setTechnologyType(newVals[1]);
+                if (mo.getAssayName().equals(newVals[5])) {
+                    if (!newVals[1].equals("") && !newVals[2].equals("")) {
+                        mo.setMeasurementEndpointType(newVals[1]);
+                        mo.setTechnologyType(newVals[2]);
+                        mo.setAssayType(newVals[4]);
+                        mo.setDispatchTarget(newVals[3]);
                     }
 
                     break;
@@ -199,8 +224,6 @@ public class TableMappingViewer extends JDialog {
 
             TableColumn tc = columns.nextElement();
             tc.setHeaderRenderer(renderer);
-
-
         }
     }
 
@@ -208,13 +231,15 @@ public class TableMappingViewer extends JDialog {
      * Updates the Mappings whenever the user clicks on the update button.
      */
     private Object[][] updateItems(List<MappingObject> mappingList) {
-        Object[][] data = new Object[mappingList.size()][4];
+        Object[][] data = new Object[mappingList.size()][6];
 
         for (int i = 0; i < mappingList.size(); i++) {
             data[i][0] = mappingList.get(i).getTableType();
             data[i][1] = mappingList.get(i).getMeasurementEndpointType();
             data[i][2] = mappingList.get(i).getTechnologyType();
-            data[i][3] = mappingList.get(i).getAssayName();
+            data[i][3] = mappingList.get(i).getDispatchTarget();
+            data[i][4] = mappingList.get(i).getAssayType();
+            data[i][5] = mappingList.get(i).getAssayName();
         }
 
         return data;

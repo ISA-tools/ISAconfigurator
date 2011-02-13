@@ -65,10 +65,17 @@ public class FieldXMLCreator {
         StringBuffer entireTableDef = new StringBuffer();
 
         entireTableDef.append("<isatab-config-file xmlns=\"http://www.ebi.ac.uk/bii/isatab_configuration#\">");
-        entireTableDef.append("<isatab-configuration table-name=\"").append(mo.getAssayName()).append("\">");
+        entireTableDef.append("<isatab-configuration table-name=\"").append(mo.getAssayName()).append("\"");
+
 
         String finalMeasurement = mo.getTableType().equalsIgnoreCase("assay") ? mo.getMeasurementEndpointType() : "[Sample]";
         String finalTechnology = mo.getTableType().equalsIgnoreCase("assay") ? mo.getTechnologyType() : "";
+
+        if (!finalMeasurement.equalsIgnoreCase("[sample]")) {
+            entireTableDef.append(" isatab-assay-type=\"").append(mo.getAssayType()).append("\" isatab-conversion-target=\"").append(mo.getDispatchTarget()).append("\"");
+        }
+
+        entireTableDef.append(">");
 
         createOntologyTypeDefinition(entireTableDef, "measurement", finalMeasurement, mo.getMeasurementAccession(), mo.getMeasurementSource());
         createOntologyTypeDefinition(entireTableDef, "technology", finalTechnology, mo.getTechnologyAccession(), mo.getTechnologySource());
