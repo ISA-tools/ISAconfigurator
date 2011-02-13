@@ -37,7 +37,9 @@
 package org.isatools.isacreatorconfigurator.configui;
 
 import org.isatools.isacreatorconfigurator.common.UIHelper;
+import org.isatools.isacreatorconfigurator.configdefinition.AssayTypes;
 import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
+import org.isatools.isacreatorconfigurator.configdefinition.DispatchTargets;
 import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
 
 import javax.swing.*;
@@ -150,6 +152,20 @@ public class AddTableGUI extends JDialog {
         final JTextField techAccessionText = new JTextField(ACCESSION_DEFAULT, 10);
         techAccessionText.setEnabled(false);
 
+        final JLabel assayTypeLab = UIHelper.createLabel("assay type :",
+                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+        assayTypeLab.setEnabled(false);
+
+        final JComboBox assayType = new JComboBox(AssayTypes.asStringArray());
+        assayType.setEnabled(false);
+
+        final JLabel targetDispatchLab = UIHelper.createLabel("dispatch target :",
+                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+        targetDispatchLab.setEnabled(false);
+
+        final JComboBox targetDispatch = new JComboBox(DispatchTargets.asStringArray());
+        targetDispatch.setEnabled(false);
+
         JPanel fields = new JPanel();
         fields.setLayout(new BoxLayout(fields, BoxLayout.PAGE_AXIS));
         fields.setOpaque(false);
@@ -186,6 +202,11 @@ public class AddTableGUI extends JDialog {
                 techSourceText.setEnabled(enabledFields);
                 techAccessionLab.setEnabled(enabledFields);
                 techAccessionText.setEnabled(enabledFields);
+
+                assayTypeLab.setEnabled(enabledFields);
+                assayType.setEnabled(enabledFields);
+                targetDispatchLab.setEnabled(enabledFields);
+                targetDispatch.setEnabled(enabledFields);
             }
         });
         UIHelper.renderComponent(typeCombo, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
@@ -218,6 +239,15 @@ public class AddTableGUI extends JDialog {
         techTypePanel.add(techAccessionLab);
         techTypePanel.add(techAccessionText);
         assayDefPanel.add(techTypePanel);
+
+        JPanel assaySettingsPanel = new JPanel(new GridLayout(2, 2));
+        assaySettingsPanel.setBackground(UIHelper.BG_COLOR);
+        assaySettingsPanel.setOpaque(false);
+        assaySettingsPanel.add(targetDispatchLab);
+        assaySettingsPanel.add(targetDispatch);
+        assaySettingsPanel.add(assayTypeLab);
+        assaySettingsPanel.add(assayType);
+        assayDefPanel.add(assaySettingsPanel);
 
         fields.add(assayDefPanel);
         fields.add(Box.createVerticalStrut(5));
@@ -315,8 +345,12 @@ public class AddTableGUI extends JDialog {
                     }
                 }
 
+                String assayTypeValue = (typeCombo.getSelectedItem() == Location.STUDY_SAMPLE) ? "" : assayType.getSelectedItem().toString();
+                String dispatchTargetValue = (typeCombo.getSelectedItem() == Location.STUDY_SAMPLE) ? "" : targetDispatch.getSelectedItem().toString();
+
                 boolean added = parentGUI.addTable(typeCombo.getSelectedItem().toString(),
-                        measType, measEndSourceText.getText(), measEndAccessionText.getText(), techType, techSourceText.getText(), techAccessionText.getText(), refNameText.getText(), initialFieldsList);
+                        measType, measEndSourceText.getText(), measEndAccessionText.getText(), techType, techSourceText.getText(), techAccessionText.getText(),
+                        refNameText.getText(), initialFieldsList, assayTypeValue, dispatchTargetValue);
 
                 if (!added) {
                     status.setText(

@@ -958,10 +958,13 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     }
 
     public boolean addTable(String tableType, String measurementType, String measurementSource, String measurementAccession,
-                            String techType, String techSource, String techAccession, String tableName, List<TableFieldObject> initialFields) {
+                            String techType, String techSource, String techAccession, String tableName, List<TableFieldObject> initialFields,
+                            String assayType, String dispatchTarget) {
 
         if (!checkConflictingTables(tableName, measurementType, techType)) {
             MappingObject mo = new MappingObject(tableType, measurementType, measurementSource, measurementAccession, techType, techSource, techAccession, tableName);
+            mo.setAssayType(assayType);
+            mo.setDispatchTarget(dispatchTarget);
             tableFields.put(mo, new ArrayList<Display>());
             // reform table list
             if (initialFields != null) {
