@@ -43,6 +43,8 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 
 /**
@@ -53,7 +55,7 @@ import java.awt.event.ActionListener;
  *
  * @author Marinacci, J, Adamson, C.
  */
-public class MACTypeDialogFrame extends JFrame implements ActionListener {
+public class MACTypeDialogFrame extends JFrame implements ActionListener, MouseListener {
     public static final int INCOMING = 1;
     public static final int OUTGOING = -1;
     public static final float ANIMATION_DURATION = 200f;
@@ -135,6 +137,7 @@ public class MACTypeDialogFrame extends JFrame implements ActionListener {
             glass.setVisible(false);
             animationDirection = OUTGOING;
             startAnimation();
+            glass.removeMouseListener(this);
         }
     }
 
@@ -171,6 +174,7 @@ public class MACTypeDialogFrame extends JFrame implements ActionListener {
     public JComponent showJDialogAsSheet(JDialog dialog) {
         sheet = (JComponent) dialog.getContentPane();
         sheet.setBorder(new LineBorder(UIHelper.DARK_GREEN_COLOR, 2));
+        glass.addMouseListener(this);
         setupAnimation();
 
         return sheet;
@@ -206,5 +210,25 @@ public class MACTypeDialogFrame extends JFrame implements ActionListener {
     private void stopAnimation() {
         animationTimer.stop();
         animating = false;
+    }
+
+    public void mouseClicked(MouseEvent mouseEvent) {
+
+    }
+
+    public void mousePressed(MouseEvent mouseEvent) {
+
+    }
+
+    public void mouseReleased(MouseEvent mouseEvent) {
+
+    }
+
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    public void mouseExited(MouseEvent mouseEvent) {
+
     }
 }

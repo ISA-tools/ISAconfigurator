@@ -143,6 +143,14 @@ public class ConfigXMLParser {
                 technologyInfo.getTermLabel(), technologyInfo.getSourceAbbreviation(), technologyInfo.getTermAccession(),
                 isaConf.getTableName());
 
+        if(isaConf.getIsatabConversionTarget() != null) {
+            mo.setDispatchTarget(isaConf.getIsatabConversionTarget());
+        }
+
+        if(isaConf.getIsatabAssayType() != null) {
+            mo.setAssayType(isaConf.getIsatabAssayType().toString());
+        }
+
         List<TableFieldObject> fields = new ArrayList<TableFieldObject>();
         // todo change to ordered map
         Map<Integer, String[]> tableStructure = new HashMap<Integer, String[]>();

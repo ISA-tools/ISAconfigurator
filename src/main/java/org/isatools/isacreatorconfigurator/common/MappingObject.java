@@ -36,6 +36,9 @@
 
 package org.isatools.isacreatorconfigurator.common;
 
+import org.isatools.isacreatorconfigurator.configdefinition.AssayTypes;
+import org.isatools.isacreatorconfigurator.configdefinition.DispatchTargets;
+
 import java.io.Serializable;
 
 
@@ -53,6 +56,9 @@ public class MappingObject implements Serializable {
 
     private String refName;
     private String tableType;
+
+    private String dispatchTarget;
+    private String assayType;
 
 
     public MappingObject(String tableType, String measurementType, String measurementSource, String measurementAccession,
@@ -90,23 +96,39 @@ public class MappingObject implements Serializable {
     }
 
     public String getMeasurementSource() {
-        return measurementSource == null ? "" : measurementSource;
+        return measurementSource == null || measurementSource.equals("e.g. OBI") ? "" : measurementSource;
     }
 
     public String getMeasurementAccession() {
-        return measurementAccession == null ? "" : measurementAccession;
+        return measurementAccession == null || measurementAccession.equals("e.g. 12345") ? "" : measurementAccession;
     }
 
     public String getTechnologySource() {
-        return technologySource == null ? "" : technologySource;
+        return technologySource == null || technologySource.equals("e.g. OBI") ? "" : technologySource;
     }
 
     public String getTechnologyAccession() {
-        return technologyAccession == null ? "" : technologyAccession;
+        return technologyAccession == null || technologyAccession.equals("e.g. 12345") ? "" : technologyAccession;
     }
 
     public void setTechnologyType(String technologyType) {
         this.technologyType = technologyType;
+    }
+
+    public String getDispatchTarget() {
+        return dispatchTarget == null ? measurementType.equals("[Sample]") ? "" : DispatchTargets.GENERIC.toString() : dispatchTarget;
+    }
+
+    public void setDispatchTarget(String dispatchTarget) {
+        this.dispatchTarget = dispatchTarget;
+    }
+
+    public String getAssayType() {
+        return assayType == null ? measurementType.equals("[Sample]") ? "" : AssayTypes.GENERIC.toString() : assayType;
+    }
+
+    public void setAssayType(String assayType) {
+        this.assayType = assayType;
     }
 
     public String toString() {
