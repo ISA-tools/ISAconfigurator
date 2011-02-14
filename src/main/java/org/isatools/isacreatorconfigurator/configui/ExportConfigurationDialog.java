@@ -38,6 +38,7 @@ package org.isatools.isacreatorconfigurator.configui;
 
 import org.isatools.isacreatorconfigurator.common.FileSelectionPanel;
 import org.isatools.isacreatorconfigurator.common.UIHelper;
+import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -94,9 +95,8 @@ public class ExportConfigurationDialog extends JDialog {
         JLabel fileNameLab = new JLabel("Please enter configuration name...");
         UIHelper.renderComponent(fileNameLab, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
 
-        final JTextField fileNameTxt = new JTextField(
-                "isaconfig-" + getDateString());
-        fileNameTxt.setBackground(UIHelper.BG_COLOR);
+        final JTextField fileNameTxt = new RoundedJTextField(10);
+        fileNameTxt.setText("isaconfig-" + getDateString());
         UIHelper.renderComponent(fileNameTxt, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
 
         fileNamePanel.add(fileNameLab);
