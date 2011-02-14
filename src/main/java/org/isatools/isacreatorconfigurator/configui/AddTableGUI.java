@@ -41,6 +41,7 @@ import org.isatools.isacreatorconfigurator.configdefinition.AssayTypes;
 import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
 import org.isatools.isacreatorconfigurator.configdefinition.DispatchTargets;
 import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
+import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
 
 import javax.swing.*;
 import java.awt.*;
@@ -111,59 +112,73 @@ public class AddTableGUI extends JDialog {
         assayDefPanel.setBackground(UIHelper.BG_COLOR);
 
         final JLabel measEndLab = UIHelper.createLabel("measurement type :",
-                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+                UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         measEndLab.setEnabled(false);
 
-        final JTextField measEndText = new JTextField(MEASEND_DEFAULT, 10);
+        final JTextField measEndText = new RoundedJTextField(10);
+        measEndText.setText(MEASEND_DEFAULT);
+        UIHelper.renderComponent(measEndText, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         measEndText.setEnabled(false);
 
         final JLabel measEndSourceLab = UIHelper.createLabel("term source :",
-                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+                UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         measEndSourceLab.setEnabled(false);
 
-        final JTextField measEndSourceText = new JTextField(SOURCE_DEFAULT, 10);
+        final JTextField measEndSourceText = new RoundedJTextField(10);
+        measEndSourceText.setText(SOURCE_DEFAULT);
+        UIHelper.renderComponent(measEndSourceText, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         measEndSourceText.setEnabled(false);
 
         final JLabel measEndAccessionLab = UIHelper.createLabel("term accession :",
-                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+                UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         measEndAccessionLab.setEnabled(false);
 
-        final JTextField measEndAccessionText = new JTextField(ACCESSION_DEFAULT, 10);
+        final JTextField measEndAccessionText = new RoundedJTextField(10);
+        measEndAccessionText.setText(ACCESSION_DEFAULT);
+        UIHelper.renderComponent(measEndAccessionText, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         measEndAccessionText.setEnabled(false);
 
         final JLabel techTypeLab = UIHelper.createLabel("technology type :",
-                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+                UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         techTypeLab.setEnabled(false);
 
-        final JTextField techTypeText = new JTextField(TECHTYPE_DEFAULT, 10);
+        final JTextField techTypeText = new RoundedJTextField(10);
+        techTypeText.setText(TECHTYPE_DEFAULT);
+        UIHelper.renderComponent(techTypeText, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         techTypeText.setEnabled(false);
 
         final JLabel techSourceLab = UIHelper.createLabel("term source ref :",
-                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+                UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         techSourceLab.setEnabled(false);
 
-        final JTextField techSourceText = new JTextField(SOURCE_DEFAULT, 10);
+        final JTextField techSourceText = new RoundedJTextField(10);
+        techSourceText.setText(SOURCE_DEFAULT);
+        UIHelper.renderComponent(techSourceText, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         techSourceText.setEnabled(false);
 
         final JLabel techAccessionLab = UIHelper.createLabel("term accession :",
-                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+                UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         techAccessionLab.setEnabled(false);
 
-        final JTextField techAccessionText = new JTextField(ACCESSION_DEFAULT, 10);
+        final JTextField techAccessionText = new RoundedJTextField(10);
+        UIHelper.renderComponent(techAccessionText, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        techAccessionText.setText(ACCESSION_DEFAULT);
         techAccessionText.setEnabled(false);
 
         final JLabel assayTypeLab = UIHelper.createLabel("assay type :",
-                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+                UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         assayTypeLab.setEnabled(false);
 
         final JComboBox assayType = new JComboBox(AssayTypes.asStringArray());
+        UIHelper.renderComponent(assayType, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         assayType.setEnabled(false);
 
         final JLabel targetDispatchLab = UIHelper.createLabel("dispatch target :",
-                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+                UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         targetDispatchLab.setEnabled(false);
 
         final JComboBox targetDispatch = new JComboBox(DispatchTargets.asStringArray());
+        UIHelper.renderComponent(targetDispatch, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         targetDispatch.setEnabled(false);
 
         JPanel fields = new JPanel();
@@ -173,7 +188,7 @@ public class AddTableGUI extends JDialog {
         JPanel tableType = new JPanel(new GridLayout(1, 2));
         tableType.setOpaque(false);
 
-        JLabel selectTypeLab = UIHelper.createLabel("select type of table:");
+        JLabel selectTypeLab = UIHelper.createLabel("select type of table:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
 
         tableType.add(selectTypeLab);
 
@@ -255,10 +270,10 @@ public class AddTableGUI extends JDialog {
         JPanel refNamePanel = new JPanel(new GridLayout(1, 2));
         refNamePanel.setBackground(UIHelper.BG_COLOR);
 
-        JLabel refNameLab = UIHelper.createLabel("table name:");
+        JLabel refNameLab = UIHelper.createLabel("table name:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         refNamePanel.add(refNameLab);
 
-        final JTextField refNameText = new JTextField(10);
+        final JTextField refNameText = new RoundedJTextField(10);
         UIHelper.renderComponent(refNameText, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
 
         refNamePanel.add(refNameText);

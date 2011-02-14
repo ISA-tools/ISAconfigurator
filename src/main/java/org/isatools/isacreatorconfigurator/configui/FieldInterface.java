@@ -44,6 +44,8 @@ import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
 import org.isatools.isacreatorconfigurator.configdefinition.RecommendedOntology;
 import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
 import org.isatools.isacreatorconfigurator.effects.RoundedBorder;
+import org.isatools.isacreatorconfigurator.effects.components.RoundedFormattedTextField;
+import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
 import org.isatools.isacreatorconfigurator.ontologyconfigurationtool.OntologyConfigUI;
 import org.isatools.isacreatorconfigurator.ontologymanager.BioPortalClient;
 import org.isatools.isacreatorconfigurator.ontologymanager.OLSClient;
@@ -254,31 +256,34 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         fieldCont.setBackground(UIHelper.BG_COLOR);
 
 
-        fieldName = new JTextField(initFieldName, 15);
+        fieldName = new RoundedJTextField(15);
+        fieldName.setText(initFieldName);
         fieldName.setEditable(false);
-        UIHelper.renderComponent(fieldName, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(fieldName, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
 
-        JLabel fieldNameLab = UIHelper.createLabel("Field Name: ", UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
+        JLabel fieldNameLab = UIHelper.createLabel("Field Name: ", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         fieldCont.add(fieldNameLab);
         fieldCont.add(fieldName);
         container.add(fieldCont);
 
         JPanel descCont = new JPanel(new GridLayout(1, 2));
         descCont.setBackground(UIHelper.BG_COLOR);
-        description = new JTextArea("", 3, 5);
+        description = new JTextArea();
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
-        UIHelper.renderComponent(description, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
+        description.setBorder(new RoundedBorder(UIHelper.GREY_COLOR, 6));
+        UIHelper.renderComponent(description, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
 
         JScrollPane descScroll = new JScrollPane(description,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         descScroll.setBackground(UIHelper.BG_COLOR);
+        descScroll.setPreferredSize(new Dimension(150, 65));
         descScroll.getViewport().setBackground(UIHelper.BG_COLOR);
 
         IAppWidgetFactory.makeIAppScrollPane(descScroll);
 
-        JLabel descLab = UIHelper.createLabel("Description: ", UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
+        JLabel descLab = UIHelper.createLabel("Description: ", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         descLab.setVerticalAlignment(JLabel.TOP);
         descCont.add(descLab);
         descCont.add(descScroll);
@@ -292,9 +297,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         datatype = new JComboBox(allowedDataTypes);
         datatype.addActionListener(this);
-        UIHelper.renderComponent(datatype, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
+        UIHelper.renderComponent(datatype, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
 
-        JLabel dataTypeLab = UIHelper.createLabel("Datatype:", UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
+        JLabel dataTypeLab = UIHelper.createLabel("Datatype:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         datatypeCont.add(dataTypeLab);
         datatypeCont.add(datatype);
         container.add(datatypeCont);
@@ -304,15 +309,15 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         defaultValCont = new JPanel(new GridLayout(1, 1));
 
-        defaultValStd = new JFormattedTextField();
+        defaultValStd = new RoundedFormattedTextField();
         defaultValStd.setSize(new Dimension(150, 19));
         defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
                 new RegExFormatter(".*", defaultValStd)));
-        UIHelper.renderComponent(defaultValStd, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(defaultValStd, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
 
         defaultValCont.add(defaultValStd);
 
-        defaultValLabStd = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
+        defaultValLabStd = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         defaultValContStd.add(defaultValLabStd);
         defaultValContStd.add(defaultValCont);
         container.add(defaultValContStd);
@@ -326,13 +331,13 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         listDataSourceCont.setVisible(false);
 
         JLabel listValLab = UIHelper.createLabel(
-                "Please enter comma separated list of values:", UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
+                "Please enter comma separated list of values:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         listDataSourceCont.add(listValLab);
 
         listValues = new JTextArea("SampleVal1, SampleVal2, SampleVal3", 3, 5);
         listValues.setLineWrap(true);
         listValues.setWrapStyleWord(true);
-        UIHelper.renderComponent(listValues, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(listValues, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
 
         JScrollPane listScroll = new JScrollPane(listValues,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,

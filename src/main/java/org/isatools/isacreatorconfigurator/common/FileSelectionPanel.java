@@ -36,8 +36,11 @@
 
 package org.isatools.isacreatorconfigurator.common;
 
+import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -98,17 +101,14 @@ public class FileSelectionPanel extends JPanel {
         JPanel fileSelectionUtil = new JPanel();
         fileSelectionUtil.setLayout(new BoxLayout(fileSelectionUtil, BoxLayout.LINE_AXIS));
 
-        fileToUse = new JTextField();
+        fileToUse = new RoundedJTextField(10);
         fileToUse.setEditable(false);
         UIHelper.renderComponent(fileToUse, textFont, textColor, false);
 
         fileSelectionUtil.add(fileToUse);
 
         final JLabel selectFileButton = new JLabel(fileSelect);
-        selectFileButton.addMouseListener(new MouseListener() {
-            public void mouseClicked(MouseEvent event) {
-
-            }
+        selectFileButton.addMouseListener(new MouseAdapter() {
 
             public void mouseEntered(MouseEvent event) {
                 selectFileButton.setIcon(fileSelectOver);
@@ -128,9 +128,6 @@ public class FileSelectionPanel extends JPanel {
                 }
             }
 
-            public void mouseReleased(MouseEvent event) {
-
-            }
         });
         fileSelectionUtil.add(selectFileButton);
         add(fileSelectionUtil);

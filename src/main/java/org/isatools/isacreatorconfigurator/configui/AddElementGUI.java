@@ -41,15 +41,13 @@ import org.isatools.isacreatorconfigurator.common.UIHelper;
 import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
 import org.isatools.isacreatorconfigurator.configdefinition.RecommendedOntology;
 import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
+import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
 import org.isatools.isacreatorconfigurator.ontologymanager.OntologyConsumer;
 import org.isatools.isacreatorconfigurator.ontologyselectiontool.OntologySelectionTool;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Map;
@@ -112,8 +110,8 @@ public class AddElementGUI extends JDialog {
         JPanel elementTypeCont = new JPanel(new GridLayout(1, 2));
         elementTypeCont.setBackground(UIHelper.BG_COLOR);
 
-        addFieldElement = new JRadioButton("Field");
-        UIHelper.renderComponent(addFieldElement, UIHelper.VER_12_BOLD, UIHelper.DARK_GREEN_COLOR, false);
+        addFieldElement = new JRadioButton("field");
+        UIHelper.renderComponent(addFieldElement, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         addFieldElement.setSelected(true);
 
         addFieldElement.addActionListener(new ActionListener() {
@@ -130,8 +128,8 @@ public class AddElementGUI extends JDialog {
             }
         });
 
-        JRadioButton addStructuralElement = new JRadioButton("Structural");
-        UIHelper.renderComponent(addStructuralElement, UIHelper.VER_12_BOLD, UIHelper.DARK_GREEN_COLOR, false);
+        JRadioButton addStructuralElement = new JRadioButton("structural");
+        UIHelper.renderComponent(addStructuralElement, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
 
         addStructuralElement.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -167,11 +165,11 @@ public class AddElementGUI extends JDialog {
         JPanel fieldContainer = new JPanel(new GridLayout(1, 2));
         fieldContainer.setOpaque(false);
 
-        JLabel selectStructureLab = UIHelper.createLabel("select structure: ");
+        JLabel selectStructureLab = UIHelper.createLabel("select structure: ", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
 
         structuralValue = new JComboBox(structureElements);
         UIHelper.setJComboBoxAsHeavyweight(structuralValue);
-        UIHelper.renderComponent(structuralValue, UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, UIHelper.BG_COLOR);
+        UIHelper.renderComponent(structuralValue, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
 
         fieldContainer.add(selectStructureLab);
         fieldContainer.add(structuralValue);
@@ -200,8 +198,8 @@ public class AddElementGUI extends JDialog {
                 fieldCont.getParent().validate();
             }
         });
-        UIHelper.renderComponent(predefinedField, UIHelper.VER_12_BOLD, UIHelper.LIGHT_GREEN_COLOR, UIHelper.BG_COLOR);
-        UIHelper.renderComponent(customField, UIHelper.VER_12_BOLD, UIHelper.LIGHT_GREEN_COLOR, UIHelper.BG_COLOR);
+        UIHelper.renderComponent(predefinedField, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
+        UIHelper.renderComponent(customField, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
 
         ButtonGroup group = new ButtonGroup();
         group.add(predefinedField);
@@ -221,11 +219,11 @@ public class AddElementGUI extends JDialog {
         predefinedFieldSelectPanel.setBackground(UIHelper.BG_COLOR);
         predefinedFieldSelectPanel.setPreferredSize(new Dimension(300, 30));
 
-        JLabel selectFieldLab = UIHelper.createLabel("select field: ");
+        JLabel selectFieldLab = UIHelper.createLabel("select field: ", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
 
         fieldValue = new JComboBox();
         UIHelper.setJComboBoxAsHeavyweight(fieldValue);
-        UIHelper.renderComponent(fieldValue, UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, UIHelper.BG_COLOR);
+        UIHelper.renderComponent(fieldValue, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
 
         predefinedFieldSelectPanel.add(selectFieldLab);
         predefinedFieldSelectPanel.add(fieldValue);
@@ -239,11 +237,12 @@ public class AddElementGUI extends JDialog {
 
         customFieldType = new JComboBox();
         UIHelper.setJComboBoxAsHeavyweight(customFieldType);
-        UIHelper.renderComponent(customFieldType, UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
+        UIHelper.renderComponent(customFieldType, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
 
 
-        customFieldQualifier = new JTextField("Enter Qualifier");
-        UIHelper.renderComponent(customFieldQualifier, UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
+        customFieldQualifier = new RoundedJTextField(10);
+        customFieldQualifier.setText("Enter Qualifier");
+        UIHelper.renderComponent(customFieldQualifier, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
 
         customFieldSelectPanel.add(customFieldType);
         customFieldSelectPanel.add(createOntologyDropDown(customFieldQualifier, parentGUI, false, null));
@@ -259,7 +258,7 @@ public class AddElementGUI extends JDialog {
         statusPanel.setBackground(UIHelper.BG_COLOR);
 
         status = new JLabel("", JLabel.CENTER);
-        UIHelper.renderComponent(status, UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
+        UIHelper.renderComponent(status, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
         status.setPreferredSize(new Dimension(300, 70));
 
         statusPanel.add(status);
@@ -273,36 +272,19 @@ public class AddElementGUI extends JDialog {
         JLabel cancelButton = new JLabel(new ImageIcon(getClass().getResource("/images/general_gui/cancel.png")), JLabel.LEFT);
         cancelButton.setOpaque(false);
 
-        cancelButton.addMouseListener(new MouseListener() {
-            public void mouseClicked(MouseEvent event) {
-
-            }
+        cancelButton.addMouseListener(new MouseAdapter() {
 
             public void mousePressed(MouseEvent event) {
                 status.setText("");
                 parentGUI.getApplicationContainer().hideSheet();
-            }
-
-            public void mouseReleased(MouseEvent event) {
-
-            }
-
-            public void mouseEntered(MouseEvent event) {
-
-            }
-
-            public void mouseExited(MouseEvent event) {
-
             }
         });
 
         JLabel okButton = new JLabel(new ImageIcon(getClass().getResource("/images/general_gui/ok.png")), JLabel.RIGHT);
         okButton.setOpaque(false);
 
-        okButton.addMouseListener(new MouseListener() {
-            public void mouseClicked(MouseEvent event) {
+        okButton.addMouseListener(new MouseAdapter() {
 
-            }
 
             public void mousePressed(MouseEvent event) {
                 // attempt to add field
@@ -331,18 +313,6 @@ public class AddElementGUI extends JDialog {
                 } else {
                     status.setText("<html><b>Problem:</b><p>This Field/Structural element is already defined for this table...</p></html>");
                 }
-            }
-
-            public void mouseReleased(MouseEvent event) {
-
-            }
-
-            public void mouseEntered(MouseEvent event) {
-
-            }
-
-            public void mouseExited(MouseEvent event) {
-
             }
         });
 
