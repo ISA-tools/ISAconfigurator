@@ -50,8 +50,6 @@ import java.awt.*;
 public class BackgroundPanel extends CurveEffectPanel {
 
     private static Image logo = new ImageIcon(BackgroundPanel.class.getResource("/images/general_gui/config_Logo.png")).getImage();
-    private static Image notes = new ImageIcon(BackgroundPanel.class.getResource("/images/general_gui/configurator_info.png")).getImage();
-//	private static Image abstract_central_logo = new ImageIcon(BackgroundPanel.class.getResource("/images/effects/abstract_logo.png")).getImage();
 
     protected void drawHeader(Graphics2D g2, int width, int height) {
         g2.drawImage(logo, 0, 80, new Color(255, 255, 255, 200), null);
@@ -62,6 +60,6 @@ public class BackgroundPanel extends CurveEffectPanel {
     }
 
     protected void drawHelpPanel(Graphics2D g2, int width, int height) {
-        g2.drawImage(notes, (width - notes.getWidth(null) + 10), (height - notes.getHeight(null) - 40), null);
+//        g2.drawImage(notes, (width - notes.getWidth(null) + 10), (height - notes.getHeight(null) - 40), null);
     }
 }
