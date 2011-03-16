@@ -45,6 +45,7 @@ import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class ISAcreatorConfigurator extends MACTypeDialogFrame {
@@ -126,6 +127,8 @@ public class ISAcreatorConfigurator extends MACTypeDialogFrame {
 
         FooterPanel fp = new FooterPanel(this);
         add(fp, BorderLayout.SOUTH);
+
+        ((JComponent) getContentPane()).setBorder(new LineBorder(UIHelper.LIGHT_GREEN_COLOR, 1));
 
         pack();
         setVisible(true);
