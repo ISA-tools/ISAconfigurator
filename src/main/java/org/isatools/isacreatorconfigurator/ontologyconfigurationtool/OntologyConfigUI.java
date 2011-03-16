@@ -50,6 +50,7 @@ import org.isatools.isacreatorconfigurator.ontologymanager.OntologyService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -121,6 +122,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
             public void run() {
                 createGUI();
                 updateSelectedOntologies();
+                ((JComponent) getContentPane()).setBorder(new LineBorder(UIHelper.LIGHT_GREEN_COLOR, 2));
             }
         });
     }

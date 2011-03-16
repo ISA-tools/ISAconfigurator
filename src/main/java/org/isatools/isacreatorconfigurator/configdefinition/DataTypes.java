@@ -44,7 +44,7 @@ import java.util.Date;
  */
 public enum DataTypes {
     STRING("String", String.class), INTEGER("Integer", Integer.class), DOUBLE("Double", Double.class), DATE("Date", Date.class),
-    LIST("List", String.class), ONTOLOGY_TERM("Ontology term", String.class), BOOLEAN("Boolean", Boolean.class);
+    LIST("List", String.class), ONTOLOGY_TERM("Ontology term", String.class), BOOLEAN("Boolean", Boolean.class), LONG_STRING("Long String", String.class);
 
     private String identifier;
     private Class mapping;

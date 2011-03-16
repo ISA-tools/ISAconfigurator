@@ -52,6 +52,7 @@ import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -107,6 +108,7 @@ public class MenuPanel extends JLayeredPane {
                 setGlassPaneToMenu();
 
                 setVisible(true);
+
             }
         });
     }
