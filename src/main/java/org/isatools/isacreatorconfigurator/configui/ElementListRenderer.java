@@ -56,9 +56,10 @@ public class ElementListRenderer implements ListCellRenderer {
     private JPanel contents;
     private JLabel icon;
     private JLabel text;
+    private JLabel separatorLabel;
 
     private Color unselectedBG = UIHelper.BG_COLOR;
-    private Color selectedBG =  UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR;
+    private Color selectedBG = UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR;
 
     @InjectedResource
     private ImageIcon protocolNode, protocolNodeNS, characteristicNode, characteristicNodeNS, factorNode, factorNodeNS,
@@ -81,7 +82,10 @@ public class ElementListRenderer implements ListCellRenderer {
         iconContainer.setLayout(new BoxLayout(iconContainer, BoxLayout.LINE_AXIS));
 
         iconContainer.add(icon);
-        iconContainer.add(new JLabel(separator));
+
+        separatorLabel = new JLabel(separator);
+
+        iconContainer.add(separatorLabel);
 
         contents.add(iconContainer, BorderLayout.WEST);
         contents.add(text, BorderLayout.CENTER);
@@ -91,27 +95,36 @@ public class ElementListRenderer implements ListCellRenderer {
     public Component getListCellRendererComponent(JList jList, Object value, int index, boolean selected, boolean hasFocus) {
 
         String valueStr = value.toString().toLowerCase().trim();
-        if (valueStr.contains("protocol ref")) {
-            icon.setIcon(selected ? protocolNode : protocolNodeNS);
-        } else if (valueStr.contains("characteristics[")) {
-            icon.setIcon(selected ? characteristicNode : characteristicNodeNS);
-        } else if (valueStr.contains("comment[")) {
-            icon.setIcon(selected ? commentNode : commentNodeNS);
-        } else if (valueStr.contains("parameter value[")) {
-            icon.setIcon(selected ? parameterNode : parameterNodeNS);
-        } else if (valueStr.contains("factor value")) {
-            icon.setIcon(selected ? factorNode : factorNodeNS);
-        } else if (valueStr.equalsIgnoreCase("factors")) {
-            icon.setIcon(selected ? factorNode : factorNodeNS);
-        } else if (valueStr.equalsIgnoreCase("characteristics")) {
-            icon.setIcon(selected ? characteristicNode : characteristicNodeNS);
+
+        if (value instanceof SectionDisplay) {
+            icon.setIcon(null);
+            contents.setBackground(selected ? UIHelper.DARK_GREEN_COLOR : UIHelper.LIGHT_GREEN_COLOR);
+            text.setForeground(UIHelper.BG_COLOR);
+            separatorLabel.setIcon(null);
         } else {
-            icon.setIcon(selected ? genericNode : genericNodeNS);
+            contents.setBackground(selected ? selectedBG : unselectedBG);
+            text.setForeground(UIHelper.GREY_COLOR);
+            separatorLabel.setIcon(separator);
+
+            if (valueStr.contains("protocol ref")) {
+                icon.setIcon(selected ? protocolNode : protocolNodeNS);
+            } else if (valueStr.contains("characteristics[")) {
+                icon.setIcon(selected ? characteristicNode : characteristicNodeNS);
+            } else if (valueStr.contains("comment")) {
+                icon.setIcon(selected ? commentNode : commentNodeNS);
+            } else if (valueStr.contains("parameter value[")) {
+                icon.setIcon(selected ? parameterNode : parameterNodeNS);
+            } else if (valueStr.contains("factor value")) {
+                icon.setIcon(selected ? factorNode : factorNodeNS);
+            } else if (valueStr.equalsIgnoreCase("factors")) {
+                icon.setIcon(selected ? factorNode : factorNodeNS);
+            } else if (valueStr.equalsIgnoreCase("characteristics")) {
+                icon.setIcon(selected ? characteristicNode : characteristicNodeNS);
+            } else {
+                icon.setIcon(selected ? genericNode : genericNodeNS);
+            }
         }
 
-        contents.setBackground(selected ? selectedBG : unselectedBG);
-
-        text.setForeground(UIHelper.GREY_COLOR);
 
         text.setText(value.toString());
 

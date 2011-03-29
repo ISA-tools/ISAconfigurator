@@ -43,19 +43,22 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-public class StructureParser extends DefaultHandler {
-    private static final Logger log = Logger.getLogger(StructureParser.class.getName());
-    private List<String> structureElements;
+public class SimpleXMLParser extends DefaultHandler {
+    private static final Logger log = Logger.getLogger(SimpleXMLParser.class.getName());
+    private List<String> values;
+    private InputStream fileLocation;
 
-    public StructureParser() {
-        structureElements = new ArrayList<String>();
+    public SimpleXMLParser(InputStream fileLocation) {
+        this.fileLocation = fileLocation;
+
+        values = new ArrayList<String>();
         parseStructureFile();
     }
 
@@ -64,7 +67,7 @@ public class StructureParser extends DefaultHandler {
 
         try {
             SAXParser sp = spf.newSAXParser();
-            sp.parse("config" + File.separator + "StructureFields.xml", this);
+            sp.parse(fileLocation, this);
         } catch (SAXException se) {
             log.error("SAX Exception Caught: \n Details are: \n" +
                     se.getMessage());
@@ -81,14 +84,14 @@ public class StructureParser extends DefaultHandler {
     public void characters(char[] ch, int start, int length) {
         String data = new String(ch, start, length).trim();
         if (!data.equals("")) {
-            structureElements.add(data);
+            values.add(data);
         }
     }
 
 
-    public String[] getStructureElements() {
-        Collections.sort(structureElements);
-        return structureElements.toArray(new String[structureElements.size()]);
+    public String[] getParsedValues() {
+        Collections.sort(values);
+        return values.toArray(new String[values.size()]);
     }
 
 }

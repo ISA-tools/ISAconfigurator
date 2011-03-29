@@ -77,8 +77,8 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
             addElementOver, removeElement, removeElementOver, moveUp, moveUpOver, moveDown, moveDownOver,
             elementListIcon, tableListIcon, informationIcon, isaConfigLogo, viewMappingsIcon, warningIcon, aboutIcon;
 
-    private static final String FIELD_XML_LOC = "/std_isa_fields.xml";
-    private static final String CUSTOM_XML_LOC = "/custom_isa_fields.xml";
+    private static final String FIELD_XML_LOC = "/config/std_isa_fields.xml";
+    private static final String CUSTOM_XML_LOC = "/config/custom_isa_fields.xml";
     // Map of table to fields
     private Map<MappingObject, List<Display>> tableFields;
     private Map<String, OntologyObject> userHistory;
@@ -617,10 +617,14 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
             if (sourceFile != null) {
                 message.append("<html><div align=\"right\">Currently editing <strong>").append(sourceFile.getName()).append("</strong><br/>");
+            } else {
+                message.append("<html><div align=\"right\">New Configuration file<strong></br>");
             }
 
             if (currentTable.getTableType().contains("sample")) {
                 message.append("<strong>study sample</strong> table definition</html>");
+            } else if (currentTable.getTableType().toLowerCase().contains("investigation")) {
+                message.append("<strong>Investigation File</strong> definition</html>");
             } else {
                 message.append("measuring <strong>").append(currentTable.getMeasurementEndpointType()).append("</strong>");
 
@@ -731,12 +735,14 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
                     aeGUI.updateCustomFieldList(filterAvailableFieldsByTableType(customFields,
                             Location.resolveLocationIdentifier(getCurrentlySelectedTable().getTableType())));
 
+
+                    aeGUI.setCurrentTableType(Location.resolveLocationIdentifier(getCurrentlySelectedTable().getTableType()));
+
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             appCont.showJDialogAsSheet(aeGUI);
                         }
                     });
-
                 }
             }
 
@@ -961,7 +967,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
                             String techType, String techSource, String techAccession, String tableName, List<FieldObject> initialFields,
                             String assayType, String dispatchTarget) {
 
-        if (!checkConflictingTables(tableName, measurementType, techType)) {
+        if (!checkConflictingTables(tableType, tableName, measurementType, techType)) {
             MappingObject mo = new MappingObject(tableType, measurementType, measurementSource, measurementAccession, techType, techSource, techAccession, tableName);
             mo.setAssayType(assayType);
             mo.setDispatchTarget(dispatchTarget);
@@ -1026,12 +1032,25 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     private void reformFieldList(MappingObject selectedTable) {
         // get MappingObject corresponding to index entered.
 
+        Set<String> sectionsAdded = new HashSet<String>();
+
         if (selectedTable != null) {
             Iterator<Display> fields = tableFields.get(selectedTable).iterator();
             elementModel.clear();
 
             while (fields.hasNext()) {
                 Display d = fields.next();
+
+                if (d.getFieldDetails() != null) {
+                    if (d.getFieldDetails().getSection() != null && !d.getFieldDetails().getSection().equals("")) {
+                        String section = d.getFieldDetails().getSection();
+                        if (!sectionsAdded.contains(section)) {
+                            elementModel.addElement(new SectionDisplay(section));
+                            sectionsAdded.add(section);
+                        }
+                    }
+                }
+
                 elementModel.addElement(d);
 
             }
@@ -1085,14 +1104,16 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
      * @param technology  - Technology type to be checked for e.g. DNA microarray
      * @return boolean if table exists with the sample name or if a table exists with the sample measurement <-> technology type combination.
      */
-    private boolean checkConflictingTables(String tableName, String measurement,
+    private boolean checkConflictingTables(String tableType, String tableName, String measurement,
                                            String technology) {
         for (MappingObject mo : tableFields.keySet()) {
+
             if (mo.getAssayName().equals(tableName)) {
                 return true;
             }
+
             if (mo.getMeasurementEndpointType().equals(measurement) &&
-                    mo.getTechnologyType().equals(technology)) {
+                    mo.getTechnologyType().equals(technology) && mo.getTableType().equals(tableType)) {
                 return true;
             }
         }

@@ -743,7 +743,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     // with ontology lookup when the field is a protocol ref!
                     defaultValCont.removeAll();
                     JComponent ontLookup = createOntologyDropDown(defaultValStd, main, false, null);
-                    UIHelper.renderComponent(defaultValStd, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
 
                     defaultValCont.add(ontLookup);
                 } else {
@@ -794,9 +793,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 required.setSelected(tfo.isRequired());
                 acceptsMultipleValues.setSelected(tfo.isAcceptsMultipleValues());
                 acceptsFileLocations.setSelected(tfo.isAcceptsFileLocations());
-
-                System.out.println(tfo.getFieldName() + " -> Field is hidden? " + tfo.isHidden());
-
                 hidden.setSelected(tfo.isHidden());
 
                 if (tfo.getFieldList() != null) {
