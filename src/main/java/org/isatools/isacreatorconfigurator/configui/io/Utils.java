@@ -40,7 +40,7 @@ import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreatorconfigurator.common.MappingObject;
 import org.isatools.isacreatorconfigurator.configdefinition.Configuration;
 import org.isatools.isacreatorconfigurator.configdefinition.TableConfiguration;
-import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
+import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 import org.isatools.isacreatorconfigurator.configui.*;
 import org.isatools.isacreatorconfigurator.xml.FieldXMLCreator;
 
@@ -108,13 +108,13 @@ public class Utils {
 
             List<Display> elements = tableFields.get(mo);
 
-            List<TableFieldObject> fields = new ArrayList<TableFieldObject>();
+            List<FieldObject> fields = new ArrayList<FieldObject>();
 
             int count = 0;
             for (Display ed : elements) {
                 if (ed instanceof FieldElement) {
                     FieldElement fed = (FieldElement) ed;
-                    TableFieldObject tfo = fed.getFieldDetails();
+                    FieldObject tfo = fed.getFieldDetails();
                     tfo.setColNo(count);
                     fields.add(fed.getFieldDetails());
 

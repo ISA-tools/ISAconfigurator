@@ -38,21 +38,19 @@ package org.isatools.isacreatorconfigurator.configui;
 
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.apache.log4j.Logger;
-import org.isatools.isacreatorconfigurator.common.FieldObject;
 import org.isatools.isacreatorconfigurator.common.MappingObject;
 import org.isatools.isacreatorconfigurator.common.TableObject;
 import org.isatools.isacreatorconfigurator.common.UIHelper;
 import org.isatools.isacreatorconfigurator.configdefinition.Configuration;
+import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 import org.isatools.isacreatorconfigurator.configdefinition.LegacyTCOToTFOMapper;
 import org.isatools.isacreatorconfigurator.configdefinition.TableConfiguration;
-import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
 import org.isatools.isacreatorconfigurator.configdefinition.io.ConfigXMLParser;
 import org.isatools.isacreatorconfigurator.effects.CurveEffectPanel;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -391,7 +389,7 @@ public class MenuPanel extends JLayeredPane {
                 Display ed = null;
 
                 boolean set = false;
-                for (FieldObject fo : to.getFields()) {
+                for (org.isatools.isacreatorconfigurator.common.FieldObject fo : to.getFields()) {
                     if (fo.getColNo() == i) {
                         ed = new FieldElement(mapper.map(fo));
                         set = true;
@@ -424,7 +422,7 @@ public class MenuPanel extends JLayeredPane {
                 Display ed = null;
 
                 boolean set = false;
-                for (TableFieldObject fo : to.getFields()) {
+                for (FieldObject fo : to.getFields()) {
                     if (fo.getColNo() == i) {
                         ed = new FieldElement(fo);
                         set = true;

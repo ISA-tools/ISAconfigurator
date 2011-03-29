@@ -37,24 +37,24 @@
 package org.isatools.isacreatorconfigurator.configui;
 
 import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
-import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
+import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 
 import java.io.Serializable;
 
 
 public class FieldElement implements Display, Serializable {
 
-    private TableFieldObject fieldObject;
+    private FieldObject fieldObject;
 
     public FieldElement(String fieldName) {
-        fieldObject = new TableFieldObject(fieldName, "", DataTypes.STRING, "", true, false, false);
+        fieldObject = new FieldObject(fieldName, "", DataTypes.STRING, "", true, false, false);
     }
 
-    public FieldElement(TableFieldObject fo) {
+    public FieldElement(FieldObject fo) {
         this.fieldObject = fo;
     }
 
-    public TableFieldObject getFieldDetails() {
+    public FieldObject getFieldDetails() {
         return fieldObject;
     }
 
@@ -63,7 +63,7 @@ public class FieldElement implements Display, Serializable {
         return fieldObject.getFieldName();
     }
 
-    public void setFieldObject(TableFieldObject fieldObject) {
+    public void setFieldObject(FieldObject fieldObject) {
         this.fieldObject = fieldObject;
     }
 }

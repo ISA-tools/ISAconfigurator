@@ -136,7 +136,9 @@ public class ConfigXMLParser {
     private void processTable(IsaTabConfigurationType isaConf) {
         OntologyEntryType measurementInfo = isaConf.getMeasurement();
         OntologyEntryType technologyInfo = isaConf.getTechnology();
-        String tableType = measurementInfo.getTermLabel().equalsIgnoreCase("[sample]") ? "study sample" : "assay";
+
+        String tableType = measurementInfo.getTermLabel().equalsIgnoreCase("[sample]") ? "study sample" :
+                measurementInfo.getTermLabel().equalsIgnoreCase("[investigation]") ? "investigation file" : "assay";
 
         MappingObject mo = new MappingObject(tableType, measurementInfo.getTermLabel(),
                 measurementInfo.getSourceAbbreviation(), measurementInfo.getTermAccession(),
@@ -151,8 +153,8 @@ public class ConfigXMLParser {
             mo.setAssayType(isaConf.getIsatabAssayType().toString());
         }
 
-        List<TableFieldObject> fields = new ArrayList<TableFieldObject>();
-        // todo change to ordered map
+        List<FieldObject> fields = new ArrayList<FieldObject>();
+
         Map<Integer, String[]> tableStructure = new HashMap<Integer, String[]>();
 
         int colNo = 0;
@@ -165,9 +167,10 @@ public class ConfigXMLParser {
 
 //                System.out.println("\tProcessing " + stdField.getHeader());
 
-                TableFieldObject newField = new TableFieldObject(colNo, stdField.getHeader(), StringUtils.cleanUpString(stdField.getDescription()), DataTypes.resolveDataType(stdField.getDataType()), stdField.getDefaultValue(),
+               FieldObject newField = new FieldObject(colNo, stdField.getHeader(), StringUtils.cleanUpString(stdField.getDescription()),
+                       DataTypes.resolveDataType(stdField.getDataType()), stdField.getDefaultValue(), stdField.getSection(),
                         stdField.getIsRequired(), stdField.getIsMultipleValue(),
-                        stdField.getIsFileField());
+                        stdField.getIsFileField(), stdField.getIsHidden());
 
                 if (stdField.getGeneratedValueTemplate() != null) {
                     newField.setWizardTemplate(stdField.getGeneratedValueTemplate());
@@ -199,7 +202,7 @@ public class ConfigXMLParser {
 
 //                System.out.println("\tProcessing PROTOCOL " + protocolField.getProtocolType());
 
-                TableFieldObject newField = new TableFieldObject(colNo, "Protocol REF", "Protocol for " + protocolField.getProtocolType(), DataTypes.STRING, protocolField.getProtocolType(),
+                FieldObject newField = new FieldObject(colNo, "Protocol REF", "Protocol for " + protocolField.getProtocolType(), DataTypes.STRING, protocolField.getProtocolType(),
                         protocolField.getIsRequired(), false, false);
                 newField.setWizardTemplate(newField.getWizardTemplate());
 
@@ -210,7 +213,7 @@ public class ConfigXMLParser {
             } else if (obj instanceof UnitFieldType) {
                 UnitFieldType unitField = (UnitFieldType) obj;
 
-                TableFieldObject newField = new TableFieldObject(colNo, "Unit", StringUtils.cleanUpString(unitField.getDescription()), DataTypes.ONTOLOGY_TERM, "",
+                FieldObject newField = new FieldObject(colNo, "Unit", StringUtils.cleanUpString(unitField.getDescription()), DataTypes.ONTOLOGY_TERM, "",
                         unitField.getIsRequired(), false, false);
 
                 if (unitField.getRecommendedOntologies() != null) {
@@ -239,19 +242,19 @@ public class ConfigXMLParser {
         tables.add(tc);
     }
 
-    private void processRecommendedOntologies(FieldType processing, TableFieldObject tfo) {
+    private void processRecommendedOntologies(FieldType processing, FieldObject tfo) {
         for (OntologyType ot : processing.getRecommendedOntologies().getOntologyArray()) {
             processOntologyType(ot, tfo);
         }
     }
 
-    private void processRecommendedOntologies(UnitFieldType processing, TableFieldObject tfo) {
+    private void processRecommendedOntologies(UnitFieldType processing, FieldObject tfo) {
         for (OntologyType ot : processing.getRecommendedOntologies().getOntologyArray()) {
             processOntologyType(ot, tfo);
         }
     }
 
-    private void processOntologyType(OntologyType ot, TableFieldObject tfo) {
+    private void processOntologyType(OntologyType ot, FieldObject tfo) {
         RecommendedOntology ro = new RecommendedOntology(new Ontology(ot.getId(), ot.getVersion(), ot.getAbbreviation(), ot.getName()), null);
         // add branch!
         if (ot.getBranchArray() != null && ot.getBranchArray().length > 0) {

@@ -43,7 +43,7 @@ package org.isatools.isacreatorconfigurator.configui;
 
 
 public enum Location {
-    ASSAY("Assay"), STUDY_SAMPLE("Study sample");
+    ASSAY("Assay"), STUDY_SAMPLE("Study sample"), INVESTIGATION("Investigation file");
 
     private String type;
 

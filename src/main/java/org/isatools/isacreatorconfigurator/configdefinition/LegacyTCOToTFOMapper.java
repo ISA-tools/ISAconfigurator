@@ -36,8 +36,6 @@
 
 package org.isatools.isacreatorconfigurator.configdefinition;
 
-import org.isatools.isacreatorconfigurator.common.FieldObject;
-
 /**
  * @author: eamonnmaguire
  * @date Aug 27, 2009
@@ -46,9 +44,9 @@ import org.isatools.isacreatorconfigurator.common.FieldObject;
 
 public class LegacyTCOToTFOMapper {
 
-    public TableFieldObject map(FieldObject fo) {
+    public FieldObject map(org.isatools.isacreatorconfigurator.common.FieldObject fo) {
 
-        TableFieldObject tfo = new TableFieldObject(fo.getColNo(), fo.getFieldName(), fo.getDescription(), DataTypes.resolveDataType(fo.getDatatype()), fo.getDefaultVal(),
+        FieldObject tfo = new FieldObject(fo.getColNo(), fo.getFieldName(), fo.getDescription(), DataTypes.resolveDataType(fo.getDatatype()), fo.getDefaultVal(),
                 fo.isRequired(), fo.isAcceptsMultipleValues(), fo.isAcceptsFileLocations());
 
         if (fo.isInputFormatted()) {

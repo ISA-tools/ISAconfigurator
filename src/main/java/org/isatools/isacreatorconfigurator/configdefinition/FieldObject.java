@@ -42,20 +42,22 @@ import java.util.Map;
 
 
 /**
- * TableFieldObject contains information from the FieldData interface.
+ * FieldObject contains information from the FieldData interface.
  * Both should be edited in Tandem during modification as one will depend on the other
  *
  * @author Eamonn Maguire
  */
-public class TableFieldObject implements Serializable {
+public class FieldObject implements Serializable {
     private int colNo;
     private String fieldName;
     private String description;
     private String defaultVal;
+    private String section;
     private DataTypes datatype;
 
     // some general validation constraints!
-    private boolean acceptsFileLocations;
+    private boolean hidden = false;
+    private boolean acceptsFileLocations = false;
     private boolean acceptsMultipleValues;
     private boolean isInputFormatted;
     private boolean required;
@@ -70,6 +72,7 @@ public class TableFieldObject implements Serializable {
     // list of values to be displayed as options for selection for the user!
     private String[] fieldList = null;
 
+
     /**
      * @param fieldName             - Name of Field
      * @param description           - Description of field. Will be used when displaying tool tips/help
@@ -79,12 +82,47 @@ public class TableFieldObject implements Serializable {
      * @param acceptsMultipleValues - Does the field accept multiple values separated by comma's (,)
      * @param acceptsFileLocations  - Does the field Accept a file Location
      */
-    public TableFieldObject(String fieldName, String description,
-                            DataTypes datatype, String defaultVal, boolean required,
-                            boolean acceptsMultipleValues, boolean acceptsFileLocations) {
+    public FieldObject(String fieldName, String description,
+                       DataTypes datatype, String defaultVal, boolean required,
+                       boolean acceptsMultipleValues, boolean acceptsFileLocations) {
 
-        this(-1, fieldName, description, datatype, defaultVal, required,
-                acceptsMultipleValues, acceptsFileLocations);
+        this(fieldName, description, datatype, defaultVal, "", required, acceptsMultipleValues, acceptsFileLocations, false);
+    }
+
+
+    /**
+     * @param fieldName             - Name of Field
+     * @param description           - Description of field. Will be used when displaying tool tips/help
+     * @param datatype              - The type of data being entered e.g. String
+     * @param defaultVal            - The default value for the field
+     * @param section               - Used in the invesitgation file config xml and defines which part of the investigation a field belongs to
+     * @param required              - Is the field required?
+     * @param acceptsMultipleValues - Does the field accept multiple values separated by comma's (,)
+     * @param acceptsFileLocations  - Does the field Accept a file Location
+     * @param hidden                - Whether the field is hidden from view or now.
+     */
+    public FieldObject(String fieldName, String description,
+                       DataTypes datatype, String defaultVal, String section, boolean required,
+                       boolean acceptsMultipleValues, boolean acceptsFileLocations, boolean hidden) {
+
+        this(-1, fieldName, description, datatype, defaultVal, section, required, acceptsMultipleValues, acceptsFileLocations, hidden);
+    }
+
+    /**
+     * @param colNumber             - Column No for field
+     * @param fieldName             - Name of Field
+     * @param description           - Description of field. Will be used when displaying tool tips/help
+     * @param datatype              - The type of data being entered e.g. String
+     * @param defaultVal            - The default value for the field
+     * @param required              - Is the field required?
+     * @param acceptsMultipleValues - Does the field accept multiple values separated by comma's (,)
+     * @param acceptsFileLocations  - Does the field Accept a file Location
+     */
+    public FieldObject(int colNumber, String fieldName, String description,
+                       DataTypes datatype, String defaultVal, boolean required,
+                       boolean acceptsMultipleValues, boolean acceptsFileLocations) {
+
+        this(colNumber, fieldName, description, datatype, defaultVal, "", required, acceptsMultipleValues, acceptsFileLocations, false);
     }
 
 
@@ -94,26 +132,28 @@ public class TableFieldObject implements Serializable {
      * @param description           - Description of field. Will be used when displaying tool tips/help
      * @param datatype              - The type of data being entered e.g. String
      * @param defaultVal            - The default value for the field
+     * @param section               - Used in the invesitgation file config xml and defines which part of the investigation a field belongs to
      * @param required              - Is the field required?
      * @param acceptsMultipleValues - Does the field accept multiple values separated by comma's (,)
      * @param acceptsFileLocations  - Does the field Accept a file Location
+     * @param hidden                - Whether the field is hidden from view or now.
      */
-    public TableFieldObject(int colNo, String fieldName, String description,
-                            DataTypes datatype, String defaultVal, boolean required,
-                            boolean acceptsMultipleValues, boolean acceptsFileLocations) {
+    public FieldObject(int colNo, String fieldName, String description,
+                       DataTypes datatype, String defaultVal, String section, boolean required,
+                       boolean acceptsMultipleValues, boolean acceptsFileLocations, boolean hidden) {
         this.colNo = colNo;
         this.fieldName = fieldName;
         this.description = description;
         this.datatype = datatype;
         this.defaultVal = defaultVal;
+        this.section = section;
         this.required = required;
         this.acceptsMultipleValues = acceptsMultipleValues;
         this.acceptsFileLocations = acceptsFileLocations;
+        this.hidden = hidden;
+
+
         recommmendedOntologySource = new HashMap<String, RecommendedOntology>();
-    }
-
-    public TableFieldObject() {
-
     }
 
 
@@ -126,7 +166,7 @@ public class TableFieldObject implements Serializable {
     }
 
     public String getDefaultVal() {
-        return defaultVal;
+        return defaultVal == null ? "" : defaultVal;
     }
 
     public String getDescription() {
@@ -143,6 +183,10 @@ public class TableFieldObject implements Serializable {
 
     public String getInputFormat() {
         return inputFormat;
+    }
+
+    public void addRecommendedOntologySource(RecommendedOntology ro) {
+        recommmendedOntologySource.put(ro.getOntology().getOntologyDisplayLabel(), ro);
     }
 
     public Map<String, RecommendedOntology> getRecommmendedOntologySource() {
@@ -165,8 +209,20 @@ public class TableFieldObject implements Serializable {
         return required;
     }
 
-    public void setColNo(int colNo) {
-        this.colNo = colNo;
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     public void setFieldList(String[] fieldList) {
@@ -190,7 +246,7 @@ public class TableFieldObject implements Serializable {
     }
 
     public void setWizardTemplate(String wizardTemplate) {
-        this.wizardTemplate = convertLegacyWizardTemplate(wizardTemplate);
+        this.wizardTemplate = wizardTemplate;
     }
 
     public NumericValidation<? extends Number> getNumberValidation() {
@@ -199,6 +255,10 @@ public class TableFieldObject implements Serializable {
 
     public void setNumberValidation(NumericValidation<? extends Number> numberValidation) {
         this.numberValidation = numberValidation;
+    }
+
+    public void setColNo(int colNo) {
+        this.colNo = colNo;
     }
 
     /**

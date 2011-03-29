@@ -39,12 +39,11 @@ package org.isatools.isacreatorconfigurator.configui;
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreatorconfigurator.common.*;
-import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
-import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
-import org.isatools.isacreatorconfigurator.configdefinition.RecommendedOntology;
-import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
+import org.isatools.isacreatorconfigurator.configdefinition.*;
+import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 import org.isatools.isacreatorconfigurator.effects.RoundedBorder;
 import org.isatools.isacreatorconfigurator.effects.components.RoundedFormattedTextField;
+import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextArea;
 import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
 import org.isatools.isacreatorconfigurator.ontologyconfigurationtool.OntologyConfigUI;
 import org.isatools.isacreatorconfigurator.ontologymanager.BioPortalClient;
@@ -56,7 +55,6 @@ import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -95,10 +93,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
 
     //private JCheckBox isFixedLength;
-    private JCheckBox isInputFormatted;
-    private JCheckBox usesTemplateForWizard;
-    private JCheckBox required;
-    private JCheckBox recommendOntologySource;
+    private JCheckBox isInputFormatted, usesTemplateForWizard, required, recommendOntologySource, hidden;
     private JLabel defaultValLabStd;
     private JComboBox datatype;
     private JComboBox defaultValBool;
@@ -168,11 +163,11 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 defaultValAsString = defaultValBool.getSelectedItem().toString();
             }
 
-            TableFieldObject tfo = new TableFieldObject(field.getFieldDetails().getColNo(), fieldName.getText(), description.getText(),
-                    DataTypes.resolveDataType(datatype.getSelectedItem().toString()), defaultValAsString,
+            FieldObject tfo = new FieldObject(field.getFieldDetails().getColNo(), fieldName.getText(), description.getText(),
+                    DataTypes.resolveDataType(datatype.getSelectedItem().toString()), defaultValAsString,"",
                     required.isSelected(),
                     acceptsMultipleValues.isSelected(),
-                    acceptsFileLocations.isSelected());
+                    acceptsFileLocations.isSelected(), hidden.isSelected());
 
             if (usesTemplateForWizard.isSelected()) {
                 tfo.setWizardTemplate(wizardTemplate.getText());
@@ -255,11 +250,10 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         JPanel fieldCont = new JPanel(new GridLayout(1, 2));
         fieldCont.setBackground(UIHelper.BG_COLOR);
 
-
         fieldName = new RoundedJTextField(15);
         fieldName.setText(initFieldName);
         fieldName.setEditable(false);
-        UIHelper.renderComponent(fieldName, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(fieldName, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
 
         JLabel fieldNameLab = UIHelper.createLabel("Field Name: ", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         fieldCont.add(fieldNameLab);
@@ -268,11 +262,10 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         JPanel descCont = new JPanel(new GridLayout(1, 2));
         descCont.setBackground(UIHelper.BG_COLOR);
-        description = new JTextArea();
+        description = new RoundedJTextArea();
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
-        description.setBorder(new RoundedBorder(UIHelper.GREY_COLOR, 6));
-        UIHelper.renderComponent(description, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(description, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
 
         JScrollPane descScroll = new JScrollPane(description,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -297,7 +290,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         datatype = new JComboBox(allowedDataTypes);
         datatype.addActionListener(this);
-        UIHelper.renderComponent(datatype, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
+        UIHelper.renderComponent(datatype, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
 
         JLabel dataTypeLab = UIHelper.createLabel("Datatype:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         datatypeCont.add(dataTypeLab);
@@ -313,7 +306,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         defaultValStd.setSize(new Dimension(150, 19));
         defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
                 new RegExFormatter(".*", defaultValStd)));
-        UIHelper.renderComponent(defaultValStd, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(defaultValStd, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
 
         defaultValCont.add(defaultValStd);
 
@@ -334,7 +327,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 "Please enter comma separated list of values:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         listDataSourceCont.add(listValLab);
 
-        listValues = new JTextArea("SampleVal1, SampleVal2, SampleVal3", 3, 5);
+        listValues = new RoundedJTextArea("SampleVal1, SampleVal2, SampleVal3", 3, 5);
         listValues.setLineWrap(true);
         listValues.setWrapStyleWord(true);
         UIHelper.renderComponent(listValues, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
@@ -344,6 +337,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         listScroll.setBackground(UIHelper.BG_COLOR);
         listScroll.getViewport().setBackground(UIHelper.BG_COLOR);
+
         listDataSourceCont.add(listScroll);
         container.add(listDataSourceCont);
 
@@ -481,31 +475,28 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         // RegExp data entry
         isInputFormatted = new JCheckBox("Is the input formatted?", false);
+        isInputFormatted.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        isInputFormatted.setHorizontalAlignment(SwingConstants.LEFT);
 
-        UIHelper.renderComponent(isInputFormatted, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(isInputFormatted, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         isInputFormatted.addActionListener(this);
-        container.add(isInputFormatted);
+        container.add(UIHelper.wrapComponentInPanel(isInputFormatted));
 
-        inputFormatCont = new
+        inputFormatCont = new JPanel();
 
-                JPanel();
-
-        inputFormatCont.setLayout(new
-
-                BoxLayout(inputFormatCont, BoxLayout.LINE_AXIS)
-
-        );
+        inputFormatCont.setLayout(new BoxLayout(inputFormatCont, BoxLayout.LINE_AXIS));
         inputFormatCont.setVisible(false);
         inputFormatCont.setBackground(UIHelper.BG_COLOR);
-        inputFormat = new JTextField(".*");
+        inputFormat = new RoundedJTextField(10);
+        inputFormat.setText(".*");
         inputFormat.setSize(new Dimension(150, 19));
 
         inputFormat.setPreferredSize(new Dimension(160, 25));
         inputFormat.setToolTipText(
                 "Field expects a regular expression describing the input format.");
-        UIHelper.renderComponent(inputFormat, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(inputFormat, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
 
-        JLabel inputFormatLab = UIHelper.createLabel("Input format:", UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
+        JLabel inputFormatLab = UIHelper.createLabel("Input format:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         inputFormatLab.setVerticalAlignment(SwingConstants.TOP);
 
         inputFormatCont.add(inputFormatLab);
@@ -513,59 +504,54 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         JLabel checkRegExp = new JLabel(checkRegExIcon,
                 JLabel.RIGHT);
         checkRegExp.setOpaque(false);
-        checkRegExp.addMouseListener(new
+        checkRegExp.addMouseListener(new MouseAdapter() {
 
-                MouseAdapter() {
+            public void mousePressed(MouseEvent event) {
+                String regexToCheck = inputFormat.getText();
 
-                    public void mousePressed
-                            (MouseEvent
-                                    event) {
-                        String regexToCheck = inputFormat.getText();
-
-                        final CheckRegExGUI regexChecker = new CheckRegExGUI(regexToCheck);
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                regexChecker.createGUI();
-                            }
-                        });
-                        regexChecker.addPropertyChangeListener("close",
-                                new PropertyChangeListener() {
-                                    public void propertyChange(PropertyChangeEvent evt) {
-                                        ((DataEntryPanel) main).getApplicationContainer().hideSheet();
-                                    }
-                                });
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                ((DataEntryPanel) main).getApplicationContainer().showJDialogAsSheet(regexChecker);
-                            }
-                        });
+                final CheckRegExGUI regexChecker = new CheckRegExGUI(regexToCheck);
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        regexChecker.createGUI();
                     }
+                });
+                regexChecker.addPropertyChangeListener("close",
+                        new PropertyChangeListener() {
+                            public void propertyChange(PropertyChangeEvent evt) {
+                                ((DataEntryPanel) main).getApplicationContainer().hideSheet();
+                            }
+                        });
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        ((DataEntryPanel) main).getApplicationContainer().showJDialogAsSheet(regexChecker);
+                    }
+                });
+            }
 
-                }
+        }
 
         );
         inputFormatCont.add(checkRegExp);
         container.add(inputFormatCont);
 
-        usesTemplateForWizard = new
+        usesTemplateForWizard = new JCheckBox("Requires template for wizard?", false);
+        usesTemplateForWizard.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        usesTemplateForWizard.setHorizontalAlignment(SwingConstants.LEFT);
 
-                JCheckBox("Requires template for wizard?", false);
-
-        UIHelper.renderComponent(usesTemplateForWizard, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(usesTemplateForWizard, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         usesTemplateForWizard.addActionListener(this);
-        container.add(usesTemplateForWizard);
+        container.add(UIHelper.wrapComponentInPanel(usesTemplateForWizard));
 
         wizardTemplatePanel = new JPanel(new GridLayout(1, 2));
         wizardTemplatePanel.setVisible(false);
         wizardTemplatePanel.setBackground(UIHelper.BG_COLOR);
 
-        wizardTemplate = new JTextArea("");
-
+        wizardTemplate = new RoundedJTextArea();
         wizardTemplate.setToolTipText(
                 "A template for the wizard to auto-create the data...");
         wizardTemplate.setLineWrap(true);
         wizardTemplate.setWrapStyleWord(true);
-        UIHelper.renderComponent(wizardTemplate, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(wizardTemplate, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
 
         JScrollPane wizScroll = new JScrollPane(wizardTemplate,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -575,7 +561,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         IAppWidgetFactory.makeIAppScrollPane(wizScroll);
 
-        JLabel wizardTemplateLab = UIHelper.createLabel("Template definition:", UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
+        JLabel wizardTemplateLab = UIHelper.createLabel("Template definition:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
         wizardTemplateLab.setVerticalAlignment(JLabel.TOP);
 
         wizardTemplatePanel.add(wizardTemplateLab);
@@ -587,38 +573,34 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         checkCont.setBackground(UIHelper.BG_COLOR);
         checkCont.setBorder(new TitledBorder(new RoundedBorder(UIHelper.GREY_COLOR, 7),
                 "Behavioural Attributes", TitledBorder.DEFAULT_JUSTIFICATION,
-                TitledBorder.DEFAULT_POSITION, UIHelper.VER_12_BOLD,
+                TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD,
                 UIHelper.GREY_COLOR));
-        required = new
 
-                JCheckBox("Required ", true);
+        required = new JCheckBox("Required ", true);
 
-        UIHelper.renderComponent(required, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(required, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         checkCont.add(required);
 
+        acceptsMultipleValues = new JCheckBox("Allow multiple instances", false);
 
-        acceptsMultipleValues = new
-
-                JCheckBox("Allow multiple instances", false);
-
-        UIHelper.renderComponent(acceptsMultipleValues, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(acceptsMultipleValues, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         checkCont.add(acceptsMultipleValues);
-        acceptsFileLocations = new
-
-                JCheckBox("Accepts file locations", false);
+        acceptsFileLocations = new JCheckBox("Accepts file locations", false);
 
         acceptsFileLocations.addActionListener(new ActionListener() {
-            public void actionPerformed
-                    (ActionEvent
-                            actionEvent) {
+            public void actionPerformed(ActionEvent actionEvent) {
                 acceptsMultipleValues.setSelected(false);
                 acceptsMultipleValues.setEnabled(!acceptsFileLocations.isSelected());
             }
-        }
+        });
 
-        );
-        UIHelper.renderComponent(acceptsFileLocations, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(acceptsFileLocations, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         checkCont.add(acceptsFileLocations);
+
+        hidden = new JCheckBox("hidden?", false);
+
+        UIHelper.renderComponent(hidden, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        checkCont.add(hidden);
 
         container.add(checkCont);
 
@@ -665,8 +647,8 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         Dimension parentSize = parent.getSize();
 
-        int calcedXLoc = (parentLocation.x) + ((parentSize.width) /2) - (container.getWidth()/2);
-        int calcedYLoc = (parentLocation.y) + ((parentSize.height) /2) - (container.getHeight()/2);
+        int calcedXLoc = (parentLocation.x) + ((parentSize.width) / 2) - (container.getWidth() / 2);
+        int calcedYLoc = (parentLocation.y) + ((parentSize.height) / 2) - (container.getHeight() / 2);
 
         container.setVisible(true);
         container.setLocation(calcedXLoc, calcedYLoc);
@@ -733,7 +715,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
      */
     private void populateFields() {
         try {
-            TableFieldObject tfo = field.getFieldDetails();
+            org.isatools.isacreatorconfigurator.configdefinition.FieldObject tfo = field.getFieldDetails();
             if (tfo != null) {
                 fieldName.setText(tfo.getFieldName());
                 description.setText(tfo.getDescription());
@@ -761,7 +743,8 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     // with ontology lookup when the field is a protocol ref!
                     defaultValCont.removeAll();
                     JComponent ontLookup = createOntologyDropDown(defaultValStd, main, false, null);
-                    UIHelper.renderComponent(ontLookup, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
+                    UIHelper.renderComponent(defaultValStd, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+
                     defaultValCont.add(ontLookup);
                 } else {
                     defaultValLabStd.setText(DEFAULT_VAL_STR);
@@ -811,6 +794,10 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 required.setSelected(tfo.isRequired());
                 acceptsMultipleValues.setSelected(tfo.isAcceptsMultipleValues());
                 acceptsFileLocations.setSelected(tfo.isAcceptsFileLocations());
+
+                System.out.println(tfo.getFieldName() + " -> Field is hidden? " + tfo.isHidden());
+
+                hidden.setSelected(tfo.isHidden());
 
                 if (tfo.getFieldList() != null) {
                     String s = "";

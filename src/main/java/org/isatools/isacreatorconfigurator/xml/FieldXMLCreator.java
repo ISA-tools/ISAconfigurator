@@ -38,9 +38,9 @@ package org.isatools.isacreatorconfigurator.xml;
 
 import org.isatools.isacreatorconfigurator.common.MappingObject;
 import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
+import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
 import org.isatools.isacreatorconfigurator.configdefinition.RecommendedOntology;
-import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
 import org.isatools.isacreatorconfigurator.configui.DataNotCompleteException;
 import org.isatools.isacreatorconfigurator.configui.Display;
 import org.isatools.isacreatorconfigurator.configui.FieldElement;
@@ -68,10 +68,10 @@ public class FieldXMLCreator {
         entireTableDef.append("<isatab-configuration table-name=\"").append(mo.getAssayName()).append("\"");
 
 
-        String finalMeasurement = mo.getTableType().equalsIgnoreCase("assay") ? mo.getMeasurementEndpointType() : "[Sample]";
+        String finalMeasurement = mo.getTableType().equalsIgnoreCase("assay") ? mo.getMeasurementEndpointType() :  mo.getTableType().equalsIgnoreCase("study sample") ? "[Sample]" : "[investigation]";
         String finalTechnology = mo.getTableType().equalsIgnoreCase("assay") ? mo.getTechnologyType() : "";
 
-        if (!finalMeasurement.equalsIgnoreCase("[sample]")) {
+        if (!finalMeasurement.equals("[Sample]")) {
             entireTableDef.append(" isatab-assay-type=\"").append(mo.getAssayType()).append("\" isatab-conversion-target=\"").append(mo.getDispatchTarget()).append("\"");
         }
 
@@ -84,7 +84,7 @@ public class FieldXMLCreator {
         for (Display fo : fields) {
             if (fo instanceof FieldElement) {
                 FieldElement fed = (FieldElement) fo;
-                TableFieldObject fd = fed.getFieldDetails();
+                FieldObject fd = fed.getFieldDetails();
                 if (fo.toString().equalsIgnoreCase("unit")) {
                     entireTableDef.append(createUnitFieldXML(fd));
                 } else if (fo.toString().equalsIgnoreCase("protocol ref")) {
@@ -117,7 +117,7 @@ public class FieldXMLCreator {
                 .append(" source-abbreviation=\"").append(values[3]).append("\"/>");
     }
 
-    private StringBuffer createStandardXMLForField(TableFieldObject field) {
+    private StringBuffer createStandardXMLForField(FieldObject field) {
         StringBuffer xmlRep = new StringBuffer();
 
         // output initial section displaying field name and type of field in format <field header = "Sample Name" data-type = "string">
@@ -125,7 +125,8 @@ public class FieldXMLCreator {
                 append("\" data-type=\"").append(field.getDatatype()).
                 append("\" is-file-field=\"").append(String.valueOf(field.isAcceptsFileLocations())).
                 append("\" is-multiple-value=\"").append(String.valueOf(field.isAcceptsMultipleValues())).
-                append("\" is-required=\"").append(String.valueOf(field.isRequired())).append("\">");
+                append("\" is-required=\"").append(String.valueOf(field.isRequired())).append("\">").
+                append("\" is-hidden=\"").append(String.valueOf(field.isHidden())).append("\">");
 
         // output field description
         xmlRep.append("<description>").append(StringUtils.cleanUpString(field.getDescription())).append("</description>");
@@ -170,7 +171,7 @@ public class FieldXMLCreator {
         return xmlRep;
     }
 
-    private StringBuffer createUnitFieldXML(TableFieldObject field) {
+    private StringBuffer createUnitFieldXML(FieldObject field) {
         StringBuffer xmlRep = new StringBuffer();
 
         xmlRep.append("<unit-field data-type=\"").append(field.getDatatype()).
@@ -185,7 +186,7 @@ public class FieldXMLCreator {
         return xmlRep;
     }
 
-    private StringBuffer createProtocolFieldXML(TableFieldObject field) {
+    private StringBuffer createProtocolFieldXML(FieldObject field) {
         StringBuffer xmlRep = new StringBuffer();
 
         xmlRep.append("<protocol-field protocol-type =\"").append(field.getDefaultVal()).append("\"/>");
@@ -193,7 +194,7 @@ public class FieldXMLCreator {
         return xmlRep;
     }
 
-    private StringBuffer createValidationXMLForField(TableFieldObject field) {
+    private StringBuffer createValidationXMLForField(FieldObject field) {
         StringBuffer valRep = new StringBuffer();
         if (field.getDatatype() == DataTypes.ONTOLOGY_TERM) {
             if (field.getRecommmendedOntologySource() != null && field.getRecommmendedOntologySource().size() > 0) {
