@@ -40,7 +40,7 @@ import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreatorconfigurator.common.MappingObject;
 import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
+import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 import org.isatools.isacreatorconfigurator.configui.io.Utils;
 import org.isatools.isacreatorconfigurator.configui.mappingviewer.TableMappingViewer;
 import org.isatools.isacreatorconfigurator.effects.CustomSplitPaneDivider;
@@ -958,7 +958,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     }
 
     public boolean addTable(String tableType, String measurementType, String measurementSource, String measurementAccession,
-                            String techType, String techSource, String techAccession, String tableName, List<TableFieldObject> initialFields,
+                            String techType, String techSource, String techAccession, String tableName, List<FieldObject> initialFields,
                             String assayType, String dispatchTarget) {
 
         if (!checkConflictingTables(tableName, measurementType, techType)) {
@@ -968,7 +968,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
             tableFields.put(mo, new ArrayList<Display>());
             // reform table list
             if (initialFields != null) {
-                for (TableFieldObject field : initialFields) {
+                for (FieldObject field : initialFields) {
                     tableFields.get(mo).add(new FieldElement(field));
                 }
             }

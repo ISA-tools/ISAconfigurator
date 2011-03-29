@@ -36,7 +36,7 @@
 
 package org.isatools.isacreatorconfigurator.configui;
 
-import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
+import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 
 import java.io.Serializable;
 
@@ -50,7 +50,7 @@ public class StructuralElementDisplay implements Display, Serializable {
         this.fieldName = fieldName;
     }
 
-    public TableFieldObject getFieldDetails() {
+    public FieldObject getFieldDetails() {
         return null;
     }
 

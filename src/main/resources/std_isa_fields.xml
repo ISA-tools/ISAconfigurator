@@ -1,5 +1,379 @@
 <fields>
 
+    <!--for investigation section!-->
+    <field>
+        <name>Investigation Identifier</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Investigation Title</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Investigation Description</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Investigation Submission Date</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Investigation Public Release Date</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Comment [Created with configuration]</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Comment [Last Opened With Configuration]</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <!--for Investigation file -> Investigation publication section!-->
+    <field>
+        <name>Investigation PubMed ID</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Investigation Publication DOI</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Investigation Publication Author List</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Investigation Publication Title</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Investigation Publication Status</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <!--for Investigation file -> Investigation contacts section!-->
+    <field>
+        <name>Investigation Person Last Name</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Investigation Person First Name</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Investigation Person Mid Initials</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Investigation Person Email</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Investigation Person Phone</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Investigation Person Fax</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Investigation Person Address</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Investigation Person Affiliation</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Investigation Person Roles</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <!--for Investigation file -> study section!-->
+
+    <field>
+        <name>Study Identifier</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Study Title</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Study Description</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Study Submission Date</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Study Public Release Date</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Study File Name</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <!--for Investigation file -> Study publication section!-->
+    <field>
+        <name>Study PubMed ID</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Publication DOI</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Study Publication Author List</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Study Publication Title</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Publication Status</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <!--for Investigation file -> Study contacts section!-->
+    <field>
+        <name>Study Person Last Name</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Person First Name</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Person Mid Initials</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Person Email</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <field>
+        <name>Study Person Phone</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Person Fax</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Person Address</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Person Affiliation</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Person Roles</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <!--for Investigation file -> Study Design section!-->
+    <field>
+        <name>Study Design Type</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <!--for Investigation file -> Study Factors section!-->
+    <field>
+        <name>Study Factor Name</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Factor Type</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <!--for Investigation file -> Study Assay section!-->
+
+    <field>
+        <name>Study Assay Measurement Type</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Assay Technology Type</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Assay Technology Platform</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Assay File Name</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
+    <!--for Investigation file -> Study Protocol section!-->
+    <field>
+        <name>Study Protocol Name</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Protocol Type</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Protocol Description</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Protocol URI</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Protocol Version</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Protocol Parameters Name</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Protocol Components Name</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+    <field>
+        <name>Study Protocol Components Type</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+    </field>
+
     <!--for general assays!-->
 
     <field>
@@ -20,7 +394,8 @@
         </appearsIn>
         <studyDefault>true</studyDefault>
         <assayDefault>true</assayDefault>
-         <defaultWizardTemplate>[INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT]</defaultWizardTemplate>
+        <defaultWizardTemplate>[INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT]
+        </defaultWizardTemplate>
     </field>
 
     <field>
@@ -36,7 +411,9 @@
         <appearsIn>
             <location>Assay</location>
         </appearsIn>
-        <defaultWizardTemplate>[INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT].Extract-[EXTRACT_COUNT]</defaultWizardTemplate>
+        <defaultWizardTemplate>
+            [INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT].Extract-[EXTRACT_COUNT]
+        </defaultWizardTemplate>
     </field>
 
     <field>
@@ -44,7 +421,9 @@
         <appearsIn>
             <location>Assay</location>
         </appearsIn>
-         <defaultWizardTemplate>[INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT].Extract-[EXTRACT_COUNT].LE-[LABEL_COUNT]</defaultWizardTemplate>
+        <defaultWizardTemplate>
+            [INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT].Extract-[EXTRACT_COUNT].LE-[LABEL_COUNT]
+        </defaultWizardTemplate>
     </field>
 
     <field>
@@ -98,7 +477,9 @@
         <appearsIn>
             <location>Assay</location>
         </appearsIn>
-        <defaultWizardTemplate>[INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT].Extract-[EXTRACT_COUNT].LE-[LABEL_COUNT].HYB-[HYB_COUNT]</defaultWizardTemplate>
+        <defaultWizardTemplate>
+            [INSTITUTION].Group-[GROUP_NO].Subject-[SUBJECT_NO].[SAMPLE_EXTRACT].Extract-[EXTRACT_COUNT].LE-[LABEL_COUNT].HYB-[HYB_COUNT]
+        </defaultWizardTemplate>
     </field>
 
     <field>
@@ -210,7 +591,7 @@
         </appearsIn>
     </field>
 
-     <!--for NMR!-->
+    <!--for NMR!-->
 
     <field>
         <name>NMR Assay Name</name>
@@ -233,7 +614,7 @@
         </appearsIn>
     </field>
 
-     <field>
+    <field>
         <name>Derived Spectral Data File</name>
         <appearsIn>
             <location>Assay</location>
@@ -264,5 +645,5 @@
         </appearsIn>
     </field>
 
-    
+
 </fields>

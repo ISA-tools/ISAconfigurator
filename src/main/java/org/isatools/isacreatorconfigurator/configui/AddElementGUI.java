@@ -39,8 +39,8 @@ package org.isatools.isacreatorconfigurator.configui;
 import org.isatools.isacreatorconfigurator.common.DropDownComponent;
 import org.isatools.isacreatorconfigurator.common.UIHelper;
 import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
+import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 import org.isatools.isacreatorconfigurator.configdefinition.RecommendedOntology;
-import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
 import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
 import org.isatools.isacreatorconfigurator.ontologymanager.OntologyConsumer;
 import org.isatools.isacreatorconfigurator.ontologyselectiontool.OntologySelectionTool;
@@ -299,10 +299,10 @@ public class AddElementGUI extends JDialog {
                             return;
                         }
                         toAdd = new FieldElement(
-                                new TableFieldObject(customFieldType.getSelectedItem().toString() + "[" + fieldName + "]",
+                                new FieldObject(customFieldType.getSelectedItem().toString() + "[" + fieldName + "]",
                                         "", DataTypes.STRING, "", false, false, false));
                     } else {
-                        toAdd = new FieldElement(new TableFieldObject(fieldValue.getSelectedItem().toString(),
+                        toAdd = new FieldElement(new FieldObject(fieldValue.getSelectedItem().toString(),
                                 "", DataTypes.STRING, "", false, false, false));
                     }
                 } else {

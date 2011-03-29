@@ -56,7 +56,7 @@ public class RoundedJTextField extends JTextField {
 
 
     public RoundedJTextField(int columns) {
-        this(columns, UIHelper.LIGHT_GREY_COLOR);
+        this(columns, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR);
     }
 
     public RoundedJTextField(int columns, Color backgroundColor) {

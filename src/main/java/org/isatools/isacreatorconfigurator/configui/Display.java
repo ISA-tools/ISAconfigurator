@@ -36,13 +36,13 @@
 
 package org.isatools.isacreatorconfigurator.configui;
 
-import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
+import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 
 
 public interface Display {
 
     public String toString();
 
-    public TableFieldObject getFieldDetails();
+    public FieldObject getFieldDetails();
 
 }

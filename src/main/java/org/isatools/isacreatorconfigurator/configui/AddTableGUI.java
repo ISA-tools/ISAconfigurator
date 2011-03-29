@@ -40,7 +40,7 @@ import org.isatools.isacreatorconfigurator.common.UIHelper;
 import org.isatools.isacreatorconfigurator.configdefinition.AssayTypes;
 import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
 import org.isatools.isacreatorconfigurator.configdefinition.DispatchTargets;
-import org.isatools.isacreatorconfigurator.configdefinition.TableFieldObject;
+import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
 
 import javax.swing.*;
@@ -319,7 +319,7 @@ public class AddTableGUI extends JDialog {
                 String measType = "n/a";
                 String techType = "n/a";
 
-                if (typeCombo.getSelectedItem() != Location.STUDY_SAMPLE) {
+                if (typeCombo.getSelectedItem() != Location.STUDY_SAMPLE && typeCombo.getSelectedItem() != Location.INVESTIGATION) {
                     measType = (measEndText.getText().equals(MEASEND_DEFAULT))
                             ? "" : measEndText.getText();
                     techType = (techTypeText.getText()
@@ -343,7 +343,7 @@ public class AddTableGUI extends JDialog {
                     return;
                 }
 
-                List<TableFieldObject> initialFieldsList = null;
+                List<FieldObject> initialFieldsList = null;
 
                 // populate initial fields with the default fields
                 Fields fieldList = parentGUI.getFields();
@@ -351,17 +351,20 @@ public class AddTableGUI extends JDialog {
                 List<String> defaultFields = fieldList.getDefaultFieldsByLocation(Location.resolveLocationIdentifier(typeCombo.getSelectedItem().toString()));
 
                 if (defaultFields.size() > 0) {
-                    initialFieldsList = new ArrayList<TableFieldObject>();
+                    initialFieldsList = new ArrayList<FieldObject>();
 
                     for (String fieldName : defaultFields) {
-                        TableFieldObject tfo = new TableFieldObject(fieldName, "", DataTypes.STRING, "", true, false, false);
+                        FieldObject tfo = new FieldObject(fieldName, "", DataTypes.STRING, "", true, false, false);
                         tfo.setWizardTemplate(fieldList.getDefaultWizardTemplateForField(fieldName));
                         initialFieldsList.add(tfo);
                     }
                 }
 
-                String assayTypeValue = (typeCombo.getSelectedItem() == Location.STUDY_SAMPLE) ? "" : assayType.getSelectedItem().toString();
-                String dispatchTargetValue = (typeCombo.getSelectedItem() == Location.STUDY_SAMPLE) ? "" : targetDispatch.getSelectedItem().toString();
+                String assayTypeValue = (typeCombo.getSelectedItem() == Location.STUDY_SAMPLE || typeCombo.getSelectedItem() == Location.INVESTIGATION)
+                        ? "" : assayType.getSelectedItem().toString();
+
+                String dispatchTargetValue = (typeCombo.getSelectedItem() == Location.STUDY_SAMPLE || typeCombo.getSelectedItem() == Location.INVESTIGATION)
+                        ? "" : targetDispatch.getSelectedItem().toString();
 
                 boolean added = parentGUI.addTable(typeCombo.getSelectedItem().toString(),
                         measType, measEndSourceText.getText(), measEndAccessionText.getText(), techType, techSourceText.getText(), techAccessionText.getText(),
