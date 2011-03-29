@@ -89,7 +89,7 @@ public class RegExFormatter extends DefaultFormatter {
         if (matcher.find()) {
             setMatcher(matcher);
             // set text to be green
-            dce.setForeground(UIHelper.DARK_GREEN_COLOR);
+            dce.setForeground(UIHelper.GREY_COLOR);
 
             try {
                 return super.stringToValue(text);

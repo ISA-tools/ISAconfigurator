@@ -44,6 +44,7 @@ import org.isatools.isacreatorconfigurator.configdefinition.RecommendedOntology;
 import org.isatools.isacreatorconfigurator.configui.DataNotCompleteException;
 import org.isatools.isacreatorconfigurator.configui.Display;
 import org.isatools.isacreatorconfigurator.configui.FieldElement;
+import org.isatools.isacreatorconfigurator.configui.SectionDisplay;
 
 import java.util.List;
 
@@ -55,6 +56,7 @@ import java.util.List;
 public class FieldXMLCreator {
     private MappingObject mo;
     private List<Display> fields;
+
 
     public FieldXMLCreator(List<Display> fields, MappingObject mo) {
         this.mo = mo;
@@ -68,7 +70,7 @@ public class FieldXMLCreator {
         entireTableDef.append("<isatab-configuration table-name=\"").append(mo.getAssayName()).append("\"");
 
 
-        String finalMeasurement = mo.getTableType().equalsIgnoreCase("assay") ? mo.getMeasurementEndpointType() :  mo.getTableType().equalsIgnoreCase("study sample") ? "[Sample]" : "[investigation]";
+        String finalMeasurement = mo.getTableType().equalsIgnoreCase("assay") ? mo.getMeasurementEndpointType() : mo.getTableType().equalsIgnoreCase("study sample") ? "[Sample]" : "[investigation]";
         String finalTechnology = mo.getTableType().equalsIgnoreCase("assay") ? mo.getTechnologyType() : "";
 
         if (!finalMeasurement.equals("[Sample]")) {
@@ -81,10 +83,17 @@ public class FieldXMLCreator {
         createOntologyTypeDefinition(entireTableDef, "technology", finalTechnology, mo.getTechnologyAccession(), mo.getTechnologySource());
 
         // create section defining general attributes of a field.
+        String currentSection = null;
+
         for (Display fo : fields) {
             if (fo instanceof FieldElement) {
                 FieldElement fed = (FieldElement) fo;
                 FieldObject fd = fed.getFieldDetails();
+
+                if(currentSection != null) {
+                    fd.setSection(currentSection);
+                }
+
                 if (fo.toString().equalsIgnoreCase("unit")) {
                     entireTableDef.append(createUnitFieldXML(fd));
                 } else if (fo.toString().equalsIgnoreCase("protocol ref")) {
@@ -92,6 +101,9 @@ public class FieldXMLCreator {
                 } else {
                     entireTableDef.append(createStandardXMLForField(fd));
                 }
+
+            } else if (fo instanceof SectionDisplay) {
+                currentSection = fo.toString();
             } else {
                 entireTableDef.append("<structured-field name=\"").append(fo.toString()).append("\"/>");
             }
@@ -125,8 +137,14 @@ public class FieldXMLCreator {
                 append("\" data-type=\"").append(field.getDatatype()).
                 append("\" is-file-field=\"").append(String.valueOf(field.isAcceptsFileLocations())).
                 append("\" is-multiple-value=\"").append(String.valueOf(field.isAcceptsMultipleValues())).
-                append("\" is-required=\"").append(String.valueOf(field.isRequired())).append("\">").
-                append("\" is-hidden=\"").append(String.valueOf(field.isHidden())).append("\">");
+                append("\" is-required=\"").append(String.valueOf(field.isRequired())).
+                append("\" is-hidden=\"").append(String.valueOf(field.isHidden()));
+
+        if(field.getSection() != null && !field.getSection().equals("")) {
+            xmlRep.append("\" section=\"").append(String.valueOf(field.getSection())).append("\">");
+        } else {
+            xmlRep.append("\">");
+        }
 
         // output field description
         xmlRep.append("<description>").append(StringUtils.cleanUpString(field.getDescription())).append("</description>");

@@ -200,8 +200,6 @@ public class ConfigXMLParser {
             } else if (obj instanceof ProtocolFieldType) {
                 ProtocolFieldType protocolField = (ProtocolFieldType) obj;
 
-//                System.out.println("\tProcessing PROTOCOL " + protocolField.getProtocolType());
-
                 FieldObject newField = new FieldObject(colNo, "Protocol REF", "Protocol for " + protocolField.getProtocolType(), DataTypes.STRING, protocolField.getProtocolType(),
                         protocolField.getIsRequired(), false, false);
                 newField.setWizardTemplate(newField.getWizardTemplate());

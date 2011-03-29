@@ -50,6 +50,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.Map;
 
 
@@ -67,12 +68,21 @@ public class AddElementGUI extends JDialog {
     private JTextField customFieldQualifier;
     private JRadioButton addFieldElement;
     private JRadioButton customField;
-    private static String[] structureElements;
+    private JRadioButton addStructuralElement;
+    private JLabel selectStructureLab;
     private JPanel fieldCont;
 
+    private Location currentTableType;
+
+    private static String[] structureElements;
+    private static String[] sectionElements;
+
     static {
-        StructureParser sp = new StructureParser();
-        structureElements = sp.getStructureElements();
+        SimpleXMLParser sp = new SimpleXMLParser(AddElementGUI.class.getResourceAsStream(File.separator + "config" + File.separator + "structure_fields.xml"));
+        structureElements = sp.getParsedValues();
+
+        SimpleXMLParser parser = new SimpleXMLParser(AddElementGUI.class.getResourceAsStream(File.separator + "config" + File.separator + "section_fields.xml"));
+        sectionElements = parser.getParsedValues();
     }
 
     public AddElementGUI(DataEntryPanel parentGUI) {
@@ -128,7 +138,9 @@ public class AddElementGUI extends JDialog {
             }
         });
 
-        JRadioButton addStructuralElement = new JRadioButton("structural");
+        addStructuralElement = new JRadioButton("structural: ");
+
+
         UIHelper.renderComponent(addStructuralElement, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
 
         addStructuralElement.addActionListener(new ActionListener() {
@@ -165,7 +177,8 @@ public class AddElementGUI extends JDialog {
         JPanel fieldContainer = new JPanel(new GridLayout(1, 2));
         fieldContainer.setOpaque(false);
 
-        JLabel selectStructureLab = UIHelper.createLabel("select structure: ", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
+
+        selectStructureLab = UIHelper.createLabel("select structure: ", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
 
         structuralValue = new JComboBox(structureElements);
         UIHelper.setJComboBoxAsHeavyweight(structuralValue);
@@ -306,7 +319,11 @@ public class AddElementGUI extends JDialog {
                                 "", DataTypes.STRING, "", false, false, false));
                     }
                 } else {
-                    toAdd = new StructuralElementDisplay(structuralValue.getSelectedItem().toString());
+                    if (currentTableType == Location.INVESTIGATION) {
+                        toAdd = new SectionDisplay(structuralValue.getSelectedItem().toString());
+                    } else {
+                        toAdd = new StructuralElementDisplay(structuralValue.getSelectedItem().toString());
+                    }
                 }
                 if (parentGUI.addField(toAdd)) {
                     parentGUI.getApplicationContainer().hideSheet();
@@ -385,5 +402,18 @@ public class AddElementGUI extends JDialog {
         }
     }
 
+
+    public void setCurrentTableType(Location currentTableType) {
+        this.currentTableType = currentTableType;
+
+
+        addStructuralElement.setText((currentTableType == Location.INVESTIGATION) ? "sections" : "structural");
+        selectStructureLab.setText("select " + ((currentTableType == Location.INVESTIGATION) ? "section:" : "structure: "));
+        structuralValue.removeAllItems();
+
+        for (String section : currentTableType == Location.INVESTIGATION ? sectionElements : structureElements) {
+            structuralValue.addItem(section);
+        }
+    }
 
 }
