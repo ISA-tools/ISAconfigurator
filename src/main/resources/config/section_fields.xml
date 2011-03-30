@@ -1,0 +1,12 @@
+<SectionFields>
+	<StructuralField>INVESTIGATION</StructuralField>
+	<StructuralField>INVESTIGATION PUBLICATIONS</StructuralField>
+    <StructuralField>INVESTIGATION CONTACTS</StructuralField>
+    <StructuralField>STUDY</StructuralField>
+    <StructuralField>STUDY PUBLICATIONS</StructuralField>
+    <StructuralField>STUDY CONTACTS</StructuralField>
+    <StructuralField>STUDY DESIGN DESCRIPTORS</StructuralField>
+    <StructuralField>STUDY FACTORS</StructuralField>
+    <StructuralField>STUDY ASSAYS</StructuralField>
+    <StructuralField>STUDY PROTOCOLS</StructuralField>
+</SectionFields>
