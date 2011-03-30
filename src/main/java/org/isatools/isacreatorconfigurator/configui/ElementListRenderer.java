@@ -74,20 +74,8 @@ public class ElementListRenderer implements ListCellRenderer {
         contents = new JPanel(new BorderLayout());
         contents.setOpaque(true);
 
-        icon = new JLabel();
         text = UIHelper.createLabel("", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
 
-
-        JPanel iconContainer = new JPanel();
-        iconContainer.setLayout(new BoxLayout(iconContainer, BoxLayout.LINE_AXIS));
-
-        iconContainer.add(icon);
-
-        separatorLabel = new JLabel(separator);
-
-        iconContainer.add(separatorLabel);
-
-        contents.add(iconContainer, BorderLayout.WEST);
         contents.add(text, BorderLayout.CENTER);
     }
 
@@ -97,32 +85,11 @@ public class ElementListRenderer implements ListCellRenderer {
         String valueStr = value.toString().toLowerCase().trim();
 
         if (value instanceof SectionDisplay) {
-            icon.setIcon(null);
             contents.setBackground(selected ? UIHelper.DARK_GREEN_COLOR : UIHelper.LIGHT_GREEN_COLOR);
             text.setForeground(UIHelper.BG_COLOR);
-            separatorLabel.setIcon(null);
         } else {
             contents.setBackground(selected ? selectedBG : unselectedBG);
             text.setForeground(UIHelper.GREY_COLOR);
-            separatorLabel.setIcon(separator);
-
-            if (valueStr.contains("protocol ref")) {
-                icon.setIcon(selected ? protocolNode : protocolNodeNS);
-            } else if (valueStr.contains("characteristics[")) {
-                icon.setIcon(selected ? characteristicNode : characteristicNodeNS);
-            } else if (valueStr.contains("comment")) {
-                icon.setIcon(selected ? commentNode : commentNodeNS);
-            } else if (valueStr.contains("parameter value[")) {
-                icon.setIcon(selected ? parameterNode : parameterNodeNS);
-            } else if (valueStr.contains("factor value")) {
-                icon.setIcon(selected ? factorNode : factorNodeNS);
-            } else if (valueStr.equalsIgnoreCase("factors")) {
-                icon.setIcon(selected ? factorNode : factorNodeNS);
-            } else if (valueStr.equalsIgnoreCase("characteristics")) {
-                icon.setIcon(selected ? characteristicNode : characteristicNodeNS);
-            } else {
-                icon.setIcon(selected ? genericNode : genericNodeNS);
-            }
         }
 
 

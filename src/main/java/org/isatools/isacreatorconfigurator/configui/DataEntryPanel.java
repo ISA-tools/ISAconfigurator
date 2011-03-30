@@ -39,6 +39,7 @@ package org.isatools.isacreatorconfigurator.configui;
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreatorconfigurator.common.MappingObject;
+import org.isatools.isacreatorconfigurator.common.ReorderableJList;
 import org.isatools.isacreatorconfigurator.common.UIHelper;
 import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 import org.isatools.isacreatorconfigurator.configui.io.Utils;
@@ -92,7 +93,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     private JList tableList;
     private DefaultListModel tableModel;
     private JLabel tableCountInfo;
-    private JList elementList;
+    private ReorderableJList elementList;
     private DefaultListModel elementModel;
     private JLabel elementCountInfo;
     private JLabel removeElementButton;
@@ -664,9 +665,8 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
 
         elementModel = new DefaultListModel();
-        elementList = new JList(elementModel);
-        elementList.setCellRenderer(new ElementListRenderer());
-        elementList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        elementList = new ReorderableJList(elementModel);
+        elementList.setDragEnabled(true);
         elementList.setBackground(UIHelper.BG_COLOR);
 
         elementList.addListSelectionListener(new ListSelectionListener() {
