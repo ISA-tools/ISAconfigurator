@@ -47,10 +47,10 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-public class ReOrderableJList extends JList
+public class ReorderableJList extends JList
         implements DragSourceListener, DropTargetListener, DragGestureListener {
 
-    private static Logger log = Logger.getLogger(ReOrderableJList.class.getName());
+    private static Logger log = Logger.getLogger(ReorderableJList.class.getName());
 
     static DataFlavor localObjectFlavor;
 
@@ -69,7 +69,7 @@ public class ReOrderableJList extends JList
     Object dropTargetCell;
     int draggedIndex = -1;
 
-    public ReOrderableJList(DefaultListModel model) {
+    public ReorderableJList(DefaultListModel model) {
         super();
 
         setCellRenderer(new ReorderableListCellRenderer());
