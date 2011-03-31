@@ -502,6 +502,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
             public void valueChanged(ListSelectionEvent event) {
                 try {
                     save(false, false);
+                    // we want to save the field order at this point for the current table.
                 } catch (DataNotCompleteException dce) {
                     showMessagePane(dce.getMessage(), JOptionPane.ERROR_MESSAGE);
                 }
@@ -689,6 +690,12 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
                         setCurrentPage(structureElement);
                     }
                 }
+            }
+        });
+
+        elementList.addPropertyChangeListener("orderChanged", new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                updateFieldOrder();
             }
         });
 
@@ -939,6 +946,34 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         list.ensureIndexIsVisible(b);
     }
 
+    private void updateFieldOrder() {
+        List<Display> backup = new ArrayList<Display>();
+
+        Set<String> sectionsAdded = new HashSet<String>();
+
+        for (int index = 0; index < elementModel.size(); index++) {
+
+            Object value = elementModel.get(index);
+            if (!sectionsAdded.contains(value.toString())) {
+
+                if (value instanceof FieldElement) {
+                    FieldElement fieldElement = (FieldElement) value;
+                    backup.add(new FieldElement(fieldElement.getFieldDetails()));
+                } else if (value instanceof SectionDisplay) {
+                    SectionDisplay sectionDisplay = (SectionDisplay) value;
+                    backup.add(new SectionDisplay(sectionDisplay.toString()));
+                    sectionsAdded.add(value.toString());
+                } else if (value instanceof StructuralElementDisplay) {
+                    StructuralElementDisplay structuralElementDisplay = (StructuralElementDisplay) value;
+                    backup.add(new StructuralElementDisplay(structuralElementDisplay.toString()));
+                }
+            }
+        }
+
+        // replace with fields in list with the new ordering
+        tableFields.put(getCurrentlySelectedTable(), backup);
+    }
+
     private DataEntryPanel getCurrentInstance() {
         return this;
     }
@@ -1036,6 +1071,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
         if (selectedTable != null) {
             Iterator<Display> fields = tableFields.get(selectedTable).iterator();
+
             elementModel.clear();
 
             while (fields.hasNext()) {
@@ -1044,6 +1080,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
                 if (d.getFieldDetails() != null) {
                     if (d.getFieldDetails().getSection() != null && !d.getFieldDetails().getSection().equals("")) {
                         String section = d.getFieldDetails().getSection();
+
                         if (!sectionsAdded.contains(section)) {
                             elementModel.addElement(new SectionDisplay(section));
                             sectionsAdded.add(section);
@@ -1051,7 +1088,14 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
                     }
                 }
 
-                elementModel.addElement(d);
+                if (d instanceof SectionDisplay) {
+                    if (!sectionsAdded.contains(d.toString())) {
+                        elementModel.addElement(d);
+                        sectionsAdded.add(d.toString());
+                    }
+                } else {
+                    elementModel.addElement(d);
+                }
 
             }
             if (elementList.getModel().getSize() > 0) {
