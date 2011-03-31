@@ -40,7 +40,6 @@ import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreatorconfigurator.common.MappingObject;
 import org.isatools.isacreatorconfigurator.common.ReorderableJList;
-import org.isatools.isacreatorconfigurator.common.ReorderableJList;
 import org.isatools.isacreatorconfigurator.common.UIHelper;
 import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 import org.isatools.isacreatorconfigurator.configui.io.Utils;
