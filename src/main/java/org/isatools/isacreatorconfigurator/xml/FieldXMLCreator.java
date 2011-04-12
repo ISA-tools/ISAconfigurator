@@ -147,11 +147,11 @@ public class FieldXMLCreator {
         }
 
         // output field description
-        xmlRep.append("<description>").append(StringUtils.cleanUpString(field.getDescription())).append("</description>");
+        xmlRep.append("<description>").append("<![CDATA[").append(StringUtils.cleanUpString(field.getDescription())).append("]]>").append("</description>");
 
         // output fields default value
         String defaultValue = field.getDefaultVal() == null ? "" : field.getDefaultVal();
-        xmlRep.append("<default-value>").append(defaultValue).append("</default-value>");
+        xmlRep.append("<default-value>").append("<![CDATA[").append(defaultValue).append("]]>").append("</default-value>");
 
         // output the regex formatting for the field...default is .*
         if (field.isInputFormatted()) {
