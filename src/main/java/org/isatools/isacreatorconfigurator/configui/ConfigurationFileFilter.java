@@ -74,6 +74,8 @@ public class ConfigurationFileFilter extends javax.swing.filechooser.FileFilter 
             File[] directoryContents = directory.listFiles();
 
             for (File toCheck : directoryContents) {
+                if(toCheck.isDirectory())
+                   return true;
                 if (!toCheck.getName().startsWith(".")) {
                     if (!getExtension(toCheck).equalsIgnoreCase("xml")) {
                         return false;
