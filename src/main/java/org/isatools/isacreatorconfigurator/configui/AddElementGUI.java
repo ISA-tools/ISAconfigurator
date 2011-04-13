@@ -78,23 +78,28 @@ public class AddElementGUI extends JDialog {
     private static String[] sectionElements;
 
     static {
-        SimpleXMLParser sp = new SimpleXMLParser(AddElementGUI.class.getResourceAsStream(File.separator + "config" + File.separator + "structure_fields.xml"));
-        structureElements = sp.getParsedValues();
+        try {
+            SimpleXMLParser structureFileParser = new SimpleXMLParser(AddElementGUI.class.getResourceAsStream(File.separator + "config" + File.separator + "structure_fields.xml"));
+            structureFileParser.parseStructureFile();
+            structureElements = structureFileParser.getParsedValues();
 
-        SimpleXMLParser parser = new SimpleXMLParser(AddElementGUI.class.getResourceAsStream(File.separator + "config" + File.separator + "section_fields.xml"));
-        sectionElements = parser.getParsedValues();
+            SimpleXMLParser sectionFileParser = new SimpleXMLParser(AddElementGUI.class.getResourceAsStream(File.separator + "config" + File.separator + "section_fields.xml"));
+            sectionFileParser.parseStructureFile();
+            sectionElements = sectionFileParser.getParsedValues();
+
+        } catch (Exception e) {
+            System.err.println("Problem encountered loading XML for Structural and section elements.");
+            sectionElements = new String[]{"Unable to load sections"};
+            structureElements = new String[]{"Unable to load structures"};
+        }
     }
 
     public AddElementGUI(DataEntryPanel parentGUI) {
 
         this.parentGUI = parentGUI;
         setBackground(UIHelper.BG_COLOR);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createGUI();
-                pack();
-            }
-        });
+        createGUI();
+        pack();
     }
 
     public void createGUI() {

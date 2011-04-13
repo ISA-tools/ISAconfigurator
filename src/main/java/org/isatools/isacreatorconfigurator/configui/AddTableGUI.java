@@ -76,12 +76,9 @@ public class AddTableGUI extends JDialog {
     public AddTableGUI(DataEntryPanel parentGUI) {
         this.parentGUI = parentGUI;
         setBackground(UIHelper.BG_COLOR);
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                createGUI();
-                pack();
-            }
-        });
+
+        createGUI();
+        pack();
     }
 
     /**

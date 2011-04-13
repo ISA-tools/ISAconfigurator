@@ -59,10 +59,10 @@ public class SimpleXMLParser extends DefaultHandler {
         this.fileLocation = fileLocation;
 
         values = new ArrayList<String>();
-        parseStructureFile();
+
     }
 
-    private void parseStructureFile() {
+    public void parseStructureFile() {
         SAXParserFactory spf = SAXParserFactory.newInstance();
 
         try {
