@@ -249,7 +249,9 @@ public class UIHelper {
             field.setAccessible(true);
             combo.putClientProperty(field.get(null), Boolean.TRUE);
         } catch (Exception e1) {
-            e1.printStackTrace();
+            System.out.println("Unable to find field forceHeavyWeightPopupKey, so using another method to get the " +
+                    "combo boxes to show in the right way");
+            combo.setLightWeightPopupEnabled(false);
         }
     }
 }
