@@ -291,7 +291,7 @@ public class BioPortalClient implements OntologyService {
 
 
         term = correctTermForHTTPTransport(term);
-        String searchString = REST_URL + "search/" + term + "/?ontologyids=" + (((source == null) || source.trim().equalsIgnoreCase("")) ? constructSourceStringFromAllowedOntologies() : source);
+        String searchString = REST_URL + "search/" + term + "/?ontologyids=" + (((source == null) || source.trim().equalsIgnoreCase("all")) ? constructSourceStringFromAllowedOntologies() : source);
         System.out.println("search string " + searchString);
 
         Map<String, String> searchResult = downloadAndProcessBranch(term, searchString);
