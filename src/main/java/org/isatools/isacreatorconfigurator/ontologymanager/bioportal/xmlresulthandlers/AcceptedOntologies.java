@@ -38,7 +38,7 @@ package org.isatools.isacreatorconfigurator.ontologymanager.bioportal.xmlresulth
 
 public enum AcceptedOntologies {
     OBI("1123", "OBI"), EFO("1136", "EFO"), NCI_THESAURUS("1032", "NCIt"), CHEBI("1007", "CHEBI"), NPO("1083", "NPO"),
-    SNOMED("1353", "SNOMEDCT"), MDR("1422", "MDR"), PATO("1107", "PATO"), UO("1112", "UO"), BFO("1005", "BFO"), FMA("1053", "FMA"),
+    SNOMED("1353", "SNOMEDCT"), MDR("1422", "MDR"), PATO("1107", "PATO"), UO("1112", "UO"), BFO("1005", "BFO"),
     NCBITaxon("1132", "NCBITaxon"), PLANT_ONTOLOGY("1587","PO");
 
     private String ontologyID;
