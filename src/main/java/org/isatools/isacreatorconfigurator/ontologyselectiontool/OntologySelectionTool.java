@@ -51,6 +51,7 @@ import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -95,7 +96,6 @@ public class OntologySelectionTool extends JFrame implements MouseListener,
 
 
     private ExtendedJList historyList;
-    private JComboBox searchBy;
     private JTextField searchField;
     private JTextField selectedTerm;
     private OntologyResultTree ontologySearchResults;
@@ -216,7 +216,7 @@ public class OntologySelectionTool extends JFrame implements MouseListener,
 
         JPanel searchUIContainer = new JPanel();
         searchUIContainer.setBackground(UIHelper.BG_COLOR);
-        searchUIContainer.setBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 6));
+        searchUIContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 6), ""));
         searchUIContainer.setLayout(new BorderLayout());
 
         // create source choice
@@ -253,15 +253,11 @@ public class OntologySelectionTool extends JFrame implements MouseListener,
 
         Box horBox = Box.createHorizontalBox();
 
-        String[] searchByValues = new String[]{"term", "accession"};
-
-        searchBy = new JComboBox(searchByValues);
-        UIHelper.renderComponent(searchBy, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, UIHelper.BG_COLOR);
-
-        horBox.add(searchBy);
+        horBox.add(UIHelper.createLabel("Search for: ", UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
         horBox.add(Box.createVerticalStrut(10));
 
         searchField = new JTextField();
+        searchField.setToolTipText("<html><b>Enter a term</b>, e.g. dose and click the search icon</html>");
         UIHelper.renderComponent(searchField, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
 
         Action searchAction = new AbstractAction() {
@@ -375,7 +371,7 @@ public class OntologySelectionTool extends JFrame implements MouseListener,
                 JLabel.LEFT), BorderLayout.NORTH);
 
         JPanel historySelectionList = createStandardBorderPanel(true);
-        historySelectionList.setBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 6));
+        historySelectionList.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 6), ""));
         historyList = new ExtendedJList(new SingleSelectionListCellRenderer());
 
         try {
@@ -435,7 +431,7 @@ public class OntologySelectionTool extends JFrame implements MouseListener,
                 JLabel.LEFT), BorderLayout.NORTH);
 
         JPanel termDefinitionContainer = createStandardBorderPanel(true);
-        termDefinitionContainer.setBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 6));
+        termDefinitionContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 6), ""));
 
         viewTermDefinition = new ViewTermDefinitionUI();
         termDefinitionContainer.add(viewTermDefinition);
@@ -675,8 +671,6 @@ public class OntologySelectionTool extends JFrame implements MouseListener,
             bioportalClient = new BioPortalClient();
         }
 
-
-        final String searchByVal = searchBy.getSelectedItem().toString();
         final String olsVersion = OntologySourceManager.getOntologyVersion(OntologySourceManager.OLS_TEXT);
 
         Thread performer = new Thread(new Runnable() {
@@ -699,90 +693,84 @@ public class OntologySelectionTool extends JFrame implements MouseListener,
                             searchOn = ":" + getRecommendedOntologyCacheIdentifier() + ":";
                         }
 
-                        String cacheKeyLookup = searchByVal + ":" + searchOn + ":" +
+                        String cacheKeyLookup = "term" + ":" + searchOn + ":" +
                                 searchField.getText();
 
                         if (!searchResultCache.containsKey(cacheKeyLookup)) {
                             result = new HashMap<String, String>();
 
 
-                            if (searchByVal.equals("term")) {
+                            if (useOntologies.isSelected()) {
+                                System.out.println("no recommended ontology specified, so searching for " + searchField.getText());
 
-                                if (useOntologies.isSelected()) {
-                                    System.out.println("no recommended ontology specified, so searching for " + searchField.getText());
+                                Map<String, String> olsResult = olsClient.getTermsByPartialNameFromSource(searchField.getText(), null, false);
 
-                                    Map<String, String> olsResult = olsClient.getTermsByPartialNameFromSource(searchField.getText(), null, false);
+                                System.out.println("found " + olsResult.size() + " terms in OLS");
 
-                                    System.out.println("found " + olsResult.size() + " terms in OLS");
-
-                                    for (String accession : olsResult.keySet()) {
-                                        System.out.println("accession: " + accession + " -> " + olsResult.get(accession));
-                                    }
-
-                                    System.out.println("");
-
-                                    if (olsResult != null) {
-                                        result.putAll(olsResult);
-                                    }
-
-                                    Map<String, String> bioportalResult = bioportalClient.getTermsByPartialNameFromSource(searchField.getText(), "all", false);
-
-                                    System.out.println("found " + bioportalResult.size() + " terms in bioportal");
-
-                                    for (String accession : bioportalResult.keySet()) {
-                                        System.out.println("accession: " + accession + " -> " + bioportalResult.get(accession));
-                                    }
-
-                                    if (bioportalResult.size() > 0) {
-                                        result.putAll(bioportalResult);
-                                    }
-
-                                    System.out.println("almalgamated result is " + result.size() + " terms");
-
-                                    OntologySourceManager.appendOntologyDescriptions(bioportalClient.getOntologyNames());
-                                    OntologySourceManager.appendOntologyVersions(bioportalClient.getOntologyVersions());
-                                } else {
-
-                                    OntologySourceManager.placeRecommendedOntologyInformationInRecords(recommendedOntologies.values());
-
-                                    List<RecommendedOntology> olsOntologies = filterRecommendedOntologiesForService(recommendedOntologies.values(), "ols");
-
-                                    Map<String, String> olsResult = olsClient.getTermsByPartialNameFromSource(searchField.getText(), olsOntologies);
-
-                                    if (olsResult != null) {
-                                        System.out.println("ols result size is: " + olsResult);
-                                        result.putAll(olsResult);
-                                    }
-
-                                    List<RecommendedOntology> bioportalOntologies = filterRecommendedOntologiesForService(recommendedOntologies.values(), "bioportal");
-
-                                    System.out.println("going to search bioportal for: ");
-                                    for (RecommendedOntology ro : bioportalOntologies) {
-                                        System.out.println("\t" + ro.getOntology().getOntologyAbbreviation());
-                                        if (ro.getBranchToSearchUnder() != null) {
-                                            System.out.print(" : " + ro.getBranchToSearchUnder().getBranchName());
-                                        }
-
-                                    }
-
-                                    Map<String, String> bioportalResult = bioportalClient.getTermsByPartialNameFromSource(searchField.getText(),
-                                            bioportalOntologies);
-
-                                    System.out.println("bioportal result size is : " + bioportalResult.size());
-
-                                    if (bioportalResult != null) {
-                                        result.putAll(bioportalResult);
-                                    }
+                                for (String accession : olsResult.keySet()) {
+                                    System.out.println("accession: " + accession + " -> " + olsResult.get(accession));
                                 }
 
-                                // only add to the cache if we got a result!
-                                if (result.size() > 0) {
-                                    searchResultCache.addToCache(cacheKeyLookup,
-                                            result);
+                                System.out.println("");
+
+                                if (olsResult != null) {
+                                    result.putAll(olsResult);
                                 }
 
+                                Map<String, String> bioportalResult = bioportalClient.getTermsByPartialNameFromSource(searchField.getText(), "all", false);
+
+                                System.out.println("found " + bioportalResult.size() + " terms in bioportal");
+
+                                for (String accession : bioportalResult.keySet()) {
+                                    System.out.println("accession: " + accession + " -> " + bioportalResult.get(accession));
+                                }
+
+                                if (bioportalResult.size() > 0) {
+                                    result.putAll(bioportalResult);
+                                }
+
+                                System.out.println("almalgamated result is " + result.size() + " terms");
+
+                                OntologySourceManager.appendOntologyDescriptions(bioportalClient.getOntologyNames());
+                                OntologySourceManager.appendOntologyVersions(bioportalClient.getOntologyVersions());
                             } else {
-                                result = olsClient.getTermByAccessionId(searchField.getText());
+
+                                OntologySourceManager.placeRecommendedOntologyInformationInRecords(recommendedOntologies.values());
+
+                                List<RecommendedOntology> olsOntologies = filterRecommendedOntologiesForService(recommendedOntologies.values(), "ols");
+
+                                Map<String, String> olsResult = olsClient.getTermsByPartialNameFromSource(searchField.getText(), olsOntologies);
+
+                                if (olsResult != null) {
+                                    System.out.println("ols result size is: " + olsResult);
+                                    result.putAll(olsResult);
+                                }
+
+                                List<RecommendedOntology> bioportalOntologies = filterRecommendedOntologiesForService(recommendedOntologies.values(), "bioportal");
+
+                                System.out.println("going to search bioportal for: ");
+                                for (RecommendedOntology ro : bioportalOntologies) {
+                                    System.out.println("\t" + ro.getOntology().getOntologyAbbreviation());
+                                    if (ro.getBranchToSearchUnder() != null) {
+                                        System.out.print(" : " + ro.getBranchToSearchUnder().getBranchName());
+                                    }
+
+                                }
+
+                                Map<String, String> bioportalResult = bioportalClient.getTermsByPartialNameFromSource(searchField.getText(),
+                                        bioportalOntologies);
+
+                                System.out.println("bioportal result size is : " + bioportalResult.size());
+
+                                if (bioportalResult != null) {
+                                    result.putAll(bioportalResult);
+                                }
+                            }
+
+                            // only add to the cache if we got a result!
+                            if (result.size() > 0) {
+                                searchResultCache.addToCache(cacheKeyLookup,
+                                        result);
                             }
 
                         } else {
