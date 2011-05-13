@@ -47,6 +47,12 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
+/**
+ * This class is a modification of that published in the Swing Hacks book by Joshua Marinacci & Chris Adamson,
+ * published by O'Reilly in 2005.
+ */
+
+
 public class ReorderableJList extends JList
         implements DragSourceListener, DropTargetListener, DragGestureListener {
 
