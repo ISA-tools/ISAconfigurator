@@ -160,19 +160,17 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
             public void mousePressed(MouseEvent mouseEvent) {
                 viewTermDefinition.setIcon(VIEW_META);
                 if (!ontologyTree.isSelectionEmpty()) {
-                    if (viewTerm != null) {
-                        setCurrentPage(viewTerm);
-                        viewTerm.setContent((OntologyBranch) ((DefaultMutableTreeNode) ontologyTree.getSelectionPath().getLastPathComponent()).getUserObject(),
-                                ontologyToQuery, ontologyClient);
+                    Object treeObject = ((DefaultMutableTreeNode) ontologyTree.getSelectionPath().getLastPathComponent()).getUserObject();
 
-                    } else {
-                        Object treeObject = ((DefaultMutableTreeNode) ontologyTree.getSelectionPath().getLastPathComponent()).getUserObject();
-                        if (treeObject instanceof OntologyBranch) {
-                            createViewDefinitionPane();
-                            setCurrentPage(viewTerm);
-                            viewTerm.setContent((OntologyBranch) treeObject,
-                                    ontologyToQuery, ontologyClient);
-                        }
+                    if (viewTerm == null) {
+                        createViewDefinitionPane();
+                    }
+
+                    if (treeObject instanceof OntologyBranch) {
+
+                        setCurrentPage(viewTerm);
+                        viewTerm.setContent((OntologyBranch) treeObject,
+                                ontologyToQuery, ontologyClient);
                     }
                 }
             }
