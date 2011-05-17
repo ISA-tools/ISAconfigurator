@@ -123,7 +123,7 @@ public class ReorderableJList extends JList
 
     // DragSourceListener events
     public void dragDropEnd(DragSourceDropEvent dsde) {
-        System.out.println("dragDropEnd()");
+
         dropTargetCell = null;
         draggedIndex = -1;
         repaint();
@@ -168,7 +168,7 @@ public class ReorderableJList extends JList
     }
 
     public void drop(DropTargetDropEvent dtde) {
-        System.out.println("drop()!");
+
         if (dtde.getSource() != dropTarget) {
             System.out.println("rejecting for bad source (" +
                     dtde.getSource().getClass().getName() + ")");
@@ -177,7 +177,7 @@ public class ReorderableJList extends JList
         }
         Point dropPoint = dtde.getLocation();
         int index = locationToIndex(dropPoint);
-        System.out.println("drop index is " + index);
+
         boolean dropped = false;
         try {
             if ((index == -1) || (index == draggedIndex)) {

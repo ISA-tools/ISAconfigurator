@@ -65,8 +65,6 @@ import java.util.Map;
 
 public class WSOntologyTreeCreator implements OntologyTreeCreator, TreeSelectionListener, TreeModelListener, TreeExpansionListener, TreeSubject {
 
-//	private static OLSClient olsClient = new OLSClient();
-
     private List<TreeObserver> observers;
 
     private DefaultMutableTreeNode rootNode;
