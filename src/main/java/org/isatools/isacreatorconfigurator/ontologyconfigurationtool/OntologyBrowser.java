@@ -105,6 +105,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
 
         ontologyTreeCreator = ontologyToQuery.getFormat() == OntologyFormats.OBO ? new WSOntologyTreeCreator(this, ontologyClient, ontologyTree) :
                 new WSOntologyTreeCreator(this, ontologyClient, ontologyTree);
+
         if (ontologyTreeCreator instanceof WSOntologyTreeCreator) {
             ((WSOntologyTreeCreator) ontologyTreeCreator).registerObserver(this);
         }
