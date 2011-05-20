@@ -322,6 +322,10 @@ public class BioPortalClient implements OntologyService {
 
             BioPortalClassBeanResultHandler handler = new BioPortalClassBeanResultHandler();
 
+             if(fileWithNameSpace == null) {
+                return new HashMap<String,String>();
+            }
+
             Map<String, BioPortalOntology> result = handler.parseRootConceptFile(fileWithNameSpace.getAbsolutePath(), noChildren);
 
             Map<String, String> processedResult = new HashMap<String, String>();
@@ -330,6 +334,8 @@ public class BioPortalClient implements OntologyService {
                 searchResults.putAll(result);
                 processedResult.putAll(processBioPortalOntology(result));
                 cachedNodeChildrenQueries.put(ontology, processedResult);
+            } else {
+                return new HashMap<String, String>();
             }
 
             return processedResult;

@@ -111,6 +111,7 @@ public class WSOntologyTreeCreator implements OntologyTreeCreator, TreeSelection
             System.out.println("Using OLS");
         }
         System.out.println("Ontology version is: " + ontology.getOntologyVersion());
+
         Map<String, String> rootTerms = ontologyClient.getOntologyRoots(new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
         System.out.println("found " + rootTerms.size() + " roots");
         // update the tree
@@ -120,7 +121,7 @@ public class WSOntologyTreeCreator implements OntologyTreeCreator, TreeSelection
 
         // not root terms found
         if (rootTerms.size() == 0) {
-            addTermToTree("Problem loading ontology!", "");
+            addTermToTree("Something has gone wrong on when loading from " + ((ontologyClient instanceof BioPortalClient) ? "BioPortal" : "Ontology lookup service"), "");
         }
         updateTree();
         browser.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
