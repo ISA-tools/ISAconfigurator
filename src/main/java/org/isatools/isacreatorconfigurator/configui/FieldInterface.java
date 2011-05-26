@@ -990,6 +990,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 defaultValContStd.setVisible(false);
                 defaultValContBool.setVisible(false);
                 usesTemplateForWizard.setVisible(false);
+                wizardTemplate.setVisible(false);
                 wizardTemplatePanel.setVisible(false);
 
                 // hide all options for length and regular expressions
@@ -1006,6 +1007,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         if (event.getSource() == usesTemplateForWizard) {
             wizardTemplatePanel.setVisible(usesTemplateForWizard.isSelected());
+            wizardTemplate.setVisible(usesTemplateForWizard.isSelected());
         }
     }
 

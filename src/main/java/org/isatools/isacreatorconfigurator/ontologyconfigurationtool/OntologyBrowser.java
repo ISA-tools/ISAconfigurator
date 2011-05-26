@@ -171,7 +171,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
                                     System.err.println("no ontology matched " + selectedTreePart.getBranchIdentifier() + " in the client");
                                 } else {
                                     System.out.println("found a match to " + selectedTreePart.getBranchIdentifier() + "...");
-                                    selectedTreePart = new OntologyBranch(bpOntology.getOntologyPurl(), selectedTreePart.getBranchName());
+                                    selectedTreePart = new OntologyBranch(bpOntology.getOntologySourceAccession(), selectedTreePart.getBranchName());
                                 }
                             }
 
