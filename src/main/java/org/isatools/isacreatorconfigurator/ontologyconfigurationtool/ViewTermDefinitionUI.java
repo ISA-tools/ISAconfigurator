@@ -109,7 +109,7 @@ public class ViewTermDefinitionUI extends InformationPane {
         String labelContent = "<html>" + "<head>" +
                 "<style type=\"text/css\">" + "<!--" + ".bodyFont {" +
                 "   font-family: Verdana;" + "   font-size: 8.5px;" +
-                "   color: #414042;" + "}" + "-->" + "</style>" + "</head>" +
+                "   color: #006838;" + "}" + "-->" + "</style>" + "</head>" +
                 "<body class=\"bodyFont\">";
 
         labelContent += "<p><b>term name: </b>";

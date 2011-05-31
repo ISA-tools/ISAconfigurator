@@ -144,20 +144,6 @@ public class OntologySelectionTool extends JFrame implements MouseListener,
                 "searching for matching ontologies");
     }
 
-    public OntologySelectionTool(Map<String, RecommendedOntology> recommendedOntologies) {
-//		this.addWindowListener(this);
-
-        this.recommendedOntologies = recommendedOntologies;
-        this.history = new HashMap<String, OntologyObject>();
-        this.searchResultCache = new ResultCache<String, Map<String, String>>();
-        this.multipleTermsAllowed = false;
-
-        ResourceInjector.get("ontologyselectiontool-package.style").inject(this);
-
-        progressIndicator = new InfiniteProgressPanel(
-                "searching for matching ontologies");
-    }
-
     /**
      * Create the OntologySelectionTool GUI.
      */

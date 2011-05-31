@@ -75,7 +75,6 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
 
     private JList ontologyResultList;
     private JScrollPane resultScroller;
-    private JComboBox searchBy;
     private JTextField searchField;
     private JLabel locateButton;
     private JPanel swappableContainer;
@@ -119,7 +118,7 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
         JPanel buttonPanel = new JPanel(new BorderLayout());
 
         locateButton = new JLabel("locate term", LOCATE_ICON, JLabel.LEFT);
-        UIHelper.renderComponent(locateButton, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(locateButton, UIHelper.VER_12_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         locateButton.addMouseListener(new MouseAdapter() {
 
             public void mouseEntered(MouseEvent mouseEvent) {
@@ -129,7 +128,7 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
 
             public void mouseExited(MouseEvent mouseEvent) {
                 locateButton.setIcon(LOCATE_ICON);
-                locateButton.setForeground(UIHelper.GREY_COLOR);
+                locateButton.setForeground(UIHelper.DARK_GREEN_COLOR);
             }
 
             public void mousePressed(MouseEvent mouseEvent) {
@@ -167,8 +166,7 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
         Box informationPanel = Box.createHorizontalBox();
         informationPanel.setBackground(UIHelper.BG_COLOR);
 
-        JLabel informationLabel = UIHelper.createLabel("<html>please enter the <b>term</b> or " +
-                "<b>accession</b> you wish to search for...</html>", UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR,
+        JLabel informationLabel = UIHelper.createLabel("<html>please enter the <b>term</b>:</html>", UIHelper.VER_10_PLAIN, UIHelper.DARK_GREEN_COLOR,
                 SwingConstants.LEFT);
 
         informationPanel.add(Box.createHorizontalStrut(2));
@@ -178,17 +176,9 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
 
         Box horBox = Box.createHorizontalBox();
 
-        String[] searchByValues = new String[]{"term", "accession"};
-
-        searchBy = new JComboBox(searchByValues);
-        searchBy.setPreferredSize(new Dimension(100, 25));
-        UIHelper.renderComponent(searchBy, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
-
-        horBox.add(searchBy);
-        horBox.add(Box.createVerticalStrut(10));
 
         searchField = new JTextField();
-        UIHelper.renderComponent(searchField, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(searchField, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
 
 
         searchField.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "SEARCH");
@@ -240,12 +230,10 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
                         setCurrentPage(new JLabel(LOADING));
                         SearchOntologyDialogUI.this.validate();
                         Map<String, String> result;
-                        if (searchBy.getSelectedItem().equals("term")) {
-                            System.out.println("Search ontology is " + searchOntology.getOntologyID() + " version " + searchOntology.getOntologyVersion());
-                            result = ontologyService.getTermsByPartialNameFromSource(searchField.getText(), new OntologyQueryAdapter(searchOntology).getOntologyQueryString(OntologyQueryAdapter.GET_ID), false);
-                        } else {
-                            result = ontologyService.getTermByAccessionId(searchField.getText());
-                        }
+
+                        System.out.println("Search ontology is " + searchOntology.getOntologyID() + " version " + searchOntology.getOntologyVersion());
+                        result = ontologyService.getTermsByPartialNameFromSource(searchField.getText(), new OntologyQueryAdapter(searchOntology).getOntologyQueryString(OntologyQueryAdapter.GET_ID), false);
+
                         if (result.size() == 0) {
                             setCurrentPage(UIHelper.wrapComponentInPanel(new JLabel(NO_TERMS_FOUND)));
                         } else {

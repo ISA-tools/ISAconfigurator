@@ -76,7 +76,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     @InjectedResource
     private ImageIcon addTable, addTableOver, removeTable, removeTableOver, addElement,
             addElementOver, removeElement, removeElementOver, moveUp, moveUpOver, moveDown, moveDownOver,
-            elementListIcon, tableListIcon, informationIcon, isaConfigLogo, viewMappingsIcon, warningIcon, aboutIcon;
+            informationIcon, isaConfigLogo, viewMappingsIcon, warningIcon, aboutIcon, fieldListTitle, tableListTitle;
 
     private static final String FIELD_XML_LOC = "/config/std_isa_fields.xml";
     private static final String CUSTOM_XML_LOC = "/config/custom_isa_fields.xml";
@@ -145,6 +145,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         fieldInterface.createGUI();
         setLayout(new BorderLayout());
         setBackground(UIHelper.BG_COLOR);
+        setBorder(null);
         instantiateFrame();
         loadPredefinedFieldNames();
         reformTableList();
@@ -220,7 +221,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     private void showMessagePane(String message, int messageType) {
         final JOptionPane optionPane = new JOptionPane("<html>" + message + "</html>",
                 JOptionPane.OK_OPTION);
-        UIHelper.renderComponent(optionPane, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(optionPane, UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
 
         if (messageType == JOptionPane.ERROR_MESSAGE) {
             optionPane.setIcon(warningIcon);
@@ -425,7 +426,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         headerImagePanel.add(logo);
 
 
-        tableInformationDisplay = UIHelper.createLabel("", UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, SwingConstants.RIGHT);
+        tableInformationDisplay = UIHelper.createLabel("", UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, SwingConstants.RIGHT);
         tableInformationDisplay.setVerticalAlignment(SwingConstants.TOP);
         tableInformationDisplay.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -487,8 +488,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         container.setBackground(UIHelper.BG_COLOR);
         container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
 
-        JLabel lab = UIHelper.createLabel("Study Sample & Assay Tables", UIHelper.VER_12_BOLD, new Color(51, 51, 51));
-//        lab.setIcon(tableListIcon);
+        JLabel lab = new JLabel(tableListTitle);
 
         container.add(UIHelper.wrapComponentInPanel(lab));
         container.add(Box.createVerticalStrut(5));
@@ -524,7 +524,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         container.add(Box.createVerticalStrut(5));
 
 
-        tableCountInfo = UIHelper.createLabel("", UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+        tableCountInfo = UIHelper.createLabel("", UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR);
         container.add(UIHelper.wrapComponentInPanel(tableCountInfo));
         container.add(Box.createVerticalStrut(5));
 
@@ -534,7 +534,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         buttonPanel.setBackground(UIHelper.BG_COLOR);
 
         final JLabel addTableButton = new JLabel(addTable, JLabel.LEFT);
-        UIHelper.renderComponent(addTableButton, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(addTableButton, UIHelper.VER_12_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         addTableButton.setOpaque(false);
 
         addTableButton.addMouseListener(new MouseAdapter() {
@@ -565,7 +565,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         addTableButton.setToolTipText("<html><b>Add table</b><p>Add a new table definition.</p></html>");
 
         final JLabel removeTableButton = new JLabel(removeTable, JLabel.LEFT);
-        UIHelper.renderComponent(removeTableButton, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(removeTableButton, UIHelper.VER_12_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         removeTableButton.setOpaque(false);
 
         removeTableButton.addMouseListener(new MouseAdapter() {
@@ -658,7 +658,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         JPanel headerLab = new JPanel(new GridLayout(1, 1));
         headerLab.setOpaque(false);
 
-        JLabel lab = UIHelper.createLabel("Table Elements", UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
+        JLabel lab = new JLabel(fieldListTitle);
         headerLab.add(lab);
 
         container.add(headerLab);
@@ -708,7 +708,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         container.add(listScroller);
         container.add(Box.createVerticalStrut(5));
 
-        elementCountInfo = UIHelper.createLabel("", UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+        elementCountInfo = UIHelper.createLabel("", UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR);
 
         container.add(UIHelper.wrapComponentInPanel(elementCountInfo));
         container.add(Box.createVerticalStrut(5));

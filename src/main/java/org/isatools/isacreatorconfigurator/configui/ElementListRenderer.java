@@ -54,9 +54,8 @@ import java.awt.*;
 public class ElementListRenderer implements ListCellRenderer {
 
     private JPanel contents;
-    private JLabel icon;
+
     private JLabel text;
-    private JLabel separatorLabel;
 
     private Color unselectedBG = UIHelper.BG_COLOR;
     private Color selectedBG = UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR;
@@ -74,7 +73,7 @@ public class ElementListRenderer implements ListCellRenderer {
         contents = new JPanel(new BorderLayout());
         contents.setOpaque(true);
 
-        text = UIHelper.createLabel("", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
+        text = UIHelper.createLabel("", UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
 
         contents.add(text, BorderLayout.CENTER);
     }
@@ -89,7 +88,7 @@ public class ElementListRenderer implements ListCellRenderer {
             text.setForeground(UIHelper.BG_COLOR);
         } else {
             contents.setBackground(selected ? selectedBG : unselectedBG);
-            text.setForeground(UIHelper.GREY_COLOR);
+            text.setForeground(UIHelper.DARK_GREEN_COLOR);
         }
 
 

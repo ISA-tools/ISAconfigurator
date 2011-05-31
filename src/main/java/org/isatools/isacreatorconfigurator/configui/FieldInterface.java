@@ -253,9 +253,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         fieldName = new RoundedJTextField(15);
         fieldName.setText(initFieldName);
         fieldName.setEditable(false);
-        UIHelper.renderComponent(fieldName, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(fieldName, UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
 
-        JLabel fieldNameLab = UIHelper.createLabel("Field Name: ", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
+        JLabel fieldNameLab = UIHelper.createLabel("Field Name: ", UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
         fieldCont.add(fieldNameLab);
         fieldCont.add(fieldName);
         container.add(fieldCont);
@@ -265,7 +265,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         description = new RoundedJTextArea();
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
-        UIHelper.renderComponent(description, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(description, UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
 
         JScrollPane descScroll = new JScrollPane(description,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -276,7 +276,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         IAppWidgetFactory.makeIAppScrollPane(descScroll);
 
-        JLabel descLab = UIHelper.createLabel("Description: ", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
+        JLabel descLab = UIHelper.createLabel("Description: ", UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
         descLab.setVerticalAlignment(JLabel.TOP);
         descCont.add(descLab);
         descCont.add(descScroll);
@@ -290,9 +290,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         datatype = new JComboBox(allowedDataTypes);
         datatype.addActionListener(this);
-        UIHelper.renderComponent(datatype, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
+        UIHelper.renderComponent(datatype, UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, UIHelper.BG_COLOR);
 
-        JLabel dataTypeLab = UIHelper.createLabel("Datatype:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
+        JLabel dataTypeLab = UIHelper.createLabel("Datatype:", UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
         datatypeCont.add(dataTypeLab);
         datatypeCont.add(datatype);
         container.add(datatypeCont);
@@ -306,11 +306,11 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         defaultValStd.setSize(new Dimension(150, 19));
         defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
                 new RegExFormatter(".*", defaultValStd)));
-        UIHelper.renderComponent(defaultValStd, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(defaultValStd, UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
 
         defaultValCont.add(defaultValStd);
 
-        defaultValLabStd = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
+        defaultValLabStd = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
         defaultValContStd.add(defaultValLabStd);
         defaultValContStd.add(defaultValCont);
         container.add(defaultValContStd);
@@ -324,13 +324,13 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         listDataSourceCont.setVisible(false);
 
         JLabel listValLab = UIHelper.createLabel(
-                "Please enter comma separated list of values:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
+                "Please enter comma separated list of values:", UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
         listDataSourceCont.add(listValLab);
 
         listValues = new RoundedJTextArea("SampleVal1, SampleVal2, SampleVal3", 3, 5);
         listValues.setLineWrap(true);
         listValues.setWrapStyleWord(true);
-        UIHelper.renderComponent(listValues, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(listValues, UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
 
         JScrollPane listScroll = new JScrollPane(listValues,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -353,7 +353,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         preferredOntologySource.setVisible(false);
         recommendOntologySource = new JCheckBox("Use recommended ontology source?", false);
 
-        UIHelper.renderComponent(recommendOntologySource, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(recommendOntologySource, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         recommendOntologySource.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (recommendOntologySource.isSelected()) {
@@ -371,7 +371,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
 
         JPanel infoCont = new JPanel(new GridLayout(1, 1));
-        JLabel infoLab = UIHelper.createLabel("<html>click on the <strong>configure ontologies</strong> button to open the ontology configurator to edit the list of ontologies and search areas within an ontology</html>", UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+        JLabel infoLab = UIHelper.createLabel("<html>click on the <strong>configure ontologies</strong> button to open the ontology configurator to edit the list of ontologies and search areas within an ontology</html>", UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR);
         infoLab.setPreferredSize(new Dimension(100, 40));
         infoCont.add(infoLab);
 
@@ -465,9 +465,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
                 JComboBox(contents);
 
-        UIHelper.renderComponent(defaultValBool, UIHelper.VER_12_PLAIN, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
+        UIHelper.renderComponent(defaultValBool, UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, UIHelper.BG_COLOR);
 
-        JLabel defaultValLabBool = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_12_BOLD, UIHelper.GREY_COLOR);
+        JLabel defaultValLabBool = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_12_BOLD, UIHelper.DARK_GREEN_COLOR);
 
         defaultValContBool.add(defaultValLabBool);
         defaultValContBool.add(defaultValBool);
@@ -478,7 +478,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         isInputFormatted.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         isInputFormatted.setHorizontalAlignment(SwingConstants.LEFT);
 
-        UIHelper.renderComponent(isInputFormatted, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(isInputFormatted, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         isInputFormatted.addActionListener(this);
         container.add(UIHelper.wrapComponentInPanel(isInputFormatted));
 
@@ -494,9 +494,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         inputFormat.setPreferredSize(new Dimension(160, 25));
         inputFormat.setToolTipText(
                 "Field expects a regular expression describing the input format.");
-        UIHelper.renderComponent(inputFormat, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(inputFormat, UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
 
-        JLabel inputFormatLab = UIHelper.createLabel("Input format:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
+        JLabel inputFormatLab = UIHelper.createLabel("Input format:", UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
         inputFormatLab.setVerticalAlignment(SwingConstants.TOP);
 
         inputFormatCont.add(inputFormatLab);
@@ -538,7 +538,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         usesTemplateForWizard.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         usesTemplateForWizard.setHorizontalAlignment(SwingConstants.LEFT);
 
-        UIHelper.renderComponent(usesTemplateForWizard, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(usesTemplateForWizard, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         usesTemplateForWizard.addActionListener(this);
         container.add(UIHelper.wrapComponentInPanel(usesTemplateForWizard));
 
@@ -551,7 +551,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 "A template for the wizard to auto-create the data...");
         wizardTemplate.setLineWrap(true);
         wizardTemplate.setWrapStyleWord(true);
-        UIHelper.renderComponent(wizardTemplate, UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(wizardTemplate, UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
 
         JScrollPane wizScroll = new JScrollPane(wizardTemplate,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -561,7 +561,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         IAppWidgetFactory.makeIAppScrollPane(wizScroll);
 
-        JLabel wizardTemplateLab = UIHelper.createLabel("Template definition:", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
+        JLabel wizardTemplateLab = UIHelper.createLabel("Template definition:", UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
         wizardTemplateLab.setVerticalAlignment(JLabel.TOP);
 
         wizardTemplatePanel.add(wizardTemplateLab);
@@ -571,19 +571,19 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         JPanel checkCont = new JPanel(new GridLayout(2, 2));
         checkCont.setBackground(UIHelper.BG_COLOR);
-        checkCont.setBorder(new TitledBorder(new RoundedBorder(UIHelper.GREY_COLOR, 7),
+        checkCont.setBorder(new TitledBorder(new RoundedBorder(UIHelper.DARK_GREEN_COLOR, 7),
                 "Behavioural Attributes", TitledBorder.DEFAULT_JUSTIFICATION,
                 TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD,
-                UIHelper.GREY_COLOR));
+                UIHelper.DARK_GREEN_COLOR));
 
         required = new JCheckBox("Required ", true);
 
-        UIHelper.renderComponent(required, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(required, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         checkCont.add(required);
 
         acceptsMultipleValues = new JCheckBox("Allow multiple instances", false);
 
-        UIHelper.renderComponent(acceptsMultipleValues, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(acceptsMultipleValues, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         checkCont.add(acceptsMultipleValues);
         acceptsFileLocations = new JCheckBox("Accepts file locations", false);
 
@@ -594,12 +594,12 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
             }
         });
 
-        UIHelper.renderComponent(acceptsFileLocations, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(acceptsFileLocations, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         checkCont.add(acceptsFileLocations);
 
         hidden = new JCheckBox("hidden?", false);
 
-        UIHelper.renderComponent(hidden, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
+        UIHelper.renderComponent(hidden, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         checkCont.add(hidden);
 
         container.add(checkCont);
@@ -990,8 +990,8 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 defaultValContStd.setVisible(false);
                 defaultValContBool.setVisible(false);
                 usesTemplateForWizard.setVisible(false);
-                wizardTemplate.setVisible(false);
                 wizardTemplatePanel.setVisible(false);
+
 
                 // hide all options for length and regular expressions
                 isInputFormatted.setVisible(false);
@@ -1007,7 +1007,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         if (event.getSource() == usesTemplateForWizard) {
             wizardTemplatePanel.setVisible(usesTemplateForWizard.isSelected());
-            wizardTemplate.setVisible(usesTemplateForWizard.isSelected());
         }
     }
 

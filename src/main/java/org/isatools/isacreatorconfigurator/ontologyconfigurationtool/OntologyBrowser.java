@@ -197,7 +197,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
 
         selectedTreePartInfoCont = new JPanel(new GridLayout(1, 1));
 
-        selectedTreePartInfo = UIHelper.createLabel("", UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR, SwingConstants.LEFT);
+        selectedTreePartInfo = UIHelper.createLabel("", UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, SwingConstants.LEFT);
         selectedTreePartInfoCont.add(selectedTreePartInfo);
         add(selectedTreePartInfoCont, BorderLayout.SOUTH);
 
@@ -212,7 +212,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
         labelContainer.add(UIHelper.createLabel("<html>viewing version <strong>" + ontologyToQuery.getOntologyVersion() +
                 "</strong> of <strong>" + ontologyToQuery.getOntologyDisplayLabel() +
                 "</strong> <i>(" + ontologyToQuery.getOntologyAbbreviation() + ")</i></html>",
-                UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR));
+                UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR));
 
         return labelContainer;
     }

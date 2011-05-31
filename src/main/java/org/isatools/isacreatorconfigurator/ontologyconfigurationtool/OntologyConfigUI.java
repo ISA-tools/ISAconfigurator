@@ -47,6 +47,8 @@ import org.isatools.isacreatorconfigurator.effects.*;
 import org.isatools.isacreatorconfigurator.ontologymanager.BioPortalClient;
 import org.isatools.isacreatorconfigurator.ontologymanager.OLSClient;
 import org.isatools.isacreatorconfigurator.ontologymanager.OntologyService;
+import org.jdesktop.fuse.InjectedResource;
+import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -71,15 +73,8 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
     private static final BioPortalClient bioportalClient = new BioPortalClient();
     private static final OLSClient olsClient = new OLSClient();
 
-    private static final ImageIcon INFO_IMAGE =
-            new ImageIcon(OntologyBrowser.class.getResource("/images/ontologyconfigurationtool/info.png"));
-    //	private static final ImageIcon OBO_NOT_SUPPORTED_IMAGE = new ImageIcon(OntologyBrowser.class.getResource("/images/ontologyconfigurationtool/obo_not_browsable.png"));
-    private static final ImageIcon OUT_OF_MEMORY_IMAGE = new ImageIcon(OntologyBrowser.class.getResource("/images/ontologyconfigurationtool/insufficient_memory.png"));
-
-    private static final ImageIcon CONFIRM_BUTTON =
-            new ImageIcon(OntologyBrowser.class.getResource("/images/ontologyconfigurationtool/confirm_selection_button.png"));
-    private static final ImageIcon CONFIRM_BUTTON_OVER =
-            new ImageIcon(OntologyBrowser.class.getResource("/images/ontologyconfigurationtool/confirm_selection_button_over.png"));
+    @InjectedResource
+    private ImageIcon infoImage, outOfMemory, confirmButton, confirmButtonOver;
 
     private DefaultListModel selectedOntologyListModel;
     private JList selectedOntologyList;
@@ -106,6 +101,9 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
 
     public OntologyConfigUI(List<Ontology> ontologiesToBrowseOn, Map<String, RecommendedOntology> currentlySelectedOntologies) {
         this.ontologiesToBrowseOn = ontologiesToBrowseOn;
+
+        ResourceInjector.get("ontologyconfigtool-package.style").inject(this);
+
         if (currentlySelectedOntologies != null) {
             for (String ontologyLabel : currentlySelectedOntologies.keySet()) {
                 if (getOntologyByLabel(ontologyLabel) != null) {
@@ -144,9 +142,9 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
 
         ontologyViewContainer = new JPanel();
         // add placeholder panel by default with some image describing what to do
-        setOntologySelectionPanelPlaceholder(INFO_IMAGE);
+        setOntologySelectionPanelPlaceholder(infoImage);
         ontologyViewContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "browse ontology",
-                TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR));
+                TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
 
         ontologySelectionPanel.add(ontologyViewContainer, BorderLayout.CENTER);
         ontologySelectionPanel.add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
@@ -156,7 +154,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
 
         searchAndTermDefinitionViewer = new SearchAndDefinitionUI();
         searchAndTermDefinitionViewer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "functions",
-                TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR));
+                TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
 
         functionWrapper.add(searchAndTermDefinitionViewer);
         functionWrapper.add(createButtonPanel(), BorderLayout.SOUTH);
@@ -195,15 +193,15 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         // contains the button to confirm selection of ontology plus filter part (if applicable!)
         JPanel buttonPanel = new JPanel(new BorderLayout());
 
-        final JLabel button = new JLabel(CONFIRM_BUTTON);
+        final JLabel button = new JLabel(confirmButton);
         button.addMouseListener(new MouseAdapter() {
 
             public void mouseEntered(MouseEvent mouseEvent) {
-                button.setIcon(CONFIRM_BUTTON_OVER);
+                button.setIcon(confirmButtonOver);
             }
 
             public void mouseExited(MouseEvent mouseEvent) {
-                button.setIcon(CONFIRM_BUTTON);
+                button.setIcon(confirmButton);
             }
 
             public void mousePressed(MouseEvent mouseEvent) {
@@ -276,13 +274,13 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
 
         IAppWidgetFactory.makeIAppScrollPane(selectedOntologiesScroller);
 
-        selectedOntologiesScroller.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "selected ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR));
+        selectedOntologiesScroller.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "selected ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
 
         selectedOntologiesContainer.add(selectedOntologiesScroller);
 
         // create panel populated with all available ontologies inside a filterable list!
         JPanel availableOntologiesListContainer = new JPanel(new BorderLayout());
-        availableOntologiesListContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "filter ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR));
+        availableOntologiesListContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "filter ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
         availableOntologiesListContainer.setPreferredSize(new Dimension(200, 250));
 
         final JLabel info = UIHelper.createLabel("", UIHelper.VER_10_PLAIN, UIHelper.DARK_GREEN_COLOR);
@@ -404,7 +402,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
                         System.err.println("ontology is null");
                     }
                 } catch (OutOfMemoryError oome) {
-                    setOntologySelectionPanelPlaceholder(OUT_OF_MEMORY_IMAGE);
+                    setOntologySelectionPanelPlaceholder(outOfMemory);
                 } finally {
                     if (glassPane != null) {
                         if (glassPane.isStarted()) {
@@ -453,7 +451,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
                 selectedOntologies.remove(ontologyToRemove);
                 updateSelectedOntologies();
                 // reset central image to that of the original image.
-                setOntologySelectionPanelPlaceholder(INFO_IMAGE);
+                setOntologySelectionPanelPlaceholder(infoImage);
             }
         });
 

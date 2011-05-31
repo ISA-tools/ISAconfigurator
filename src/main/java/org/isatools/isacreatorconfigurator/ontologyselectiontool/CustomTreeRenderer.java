@@ -92,22 +92,12 @@ public class CustomTreeRenderer implements TreeCellRenderer {
 
         if (leaf) {
             // leaf nodes...
-            if (selected) {
-                icon.setIcon(termNodeSelected);
-            } else {
-                icon.setIcon(termNode);
-            }
+            icon.setIcon(selected ? termNodeSelected : termNode);
         } else if (((TreeNode) val).getParent() == null) {
             // this is the root node
-            if (selected) {
-                icon.setIcon(rootNodeSelected);
-            } else {
-                icon.setIcon(rootNode);
-            }
-        } else if (selected) {
-            icon.setIcon(branchNodeSelected);
+            icon.setIcon(selected ? rootNodeSelected : rootNode);
         } else {
-            icon.setIcon(branchNode);
+            icon.setIcon(selected ? branchNodeSelected : branchNode);
         }
 
         text.setText(val.toString());

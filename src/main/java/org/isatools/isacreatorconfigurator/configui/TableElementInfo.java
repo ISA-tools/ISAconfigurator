@@ -48,16 +48,6 @@ public class TableElementInfo extends JLayeredPane {
         setLayout(new BorderLayout());
         setBackground(UIHelper.BG_COLOR);
 
-
-        JLabel headerLab = new JLabel(
-                new ImageIcon(getClass()
-                        .getResource("/images/general_gui/tableElementHeader.png")));
-        headerLab.setOpaque(false);
-
-
-        add(headerLab,
-                BorderLayout.NORTH);
-
         JLabel infoLab = new JLabel(
                 new ImageIcon(getClass()
                         .getResource("/images/general_gui/tableInfo.png")));

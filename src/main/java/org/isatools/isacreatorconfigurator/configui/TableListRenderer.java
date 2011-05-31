@@ -74,7 +74,7 @@ public class TableListRenderer implements ListCellRenderer {
         contents.setOpaque(true);
 
         icon = new JLabel();
-        text = UIHelper.createLabel("", UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR);
+        text = UIHelper.createLabel("", UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
 
 
         JPanel iconContainer = new JPanel();
@@ -116,7 +116,7 @@ public class TableListRenderer implements ListCellRenderer {
 
         }
 
-        text.setForeground(UIHelper.GREY_COLOR);
+        text.setForeground(UIHelper.DARK_GREEN_COLOR);
 
         contents.setBackground(selected ? selectedBG : unselectedBG);
 

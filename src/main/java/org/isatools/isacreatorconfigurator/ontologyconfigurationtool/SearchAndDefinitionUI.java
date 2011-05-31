@@ -60,13 +60,19 @@ import java.beans.PropertyChangeListener;
 
 
 public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
-    private static final ImageIcon ADDITIONAL_FUNCTION_SIDE_LEFT = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/additionalFunctions.png"));
-    private static final ImageIcon ADDITIONAL_FUNCTION_SIDE_RIGHT = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/additionFunctions_end.png"));
+
     private static final ImageIcon FIND_TERM = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/use_search_function.png"));
     private static final ImageIcon FIND_TERM_OVER = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/use_search_function_over.png"));
     private static final ImageIcon VIEW_META = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/view_term_definition.png"));
     private static final ImageIcon VIEW_META_OVER = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/view_term_definition_over.png"));
     private static final ImageIcon PLACEHOLDER = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/search_box_placeholder.gif"));
+
+    private static final int SEARCH = 0;
+    private static final int DEFINITION = 1;
+
+    private int mode = SEARCH;
+
+    private JLabel viewTermDefinition, findTerm;
 
     private ViewTermDefinitionUI viewTerm;
     private SearchOntologyDialogUI searchOntologyDialogUI;
@@ -116,9 +122,7 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
         functionPanel.setLayout(new BoxLayout(functionPanel, BoxLayout.LINE_AXIS));
         functionPanel.setBackground(UIHelper.BG_COLOR);
 
-        functionPanel.add(new JLabel(ADDITIONAL_FUNCTION_SIDE_LEFT));
-
-        final JLabel findTerm = new JLabel(FIND_TERM);
+        findTerm = new JLabel(FIND_TERM_OVER);
         findTerm.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent mouseEvent) {
@@ -127,12 +131,16 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
 
             @Override
             public void mouseExited(MouseEvent mouseEvent) {
-                findTerm.setIcon(FIND_TERM);
+                findTerm.setIcon(mode == SEARCH ? FIND_TERM_OVER : FIND_TERM);
             }
 
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
-                findTerm.setIcon(FIND_TERM);
+
+                resetButtons();
+                mode = SEARCH;
+                findTerm.setIcon(FIND_TERM_OVER);
+
                 if (searchOntologyDialogUI != null) {
                     setCurrentPage(searchOntologyDialogUI);
                 } else {
@@ -144,7 +152,7 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
 
         functionPanel.add(findTerm);
 
-        final JLabel viewTermDefinition = new JLabel(VIEW_META);
+        viewTermDefinition = new JLabel(VIEW_META);
         viewTermDefinition.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent mouseEvent) {
@@ -153,13 +161,15 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
 
             @Override
             public void mouseExited(MouseEvent mouseEvent) {
-                viewTermDefinition.setIcon(VIEW_META);
+                viewTermDefinition.setIcon(mode == DEFINITION ? VIEW_META_OVER : VIEW_META);
             }
 
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
-                viewTermDefinition.setIcon(VIEW_META);
+
+
                 if (!ontologyTree.isSelectionEmpty()) {
+
                     Object treeObject = ((DefaultMutableTreeNode) ontologyTree.getSelectionPath().getLastPathComponent()).getUserObject();
 
                     if (viewTerm == null) {
@@ -167,6 +177,9 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
                     }
 
                     if (treeObject instanceof OntologyBranch) {
+                        resetButtons();
+                        mode = DEFINITION;
+                        viewTermDefinition.setIcon(VIEW_META_OVER);
 
                         setCurrentPage(viewTerm);
                         viewTerm.setContent((OntologyBranch) treeObject,
@@ -178,10 +191,14 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
 
         functionPanel.add(viewTermDefinition);
 
-        functionPanel.add(new JLabel(ADDITIONAL_FUNCTION_SIDE_RIGHT));
-
         add(functionPanel, BorderLayout.NORTH);
     }
+
+    private void resetButtons() {
+        findTerm.setIcon(FIND_TERM);
+        viewTermDefinition.setIcon(VIEW_META);
+    }
+
 
     private void createViewDefinitionPane() {
         viewTerm = new ViewTermDefinitionUI();
