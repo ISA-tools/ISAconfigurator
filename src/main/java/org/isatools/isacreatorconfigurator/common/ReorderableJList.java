@@ -296,7 +296,7 @@ public class ReorderableJList extends JList
                 setForeground(isSelected ? UIHelper.BG_COLOR : UIHelper.LIGHT_GREEN_COLOR);
             } else {
                 setBackground(isSelected ? UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR : UIHelper.BG_COLOR);
-                setForeground(UIHelper.GREY_COLOR);
+                setForeground(UIHelper.DARK_GREEN_COLOR);
 
             }
 

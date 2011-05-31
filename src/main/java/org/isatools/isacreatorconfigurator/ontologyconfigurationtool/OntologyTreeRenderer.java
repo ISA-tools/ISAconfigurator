@@ -37,9 +37,12 @@
 package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
 import org.isatools.isacreatorconfigurator.common.UIHelper;
+import org.jdesktop.fuse.InjectedResource;
+import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
 import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeNode;
 import java.awt.*;
 
 /**
@@ -52,25 +55,23 @@ import java.awt.*;
 
 public class OntologyTreeRenderer implements TreeCellRenderer {
 
-    static ImageIcon NODE = new ImageIcon(OntologyTreeRenderer.class
-            .getResource("/images/ontologyconfigurationtool/node.png"));
-    static ImageIcon NODE_OPEN = new ImageIcon(OntologyTreeRenderer.class
-            .getResource("/images/ontologyconfigurationtool/node_open.png"));
-    static ImageIcon NODE_CLOSED = new ImageIcon(OntologyTreeRenderer.class
-            .getResource("/images/ontologyconfigurationtool/node_closed.png"));
-
+    @InjectedResource
+    private ImageIcon node, nodeSelected, branchOpen, branchClosed, rootOpen, rootClosed;
 
     private JPanel contents;
     private JLabel icon;
     private JLabel text;
 
     public OntologyTreeRenderer() {
+
+        ResourceInjector.get("ontologyconfigtool-package.style").inject(this);
+
         contents = new JPanel();
         contents.setLayout(new BorderLayout());
         contents.setOpaque(false);
 
-        icon = new JLabel(NODE_OPEN);
-        text = UIHelper.createLabel("", UIHelper.VER_11_PLAIN, UIHelper.GREY_COLOR);
+        icon = new JLabel();
+        text = UIHelper.createLabel("", UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR);
 
         contents.add(icon, BorderLayout.WEST);
         contents.add(text, BorderLayout.CENTER);
@@ -90,11 +91,11 @@ public class OntologyTreeRenderer implements TreeCellRenderer {
     public Component getTreeCellRendererComponent(JTree tree, Object val, boolean selected, boolean expanded, boolean leaf, int index, boolean hasFocus) {
 
         if (leaf) {
-            icon.setIcon(NODE);
-        } else if (expanded) {
-            icon.setIcon(NODE_OPEN);
+            icon.setIcon(selected ? nodeSelected : node);
+        } else if (((TreeNode) val).getParent() == null) {
+            icon.setIcon(expanded ? rootOpen : rootClosed);
         } else {
-            icon.setIcon(NODE_CLOSED);
+            icon.setIcon(expanded ? branchOpen : branchClosed);
         }
 
         String toDisplay = val.toString();
@@ -104,18 +105,10 @@ public class OntologyTreeRenderer implements TreeCellRenderer {
         text.setText(toDisplay);
 
         // change text colour depending on selection
-        if (!leaf) {
-            text.setFont(UIHelper.VER_11_BOLD);
-        } else {
-            text.setFont(UIHelper.VER_11_PLAIN);
-        }
+        text.setFont(!leaf ? UIHelper.VER_11_BOLD : UIHelper.VER_11_PLAIN);
 
-        if (selected) {
-            text.setForeground(UIHelper.LIGHT_GREEN_COLOR);
-        } else {
-            text.setForeground(UIHelper.GREY_COLOR);
-        }
 
+        text.setForeground(selected ? UIHelper.LIGHT_GREEN_COLOR : UIHelper.DARK_GREEN_COLOR);
         text.revalidate();
 
         return contents;
