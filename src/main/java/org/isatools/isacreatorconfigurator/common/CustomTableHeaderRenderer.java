@@ -49,16 +49,14 @@ import java.awt.*;
 public class CustomTableHeaderRenderer extends JLabel implements TableCellRenderer {
     // This method is called each time a column header
     // using this renderer needs to be rendered.
-    private ImageIcon HEADER_NOT_SELECTED = new ImageIcon(getClass().getResource("/images/common/column_header_selected.png"));
 
     public CustomTableHeaderRenderer() {
-        UIHelper.renderComponent(this, UIHelper.VER_10_BOLD, UIHelper.GREY_COLOR, UIHelper.BG_COLOR);
+        UIHelper.renderComponent(this, UIHelper.VER_10_BOLD, UIHelper.DARK_GREEN_COLOR, UIHelper.BG_COLOR);
     }
 
     public Component getTableCellRendererComponent(JTable table, Object value,
                                                    boolean isSelected, boolean hasFocus, int rowIndex, int vColIndex) {
         setBackground(UIHelper.BG_COLOR);
-        setIcon(HEADER_NOT_SELECTED);
         setText(value.toString());
         revalidate();
         return this;

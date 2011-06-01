@@ -72,8 +72,8 @@ public class CustomSpreadsheetCellRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         /* the following is the similar to DefaultTableCellRenderer */
 
-        super.setForeground(UIHelper.GREY_COLOR);
-        super.setBackground(new Color(140, 198, 63, 25));
+        super.setForeground(UIHelper.DARK_GREEN_COLOR);
+        super.setBackground(new Color(140, 198, 63, 20));
 
         setFont(UIHelper.VER_11_PLAIN);
 

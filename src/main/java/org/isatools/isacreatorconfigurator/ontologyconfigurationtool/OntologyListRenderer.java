@@ -38,6 +38,8 @@ package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
 import org.isatools.isacreatorconfigurator.common.UIHelper;
 import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
+import org.jdesktop.fuse.InjectedResource;
+import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -55,9 +57,9 @@ public class OntologyListRenderer extends JPanel
         implements ListCellRenderer {
     static Color listForeground = UIHelper.DARK_GREEN_COLOR;
 
+    @InjectedResource
+    private ImageIcon olsIcon, bioPortalIcon;
 
-    static ImageIcon OLS_ICON = new ImageIcon(OntologyListRenderer.class.getResource("/images/ontologyconfigurationtool/ols_ontology.png"));
-    static ImageIcon BIOPORTAL_ICON = new ImageIcon(OntologyListRenderer.class.getResource("/images/ontologyconfigurationtool/bioportal_ontology.png"));
 
     private JLabel icon;
     private JLabel text;
@@ -66,9 +68,11 @@ public class OntologyListRenderer extends JPanel
      * CustomListCellRenderer Constructor
      */
     public OntologyListRenderer() {
+        ResourceInjector.get("ontologyconfigtool-package.style").inject(this);
+
         setLayout(new BorderLayout());
 
-        icon = new JLabel(OLS_ICON);
+        icon = new JLabel(olsIcon);
         add(icon, BorderLayout.WEST);
 
         text = UIHelper.createLabel("", UIHelper.VER_10_PLAIN, listForeground);
@@ -95,9 +99,9 @@ public class OntologyListRenderer extends JPanel
 
             // ols versions are now like Jun 2010 rather than their previous version format 1.26
             if (o.getOntologyVersion().length() > 5) {
-                icon.setIcon(OLS_ICON);
+                icon.setIcon(olsIcon);
             } else {
-                icon.setIcon(BIOPORTAL_ICON);
+                icon.setIcon(bioPortalIcon);
             }
         }
 

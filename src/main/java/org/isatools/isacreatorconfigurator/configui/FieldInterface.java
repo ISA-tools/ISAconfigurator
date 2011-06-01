@@ -571,7 +571,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         JPanel checkCont = new JPanel(new GridLayout(2, 2));
         checkCont.setBackground(UIHelper.BG_COLOR);
-        checkCont.setBorder(new TitledBorder(new RoundedBorder(UIHelper.DARK_GREEN_COLOR, 7),
+        checkCont.setBorder(new TitledBorder(new RoundedBorder(UIHelper.DARK_GREEN_COLOR, 3),
                 "Behavioural Attributes", TitledBorder.DEFAULT_JUSTIFICATION,
                 TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD,
                 UIHelper.DARK_GREEN_COLOR));
@@ -780,7 +780,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     }
                 }
 
-                if (!tfo.getWizardTemplate().trim().equals("")) {
+                if (!tfo.getWizardTemplate().trim().equals("") && datatype.getSelectedItem() == DataTypes.STRING) {
                     usesTemplateForWizard.setSelected(true);
                     wizardTemplatePanel.setVisible(true);
                     wizardTemplate.setText(tfo.getWizardTemplate());

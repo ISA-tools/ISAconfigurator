@@ -42,6 +42,8 @@ import org.isatools.isacreatorconfigurator.configdefinition.OntologyBranch;
 import org.isatools.isacreatorconfigurator.ontologymanager.BioPortalClient;
 import org.isatools.isacreatorconfigurator.ontologymanager.OLSClient;
 import org.isatools.isacreatorconfigurator.ontologymanager.OntologyService;
+import org.jdesktop.fuse.InjectedResource;
+import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -61,11 +63,8 @@ import java.beans.PropertyChangeListener;
 
 public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
 
-    private static final ImageIcon FIND_TERM = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/use_search_function.png"));
-    private static final ImageIcon FIND_TERM_OVER = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/use_search_function_over.png"));
-    private static final ImageIcon VIEW_META = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/view_term_definition.png"));
-    private static final ImageIcon VIEW_META_OVER = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/view_term_definition_over.png"));
-    private static final ImageIcon PLACEHOLDER = new ImageIcon(SearchAndDefinitionUI.class.getResource("/images/ontologyconfigurationtool/search_box_placeholder.gif"));
+    @InjectedResource
+    private ImageIcon findTermIcon, findTermIconOver, viewMetadataIcon, viewMetadataIconOver, placeholder;
 
     private static final int SEARCH = 0;
     private static final int DEFINITION = 1;
@@ -86,6 +85,7 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
     private JPanel swappableContainer;
 
     public SearchAndDefinitionUI() {
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createGUI();
@@ -94,6 +94,8 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
     }
 
     public void createGUI() {
+        ResourceInjector.get("ontologyconfigtool-package.style").inject(this);
+
         setLayout(new BorderLayout());
         setBackground(UIHelper.BG_COLOR);
         setPreferredSize(new Dimension(240, 300));
@@ -101,7 +103,7 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
     }
 
     public void createPlaceholderPanel() {
-        add(new JLabel(PLACEHOLDER), BorderLayout.CENTER);
+        add(new JLabel(placeholder), BorderLayout.CENTER);
     }
 
     public void createFunctionalView() {
@@ -122,16 +124,16 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
         functionPanel.setLayout(new BoxLayout(functionPanel, BoxLayout.LINE_AXIS));
         functionPanel.setBackground(UIHelper.BG_COLOR);
 
-        findTerm = new JLabel(FIND_TERM_OVER);
+        findTerm = new JLabel(findTermIcon);
         findTerm.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent mouseEvent) {
-                findTerm.setIcon(FIND_TERM_OVER);
+                findTerm.setIcon(findTermIconOver);
             }
 
             @Override
             public void mouseExited(MouseEvent mouseEvent) {
-                findTerm.setIcon(mode == SEARCH ? FIND_TERM_OVER : FIND_TERM);
+                findTerm.setIcon(mode == SEARCH ? findTermIconOver : findTermIcon);
             }
 
             @Override
@@ -139,7 +141,7 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
 
                 resetButtons();
                 mode = SEARCH;
-                findTerm.setIcon(FIND_TERM_OVER);
+                findTerm.setIcon(findTermIconOver);
 
                 if (searchOntologyDialogUI != null) {
                     setCurrentPage(searchOntologyDialogUI);
@@ -152,16 +154,16 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
 
         functionPanel.add(findTerm);
 
-        viewTermDefinition = new JLabel(VIEW_META);
+        viewTermDefinition = new JLabel(viewMetadataIcon);
         viewTermDefinition.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent mouseEvent) {
-                viewTermDefinition.setIcon(VIEW_META_OVER);
+                viewTermDefinition.setIcon(viewMetadataIconOver);
             }
 
             @Override
             public void mouseExited(MouseEvent mouseEvent) {
-                viewTermDefinition.setIcon(mode == DEFINITION ? VIEW_META_OVER : VIEW_META);
+                viewTermDefinition.setIcon(mode == DEFINITION ? viewMetadataIconOver : viewMetadataIcon);
             }
 
             @Override
@@ -179,7 +181,7 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
                     if (treeObject instanceof OntologyBranch) {
                         resetButtons();
                         mode = DEFINITION;
-                        viewTermDefinition.setIcon(VIEW_META_OVER);
+                        viewTermDefinition.setIcon(viewMetadataIconOver);
 
                         setCurrentPage(viewTerm);
                         viewTerm.setContent((OntologyBranch) treeObject,
@@ -195,8 +197,8 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
     }
 
     private void resetButtons() {
-        findTerm.setIcon(FIND_TERM);
-        viewTermDefinition.setIcon(VIEW_META);
+        findTerm.setIcon(findTermIcon);
+        viewTermDefinition.setIcon(viewMetadataIcon);
     }
 
 
