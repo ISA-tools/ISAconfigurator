@@ -85,16 +85,13 @@ public class ExpandingPanel extends JPanel {
 
     public void addNotify() {
         super.addNotify();
-        JPanel toggleContainer = new JPanel();
-        toggleContainer.setLayout(new BoxLayout(toggleContainer, BoxLayout.LINE_AXIS));
+        Box toggleContainer = Box.createHorizontalBox();
 
         if (headerIm == null) {
-
             headerIm = UIHelper.createLabel("show " + sectionName, UIHelper.VER_10_BOLD, UIHelper.DARK_GREEN_COLOR);
             headerIm.setVerticalAlignment(JLabel.TOP);
             toggleContainer.add(headerIm);
             toggleContainer.add(Box.createHorizontalStrut(70));
-
         }
 
 
@@ -119,6 +116,8 @@ public class ExpandingPanel extends JPanel {
             toggle.setToolTipText("<html>to <strong>show or hide</strong> the options panel, click here</html>");
             toggleContainer.add(toggle);
         }
+
+        toggleContainer.setSize(new Dimension(200, 20));
 
         content.add(toggleContainer);
     }

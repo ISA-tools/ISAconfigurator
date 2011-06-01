@@ -105,7 +105,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
 
         if (currentlySelectedOntologies != null) {
             for (String ontologyLabel : currentlySelectedOntologies.keySet()) {
-                if (getOntologyByLabel(ontologyLabel) != null) {
+                if (currentlySelectedOntologies.get(ontologyLabel) != null) {
                     selectedOntologies.put(ontologyLabel, currentlySelectedOntologies.get(ontologyLabel));
                 }
             }
@@ -139,7 +139,8 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         JPanel ontologySelectionPanel = new JPanel(new BorderLayout());
 
 
-        ontologyViewContainer = new JPanel();
+        ontologyViewContainer = new JPanel(new BorderLayout());
+        ontologyViewContainer.setPreferredSize(new Dimension(500, 300));
         // add placeholder panel by default with some image describing what to do
         setOntologySelectionPanelPlaceholder(infoImage);
         ontologyViewContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "browse ontology",
@@ -182,6 +183,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
     private void setOntologySelectionPanelPlaceholder(ImageIcon image) {
         JPanel placeHolder = new JPanel(new GridLayout(1, 1));
         placeHolder.add(new JLabel(image, SwingConstants.CENTER));
+        placeHolder.setPreferredSize(new Dimension(500, 300));
         ontologyViewContainer.removeAll();
         ontologyViewContainer.add(placeHolder);
         ontologyViewContainer.revalidate();
@@ -212,6 +214,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
                                 .setBranchToSearchUnder(getOntologyByLabel(ontLabel)
                                         .getSubsectionToQuery());
                     } else {
+
                         ontLabelsToRemove.add(ontLabel);
                     }
                 }
@@ -253,11 +256,10 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
 
         OntologyListRenderer listRenderer = new OntologyListRenderer();
 
-        JPanel westPanel = new JPanel();
-        westPanel.setLayout(new BorderLayout());
+        JPanel westPanel = new JPanel(new BorderLayout());
 
-        JPanel selectedOntologiesContainer = new JPanel();
-        selectedOntologiesContainer.setLayout(new BoxLayout(selectedOntologiesContainer, BoxLayout.PAGE_AXIS));
+
+        Box selectedOntologiesContainer = Box.createVerticalBox();
 
         // create List containing selected ontologies
         selectedOntologyListModel = new DefaultListModel();
@@ -267,7 +269,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         selectedOntologyList.setBackground(UIHelper.BG_COLOR);
 
         JScrollPane selectedOntologiesScroller = new JScrollPane(selectedOntologyList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        selectedOntologiesScroller.setPreferredSize(new Dimension(200, 300));
+        selectedOntologiesScroller.setPreferredSize(new Dimension(200, 200));
         selectedOntologiesScroller.setBackground(UIHelper.BG_COLOR);
         selectedOntologiesScroller.getViewport().setBackground(UIHelper.BG_COLOR);
 
@@ -275,16 +277,16 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
 
         selectedOntologiesScroller.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "selected ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
 
-        selectedOntologiesContainer.add(selectedOntologiesScroller);
+        selectedOntologiesContainer.add(selectedOntologiesScroller, BorderLayout.CENTER);
 
         // create panel populated with all available ontologies inside a filterable list!
         JPanel availableOntologiesListContainer = new JPanel(new BorderLayout());
-        availableOntologiesListContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "filter ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
-        availableOntologiesListContainer.setPreferredSize(new Dimension(200, 250));
+        availableOntologiesListContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "available ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
+        availableOntologiesListContainer.setPreferredSize(new Dimension(200, 150));
 
         final JLabel info = UIHelper.createLabel("", UIHelper.VER_10_PLAIN, UIHelper.DARK_GREEN_COLOR);
 
-        availableOntologiesListContainer.add(UIHelper.wrapComponentInPanel(info), BorderLayout.SOUTH);
+        availableOntologiesListContainer.add(UIHelper.wrapComponentInPanel(info));
 
         final ExtendedJList availableOntologies = new ExtendedJList(listRenderer);
 
@@ -335,7 +337,9 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
 
 
         ExpandingPanel ep = new ExpandingPanel(selectedOntologiesContainer, availableOntologiesListContainer, "ontologies");
+        ep.setPreferredSize(new Dimension(200, 300));
         westPanel.add(ep);
+
 
         add(westPanel, BorderLayout.WEST);
     }
