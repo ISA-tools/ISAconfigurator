@@ -77,9 +77,6 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
     private OntologyService ontologyClient;
     private OntologyTreeCreator ontologyTreeCreator;
 
-    private JScrollPane ontologyTreeScroller;
-    private JPanel selectedTreePartInfoCont;
-
     private List<TreeObserver> observers;
 
     private Dimension browserSize;
@@ -186,7 +183,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
 
         });
 
-        ontologyTreeScroller = new JScrollPane(ontologyTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane ontologyTreeScroller = new JScrollPane(ontologyTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         ontologyTreeScroller.getViewport().setOpaque(false);
         ontologyTreeScroller.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -195,7 +192,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
 
         IAppWidgetFactory.makeIAppScrollPane(ontologyTreeScroller);
 
-        selectedTreePartInfoCont = new JPanel(new GridLayout(1, 1));
+        JPanel selectedTreePartInfoCont = new JPanel(new GridLayout(1, 1));
 
         selectedTreePartInfo = UIHelper.createLabel("", UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, SwingConstants.LEFT);
         selectedTreePartInfoCont.add(selectedTreePartInfo);

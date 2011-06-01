@@ -59,9 +59,6 @@ import java.util.Map;
 
 public class ViewTermDefinitionUI extends InformationPane {
 
-//	private static final Image LOGO = new ImageIcon(ViewTermDefinitionUI.class.getResource("/images/ontologyconfigurationtool/term_metadata_util_header_active.png")).getImage();
-//	private static final Image LOGO_INACTIVE = new ImageIcon(ViewTermDefinitionUI.class.getResource("/images/ontologyconfigurationtool/term_metadata_util_header_inactive.png")).getImage();
-
     private JPanel swappableContainer;
 
     private Map<String, String> properties;

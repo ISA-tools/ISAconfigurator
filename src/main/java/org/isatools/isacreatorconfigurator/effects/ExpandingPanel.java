@@ -90,7 +90,7 @@ public class ExpandingPanel extends JPanel {
 
         if (headerIm == null) {
 
-            headerIm = UIHelper.createLabel("show " + sectionName, UIHelper.VER_10_BOLD, UIHelper.GREY_COLOR);
+            headerIm = UIHelper.createLabel("show " + sectionName, UIHelper.VER_10_BOLD, UIHelper.DARK_GREEN_COLOR);
             headerIm.setVerticalAlignment(JLabel.TOP);
             toggleContainer.add(headerIm);
             toggleContainer.add(Box.createHorizontalStrut(70));

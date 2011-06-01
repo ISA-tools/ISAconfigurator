@@ -43,6 +43,8 @@ import org.isatools.isacreatorconfigurator.effects.SingleSelectionListCellRender
 import org.isatools.isacreatorconfigurator.informationwindow.InformationPane;
 import org.isatools.isacreatorconfigurator.ontologymanager.OntologyQueryAdapter;
 import org.isatools.isacreatorconfigurator.ontologymanager.OntologyService;
+import org.jdesktop.fuse.InjectedResource;
+import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -64,14 +66,9 @@ import java.util.Map;
 
 public class SearchOntologyDialogUI extends InformationPane implements ListSelectionListener {
 
-    private static final ImageIcon SEARCH_ICON = new ImageIcon(SearchOntologyDialogUI.class.getResource("/images/ontologyconfigurationtool/search_button.png"));
-    private static final ImageIcon SEARCH_ICON_OVER = new ImageIcon(SearchOntologyDialogUI.class.getResource("/images/ontologyconfigurationtool/search_button_over.png"));
-    private static final ImageIcon LOCATE_ICON = new ImageIcon(SearchOntologyDialogUI.class.getResource("/images/ontologyconfigurationtool/locate_button.png"));
-    private static final ImageIcon LOCATE_ICON_OVER = new ImageIcon(SearchOntologyDialogUI.class.getResource("/images/ontologyconfigurationtool/locate_button_over.png"));
-    private static final ImageIcon SEARCH_INFO = new ImageIcon(SearchOntologyDialogUI.class.getResource("/images/ontologyconfigurationtool/search_placeholder.png"));
-    private static final ImageIcon SEARCH_FAILED = new ImageIcon(SearchOntologyDialogUI.class.getResource("/images/ontologyconfigurationtool/search_failed_info.png"));
-    private static final ImageIcon NO_TERMS_FOUND = new ImageIcon(SearchOntologyDialogUI.class.getResource("/images/ontologyconfigurationtool/no_terms_found.png"));
-    private static final ImageIcon LOCATING_NOT_SUPPORTED = new ImageIcon(SearchOntologyDialogUI.class.getResource("/images/ontologyconfigurationtool/locating_not_supported.png"));
+
+    @InjectedResource
+    private ImageIcon searchIcon, searchIconOver, locateIcon, locateIconOver, searchInfo, searchFailed, noTermsFound, locatingNotSupported;
 
     private JList ontologyResultList;
     private JScrollPane resultScroller;
@@ -83,6 +80,8 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
     private OntologyService ontologyService;
 
     public SearchOntologyDialogUI(Ontology searchOntology, OntologyService ontologyService) {
+        ResourceInjector.get("ontologyconfigtool-package.style").inject(this);
+
         this.searchOntology = searchOntology;
         this.ontologyService = ontologyService;
     }
@@ -100,7 +99,7 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
 
         swappableContainer = new JPanel(new BorderLayout());
 
-        swappableContainer.add(isLocatingSupported() ? new JLabel(SEARCH_INFO) : new JLabel(LOCATING_NOT_SUPPORTED));
+        swappableContainer.add(isLocatingSupported() ? new JLabel(searchInfo) : new JLabel(locatingNotSupported));
         swappableContainer.setBackground(UIHelper.BG_COLOR);
     }
 
@@ -117,18 +116,16 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
     protected void createButtonPane() {
         JPanel buttonPanel = new JPanel(new BorderLayout());
 
-        locateButton = new JLabel("locate term", LOCATE_ICON, JLabel.LEFT);
+        locateButton = new JLabel(locateIcon);
         UIHelper.renderComponent(locateButton, UIHelper.VER_12_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         locateButton.addMouseListener(new MouseAdapter() {
 
             public void mouseEntered(MouseEvent mouseEvent) {
-                locateButton.setIcon(LOCATE_ICON_OVER);
-                locateButton.setForeground(UIHelper.LIGHT_GREEN_COLOR);
+                locateButton.setIcon(locateIconOver);
             }
 
             public void mouseExited(MouseEvent mouseEvent) {
-                locateButton.setIcon(LOCATE_ICON);
-                locateButton.setForeground(UIHelper.DARK_GREEN_COLOR);
+                locateButton.setIcon(locateIcon);
             }
 
             public void mousePressed(MouseEvent mouseEvent) {
@@ -187,21 +184,21 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
         horBox.add(searchField);
         horBox.add(Box.createVerticalStrut(10));
 
-        final JLabel searchOntologies = new JLabel(SEARCH_ICON);
+        final JLabel searchOntologies = new JLabel(searchIcon);
         searchOntologies.setBackground(UIHelper.BG_COLOR);
         searchOntologies.addMouseListener(new MouseAdapter() {
 
             public void mousePressed(MouseEvent event) {
-                searchOntologies.setIcon(SEARCH_ICON);
+                searchOntologies.setIcon(searchIcon);
                 performSearch();
             }
 
             public void mouseEntered(MouseEvent event) {
-                searchOntologies.setIcon(SEARCH_ICON_OVER);
+                searchOntologies.setIcon(searchIconOver);
             }
 
             public void mouseExited(MouseEvent event) {
-                searchOntologies.setIcon(SEARCH_ICON);
+                searchOntologies.setIcon(searchIcon);
             }
         });
 
@@ -235,13 +232,13 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
                         result = ontologyService.getTermsByPartialNameFromSource(searchField.getText(), new OntologyQueryAdapter(searchOntology).getOntologyQueryString(OntologyQueryAdapter.GET_ID), false);
 
                         if (result.size() == 0) {
-                            setCurrentPage(UIHelper.wrapComponentInPanel(new JLabel(NO_TERMS_FOUND)));
+                            setCurrentPage(UIHelper.wrapComponentInPanel(new JLabel(noTermsFound)));
                         } else {
                             createOntologyResultList(result);
                             setCurrentPage(resultScroller);
                         }
                     } catch (Exception e) {
-                        setCurrentPage(UIHelper.wrapComponentInPanel(new JLabel(SEARCH_FAILED)));
+                        setCurrentPage(UIHelper.wrapComponentInPanel(new JLabel(searchFailed)));
                         System.err.println("Failed to connect to ontology client: " + e.getMessage());
                         e.printStackTrace();
                     }

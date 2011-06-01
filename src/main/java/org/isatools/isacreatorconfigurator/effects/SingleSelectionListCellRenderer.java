@@ -37,6 +37,8 @@
 package org.isatools.isacreatorconfigurator.effects;
 
 import org.isatools.isacreatorconfigurator.common.UIHelper;
+import org.jdesktop.fuse.InjectedResource;
+import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -52,14 +54,17 @@ import java.awt.*;
 
 public class SingleSelectionListCellRenderer extends JComponent implements ListCellRenderer {
 
-    public static final ImageIcon SELECTED_IMAGE = new ImageIcon(SingleSelectionListCellRenderer.class.getResource("/images/ontologyconfigurationtool/item_selected.png"));
-    public static final ImageIcon UNSELECTED_IMAGE = new ImageIcon(SingleSelectionListCellRenderer.class.getResource("/images/ontologyconfigurationtool/item_unselected.png"));
-    public static final Color SELECTED_COLOR = new Color(51, 51, 51);
-    public static final Color UNSELECTED_COLOR = new Color(51, 51, 51, 60);
+    @InjectedResource
+    private ImageIcon selectedIcon, unselectedIcon;
+
+    public static final Color SELECTED_COLOR = UIHelper.LIGHT_GREEN_COLOR;
+    public static final Color UNSELECTED_COLOR = UIHelper.BG_COLOR;
 
     private DefaultListCellRenderer listCellRenderer;
 
     public SingleSelectionListCellRenderer() {
+        ResourceInjector.get("config-ui-package.style").inject(this);
+
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
@@ -85,13 +90,9 @@ public class SingleSelectionListCellRenderer extends JComponent implements ListC
             if (c instanceof SpecialListImage) {
                 ((SpecialListImage) c).setSelected(selected);
             } else {
-                if (selected) {
-                    c.setBackground(SELECTED_COLOR);
-                    c.setFont(UIHelper.VER_11_BOLD);
-                } else {
-                    c.setBackground(UNSELECTED_COLOR);
-                    c.setFont(UIHelper.VER_11_PLAIN);
-                }
+                c.setBackground(selected ? SELECTED_COLOR : UNSELECTED_COLOR);
+                c.setFont(selected ? UIHelper.VER_11_BOLD : UIHelper.VER_11_PLAIN);
+                c.setForeground(UIHelper.DARK_GREEN_COLOR);
             }
         }
 
@@ -105,18 +106,14 @@ public class SingleSelectionListCellRenderer extends JComponent implements ListC
 
         SpecialListImage() {
             setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-            itemSelectedIndicator = new JLabel(UNSELECTED_IMAGE);
+            itemSelectedIndicator = new JLabel(unselectedIcon);
 
             add(itemSelectedIndicator);
             add(Box.createHorizontalStrut(2));
         }
 
         public void setSelected(boolean selected) {
-            if (selected) {
-                itemSelectedIndicator.setIcon(SELECTED_IMAGE);
-            } else {
-                itemSelectedIndicator.setIcon(UNSELECTED_IMAGE);
-            }
+            itemSelectedIndicator.setIcon(selected ? selectedIcon : unselectedIcon);
         }
     }
 }

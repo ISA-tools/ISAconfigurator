@@ -56,8 +56,6 @@ import java.awt.event.WindowEvent;
 
 public class OntologyConfigTitlePanel extends TitlePanel {
 
-    private static final Image BG_GRADIENT = new ImageIcon(OntologyConfigTitlePanel.class.getResource("/images/visualization/title-background.png")).getImage();
-
     @InjectedResource
     private Image close, closeOver, closePressed, logo, logoInactive;
 

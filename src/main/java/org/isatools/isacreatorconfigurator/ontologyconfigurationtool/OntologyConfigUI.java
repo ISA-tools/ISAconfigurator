@@ -74,12 +74,11 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
     private static final OLSClient olsClient = new OLSClient();
 
     @InjectedResource
-    private ImageIcon infoImage, outOfMemory, confirmButton, confirmButtonOver;
+    private ImageIcon infoImage, confirmButton, confirmButtonOver;
 
     private DefaultListModel selectedOntologyListModel;
     private JList selectedOntologyList;
     private JPanel ontologyViewContainer;
-    private JPanel ontologySelectionPanel;
 
     private OntologyBrowser currentlyActiveBrowser;
     private SearchAndDefinitionUI searchAndTermDefinitionViewer;
@@ -137,7 +136,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         // create left panel with list of selected ontology terms and Expandable panel
         createOntologySelectionPanel();
         // create right panel containing tree showing the entirety of the ontology selected from the left pane.
-        ontologySelectionPanel = new JPanel(new BorderLayout());
+        JPanel ontologySelectionPanel = new JPanel(new BorderLayout());
 
 
         ontologyViewContainer = new JPanel();
@@ -402,7 +401,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
                         System.err.println("ontology is null");
                     }
                 } catch (OutOfMemoryError oome) {
-                    setOntologySelectionPanelPlaceholder(outOfMemory);
+                    System.err.println("We ran out of memory when trying to load the ontology");
                 } finally {
                     if (glassPane != null) {
                         if (glassPane.isStarted()) {
