@@ -112,7 +112,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         }
         setUndecorated(true);
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(900, 400));
+        setPreferredSize(new Dimension(900, 450));
         setAlwaysOnTop(true);
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -269,7 +269,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         selectedOntologyList.setBackground(UIHelper.BG_COLOR);
 
         JScrollPane selectedOntologiesScroller = new JScrollPane(selectedOntologyList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        selectedOntologiesScroller.setPreferredSize(new Dimension(200, 200));
+        selectedOntologiesScroller.setPreferredSize(new Dimension(200, 250));
         selectedOntologiesScroller.setBackground(UIHelper.BG_COLOR);
         selectedOntologiesScroller.getViewport().setBackground(UIHelper.BG_COLOR);
 
@@ -282,7 +282,6 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         // create panel populated with all available ontologies inside a filterable list!
         JPanel availableOntologiesListContainer = new JPanel(new BorderLayout());
         availableOntologiesListContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "available ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
-        availableOntologiesListContainer.setPreferredSize(new Dimension(200, 150));
 
         final JLabel info = UIHelper.createLabel("", UIHelper.VER_10_PLAIN, UIHelper.DARK_GREEN_COLOR);
 
@@ -328,6 +327,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         availableOntologiesScroller.getViewport().setBackground(UIHelper.BG_COLOR);
+        availableOntologiesScroller.setPreferredSize(new Dimension(200, 150));
         availableOntologiesScroller.setBorder(new EmptyBorder(0, 0, 0, 0));
 
         IAppWidgetFactory.makeIAppScrollPane(availableOntologiesScroller);
@@ -336,9 +336,12 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         availableOntologiesListContainer.add(availableOntologies.getFilterField(), BorderLayout.NORTH);
 
 
-        ExpandingPanel ep = new ExpandingPanel(selectedOntologiesContainer, availableOntologiesListContainer, "ontologies");
-        ep.setPreferredSize(new Dimension(200, 300));
-        westPanel.add(ep);
+        westPanel.add(selectedOntologiesScroller, BorderLayout.CENTER);
+        westPanel.add(availableOntologiesListContainer, BorderLayout.SOUTH);
+
+//        ExpandingPanel ep = new ExpandingPanel(selectedOntologiesContainer, availableOntologiesListContainer, "ontologies");
+//        ep.setPreferredSize(new Dimension(200, 300));
+//        westPanel.add(ep);
 
 
         add(westPanel, BorderLayout.WEST);
