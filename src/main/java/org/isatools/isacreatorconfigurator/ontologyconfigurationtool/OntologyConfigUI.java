@@ -67,14 +67,15 @@ import java.util.List;
  */
 
 
-public class OntologyConfigUI extends JFrame implements MouseListener {
+public class OntologyConfigUI extends JFrame {
 
     // we create one BioportalClient to be shared by all instances of the OntologyConfigUI
     private static final BioPortalClient bioportalClient = new BioPortalClient();
     private static final OLSClient olsClient = new OLSClient();
 
     @InjectedResource
-    private ImageIcon infoImage, confirmButton, confirmButtonOver;
+    private ImageIcon infoImage, confirmButton, confirmButtonOver, addOntologyButtonIcon, addOntologyButtonIconOver,
+            removeOntologyButtonIcon, removeOntologyButtonIconOver, browseOntologyButtonIcon, browseOntologyButtonIconOver;
 
     private DefaultListModel selectedOntologyListModel;
     private JList selectedOntologyList;
@@ -259,50 +260,135 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         JPanel westPanel = new JPanel(new BorderLayout());
 
 
-        Box selectedOntologiesContainer = Box.createVerticalBox();
+        JPanel selectedOntologiesContainer = new JPanel(new BorderLayout());
+        selectedOntologiesContainer.setOpaque(false);
 
         // create List containing selected ontologies
         selectedOntologyListModel = new DefaultListModel();
         selectedOntologyList = new JList(selectedOntologyListModel);
         selectedOntologyList.setCellRenderer(listRenderer);
-        selectedOntologyList.addMouseListener(this);
         selectedOntologyList.setBackground(UIHelper.BG_COLOR);
 
         JScrollPane selectedOntologiesScroller = new JScrollPane(selectedOntologyList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        selectedOntologiesScroller.setPreferredSize(new Dimension(200, 250));
+        selectedOntologiesScroller.setPreferredSize(new Dimension(200, 230));
         selectedOntologiesScroller.setBackground(UIHelper.BG_COLOR);
         selectedOntologiesScroller.getViewport().setBackground(UIHelper.BG_COLOR);
 
         IAppWidgetFactory.makeIAppScrollPane(selectedOntologiesScroller);
 
-        selectedOntologiesScroller.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "selected ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
+        selectedOntologiesContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "selected ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
 
         selectedOntologiesContainer.add(selectedOntologiesScroller, BorderLayout.CENTER);
+
+        // ADD BUTTONS
+        final JLabel removeOntologyButton = new JLabel(removeOntologyButtonIcon);
+        removeOntologyButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+
+                if (!selectedOntologyList.isSelectionEmpty()) {
+                    String ontologyToRemove = selectedOntologyList.getSelectedValue().toString();
+                    System.out.println("Removing  " + ontologyToRemove);
+                    selectedOntologies.remove(ontologyToRemove);
+                    setOntologySelectionPanelPlaceholder(infoImage);
+
+                    updateSelectedOntologies();
+
+                    // reset central image to that of the original image.
+                }
+
+                removeOntologyButton.setIcon(removeOntologyButtonIcon);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+                removeOntologyButton.setIcon(removeOntologyButtonIconOver);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+                removeOntologyButton.setIcon(removeOntologyButtonIcon);
+            }
+        });
+
+        final JLabel viewOntologyButton = new JLabel(browseOntologyButtonIcon);
+        viewOntologyButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                // todo show ontology
+                performTransition();
+                viewOntologyButton.setIcon(browseOntologyButtonIcon);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+                viewOntologyButton.setIcon(browseOntologyButtonIconOver);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+                viewOntologyButton.setIcon(browseOntologyButtonIcon);
+            }
+        });
+
+        Box selectedOntologiesOptionContainer = Box.createHorizontalBox();
+        selectedOntologiesOptionContainer.setOpaque(false);
+
+        selectedOntologiesOptionContainer.add(removeOntologyButton);
+        selectedOntologiesOptionContainer.add(viewOntologyButton);
+
+        selectedOntologiesContainer.add(selectedOntologiesOptionContainer, BorderLayout.SOUTH);
+
 
         // create panel populated with all available ontologies inside a filterable list!
         JPanel availableOntologiesListContainer = new JPanel(new BorderLayout());
         availableOntologiesListContainer.setBorder(new TitledBorder(new RoundedBorder(UIHelper.LIGHT_GREEN_COLOR, 7), "available ontologies", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR));
 
-        final JLabel info = UIHelper.createLabel("", UIHelper.VER_10_PLAIN, UIHelper.DARK_GREEN_COLOR);
-
-        availableOntologiesListContainer.add(UIHelper.wrapComponentInPanel(info));
-
         final ExtendedJList availableOntologies = new ExtendedJList(listRenderer);
 
-        availableOntologies.addPropertyChangeListener("itemSelected", new PropertyChangeListener() {
+        final JLabel addOntologyButton = new JLabel(addOntologyButtonIcon);
+        addOntologyButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                if (!availableOntologies.isSelectionEmpty()) {
+                    String ontology = availableOntologies.getSelectedTerm();
+                    selectedOntologies.put(ontology, new RecommendedOntology(getOntologyByLabel(ontology)));
+                    updateSelectedOntologies();
+                }
 
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String ontology = propertyChangeEvent.getNewValue().toString();
-                selectedOntologies.put(ontology, new RecommendedOntology(lookupOntologyByLabel(ontology)));
-                updateSelectedOntologies();
+                addOntologyButton.setIcon(addOntologyButtonIcon);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+                addOntologyButton.setIcon(addOntologyButtonIconOver);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+                addOntologyButton.setIcon(addOntologyButtonIcon);
             }
         });
+
+        final JLabel info = UIHelper.createLabel("", UIHelper.VER_10_PLAIN, UIHelper.DARK_GREEN_COLOR);
 
         availableOntologies.addPropertyChangeListener("update", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 info.setText("<html>viewing <b>" + availableOntologies.getFilteredItems().size() + "</b> ontologies</html>");
             }
         });
+
+        Box optionsBox = Box.createVerticalBox();
+
+        optionsBox.add(UIHelper.wrapComponentInPanel(info));
+
+        Box availableOntologiesOptionBox = Box.createHorizontalBox();
+        availableOntologiesOptionBox.add(addOntologyButton);
+        availableOntologiesOptionBox.add(Box.createHorizontalStrut(110));
+
+        optionsBox.add(availableOntologiesOptionBox);
+
+        availableOntologiesListContainer.add(optionsBox, BorderLayout.SOUTH);
 
         if (ontologiesToBrowseOn == null) {
             ontologiesToBrowseOn = new ArrayList<Ontology>();
@@ -336,13 +422,8 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         availableOntologiesListContainer.add(availableOntologies.getFilterField(), BorderLayout.NORTH);
 
 
-        westPanel.add(selectedOntologiesScroller, BorderLayout.CENTER);
+        westPanel.add(selectedOntologiesContainer, BorderLayout.CENTER);
         westPanel.add(availableOntologiesListContainer, BorderLayout.SOUTH);
-
-//        ExpandingPanel ep = new ExpandingPanel(selectedOntologiesContainer, availableOntologiesListContainer, "ontologies");
-//        ep.setPreferredSize(new Dimension(200, 300));
-//        westPanel.add(ep);
-
 
         add(westPanel, BorderLayout.WEST);
     }
@@ -354,6 +435,7 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
                 selectedOntologyListModel.addElement(selectedOntologies.get(ro).getOntology());
             }
         }
+        repaint();
     }
 
     public static void main(String[] args) {
@@ -440,67 +522,6 @@ public class OntologyConfigUI extends JFrame implements MouseListener {
         searchAndTermDefinitionViewer.updateView();
 
         currentlyActiveBrowser.registerObserver(searchAndTermDefinitionViewer);
-    }
-
-
-    private void showListPopup(JComponent jc, final int x, final int y) {
-        final JPopupMenu popup = new JPopupMenu("Remove");
-        popup.setLightWeightPopupEnabled(false);
-        jc.add(popup);
-
-
-        JMenuItem removeField = new JMenuItem("Remove ontology");
-        removeField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                String ontologyToRemove = selectedOntologyList.getSelectedValue().toString();
-
-                selectedOntologies.remove(ontologyToRemove);
-                updateSelectedOntologies();
-                // reset central image to that of the original image.
-                setOntologySelectionPanelPlaceholder(infoImage);
-            }
-        });
-
-        popup.add(removeField);
-        popup.show(jc, x, y);
-    }
-
-    public void mouseClicked(MouseEvent mouseEvent) {
-
-    }
-
-    public void mouseEntered(MouseEvent mouseEvent) {
-
-    }
-
-    public void mouseExited(MouseEvent mouseEvent) {
-
-    }
-
-    public void mousePressed(MouseEvent mouseEvent) {
-
-        if (selectedOntologyList.getSelectedValue() != null) {
-            if (SwingUtilities.isRightMouseButton(mouseEvent)) {
-                // show menu to allow removal of the ontology from the selected ontologies!
-                showListPopup(selectedOntologyList, mouseEvent.getX(), mouseEvent.getY());
-            } else {
-                // perform transition
-                performTransition();
-            }
-        }
-    }
-
-    public void mouseReleased(MouseEvent mouseEvent) {
-
-    }
-
-    private Ontology lookupOntologyByLabel(String label) {
-        for (Ontology o : ontologiesToBrowseOn) {
-            if (o.toString().equals(label)) {
-                return o;
-            }
-        }
-        return null;
     }
 
 }
