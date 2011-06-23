@@ -835,7 +835,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
             }
 
             // Need to remove dependencies if a change has occurred which results in differing datatypes
-            if (selected == DataTypes.STRING) {
+            if (selected == DataTypes.STRING || selected == DataTypes.LONG_STRING) {
                 preferredOntologySource.setVisible(false);
                 // initialise the default value field to be specific for String values
                 defaultValStd.setText("");
