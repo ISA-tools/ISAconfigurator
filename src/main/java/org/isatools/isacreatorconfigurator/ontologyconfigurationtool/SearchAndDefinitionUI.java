@@ -39,9 +39,13 @@ package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Ontology;
 import org.isatools.isacreator.configuration.OntologyBranch;
+import org.isatools.isacreator.ontologybrowsingutils.OntologyTreeCreator;
+import org.isatools.isacreator.ontologybrowsingutils.TreeObserver;
+import org.isatools.isacreator.ontologybrowsingutils.WSOntologyTreeCreator;
 import org.isatools.isacreator.ontologymanager.BioPortalClient;
 import org.isatools.isacreator.ontologymanager.OLSClient;
 import org.isatools.isacreator.ontologymanager.OntologyService;
+import org.isatools.isacreator.ontologymanager.common.OntologyTerm;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -210,9 +214,10 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
         searchOntologyDialogUI = new SearchOntologyDialogUI(ontologyToQuery, getOntologyClient());
         searchOntologyDialogUI.addPropertyChangeListener("termSelected", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                String termAccession = propertyChangeEvent.getNewValue().toString();
-                termAccession = termAccession.substring(termAccession.indexOf("(") + 1, termAccession.lastIndexOf(")"));
-                ((WSOntologyTreeCreator) ontologyTreeCreator).expandTreeToReachTerm(termAccession);
+                if (propertyChangeEvent.getNewValue() instanceof OntologyTerm) {
+                    OntologyTerm term = (OntologyTerm) propertyChangeEvent.getNewValue();
+                    ((WSOntologyTreeCreator) ontologyTreeCreator).expandTreeToReachTerm(term);
+                }
             }
         });
     }
