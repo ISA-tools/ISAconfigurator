@@ -217,7 +217,7 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
         DefaultListModel dlm = new DefaultListModel();
         for (OntologySourceRefObject ontologySourceRefObject : termsFound.keySet()) {
             for (OntologyTerm term : termsFound.get(ontologySourceRefObject)) {
-                dlm.addElement(term.getOntologyTermName() + "(" + term.getOntologySourceAccession() + ")");
+                dlm.addElement(term);
             }
         }
         ontologyResultList.setModel(dlm);

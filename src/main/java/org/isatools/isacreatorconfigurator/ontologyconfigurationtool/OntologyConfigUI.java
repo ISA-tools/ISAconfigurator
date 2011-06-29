@@ -391,7 +391,7 @@ public class OntologyConfigUI extends JFrame {
 
         Box availableOntologiesOptionBox = Box.createHorizontalBox();
         availableOntologiesOptionBox.add(addOntologyButton);
-        availableOntologiesOptionBox.add(Box.createHorizontalStrut(110));
+        availableOntologiesOptionBox.add(Box.createHorizontalGlue());
 
         optionsBox.add(availableOntologiesOptionBox);
 

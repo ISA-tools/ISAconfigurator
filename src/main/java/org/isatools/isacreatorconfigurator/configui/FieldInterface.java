@@ -440,15 +440,15 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                                     selectedOntologies = (ListOrderedMap<String, RecommendedOntology>) propertyChangeEvent.getNewValue();
                                     updateTable();
-                                    openConfigButton.setEnabled(true);
+//                                    openConfigButton.setEnabled(true);
                                 }
                             });
-                            ontologyConfig.addPropertyChangeListener("ontologyClosed", new PropertyChangeListener() {
-                                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                                    openConfigButton.setEnabled(true);
-                                }
-                            });
-                            openConfigButton.setEnabled(false);
+//                            ontologyConfig.addPropertyChangeListener("ontologyClosed", new PropertyChangeListener() {
+//                                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+//                                    openConfigButton.setEnabled(true);
+//                                }
+//                            });
+//                            openConfigButton.setEnabled(false);
                             showPopupInCenter(ontologyConfig);
                         }
                     }

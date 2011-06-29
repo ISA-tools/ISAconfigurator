@@ -41,6 +41,11 @@ import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Ontology;
 import org.isatools.isacreator.configuration.OntologyBranch;
 import org.isatools.isacreator.configuration.OntologyFormats;
+import org.isatools.isacreator.configuration.RecommendedOntology;
+import org.isatools.isacreator.ontologybrowsingutils.OntologyTreeCreator;
+import org.isatools.isacreator.ontologybrowsingutils.TreeObserver;
+import org.isatools.isacreator.ontologybrowsingutils.TreeSubject;
+import org.isatools.isacreator.ontologybrowsingutils.WSOntologyTreeCreator;
 import org.isatools.isacreator.ontologymanager.BioPortalClient;
 import org.isatools.isacreator.ontologymanager.OntologyService;
 
@@ -48,12 +53,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -99,8 +104,8 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
         // add event change listener to detect when nodes are being selected in the tree. we can then update the definition in
         // the ViewTermDefinitionUI to show the currently selected term.
 
-        ontologyTreeCreator = ontologyToQuery.getFormat() == OntologyFormats.OBO ? new WSOntologyTreeCreator(this, ontologyClient, ontologyTree) :
-                new WSOntologyTreeCreator(this, ontologyClient, ontologyTree);
+        ontologyTreeCreator = ontologyToQuery.getFormat() == OntologyFormats.OBO ? new WSOntologyTreeCreator(this, ontologyTree) :
+                new WSOntologyTreeCreator(this, ontologyTree);
 
         if (ontologyTreeCreator instanceof WSOntologyTreeCreator) {
             ((WSOntologyTreeCreator) ontologyTreeCreator).registerObserver(this);
@@ -118,7 +123,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
         DefaultMutableTreeNode root;
 
         try {
-            root = ontologyTreeCreator.createTree(ontologyToQuery);
+            root = ontologyTreeCreator.createTree(Collections.singletonMap(ontologyToQuery.getOntologyAbbreviation(), new RecommendedOntology(ontologyToQuery, null)));
             ontologyToQuery.setView(root);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
