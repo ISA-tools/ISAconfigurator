@@ -37,10 +37,10 @@
 package org.isatools.isacreatorconfigurator.configui.io;
 
 import org.apache.commons.collections15.map.ListOrderedMap;
-import org.isatools.isacreatorconfigurator.common.MappingObject;
-import org.isatools.isacreatorconfigurator.configdefinition.Configuration;
-import org.isatools.isacreatorconfigurator.configdefinition.TableConfiguration;
-import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
+import org.isatools.isacreator.configuration.Configuration;
+import org.isatools.isacreator.configuration.FieldObject;
+import org.isatools.isacreator.configuration.MappingObject;
+import org.isatools.isacreator.configuration.TableConfiguration;
 import org.isatools.isacreatorconfigurator.configui.*;
 import org.isatools.isacreatorconfigurator.xml.FieldXMLCreator;
 

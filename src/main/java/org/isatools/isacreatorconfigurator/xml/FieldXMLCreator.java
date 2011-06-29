@@ -36,11 +36,8 @@
 
 package org.isatools.isacreatorconfigurator.xml;
 
-import org.isatools.isacreatorconfigurator.common.MappingObject;
-import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
-import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
-import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
-import org.isatools.isacreatorconfigurator.configdefinition.RecommendedOntology;
+
+import org.isatools.isacreator.configuration.*;
 import org.isatools.isacreatorconfigurator.configui.DataNotCompleteException;
 import org.isatools.isacreatorconfigurator.configui.Display;
 import org.isatools.isacreatorconfigurator.configui.FieldElement;

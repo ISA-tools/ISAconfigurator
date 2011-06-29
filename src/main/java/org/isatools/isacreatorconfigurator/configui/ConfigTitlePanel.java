@@ -36,98 +36,32 @@
 
 package org.isatools.isacreatorconfigurator.configui;
 
-import org.isatools.isacreatorconfigurator.effects.TitlePanel;
-import org.jdesktop.fuse.InjectedResource;
-import org.jdesktop.fuse.ResourceInjector;
+import org.isatools.isacreator.effects.TitlePanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-/**
- * ConfigTitlePanel
- *
- * @author eamonnmaguire
- * @date Oct 15, 2009
- */
-
 
 public class ConfigTitlePanel extends TitlePanel {
 
-    private JButton minimiseButton;
-    private JButton maximiseButton;
 
-    @InjectedResource
-    private Image grip, inactiveGrip, title, inactiveTitle, minimise, minimiseInactive,
-            minimiseOver, minimisePressed, maximise, maximiseInactive, maximiseOver, maximisePressed, backgroundGradient;
+    private Image grip, inactiveGrip, title, inactiveTitle;
 
-
-    public ConfigTitlePanel() {
-
-        ResourceInjector.get("config-ui-package.style").inject(this);
-        setBackgroundGradient(backgroundGradient);
-        createGUI();
+    public ConfigTitlePanel(Image grip, Image inactiveGrip, Image title, Image inactiveTitle) {
+        this.grip = grip;
+        this.inactiveGrip = inactiveGrip;
+        this.title = title;
+        this.inactiveTitle = inactiveTitle;
     }
 
-    protected void drawComponents(Graphics2D g2d, boolean active) {
+    protected void drawGrip(Graphics2D g2d, boolean active) {
         g2d.drawImage(active ? grip : inactiveGrip, 0, 0, null);
+    }
+
+    protected void drawTitle(Graphics2D g2d, boolean active) {
         g2d.drawImage(active ? title : inactiveTitle, getWidth() / 2 - title.getWidth(null) / 2, 0, null);
     }
 
-
-    protected void createButtons() {
-        add(Box.createHorizontalGlue(),
-                new GridBagConstraints(0, 0,
-                        1, 1, 1.0, 1.0,
-                        GridBagConstraints.EAST,
-                        GridBagConstraints.HORIZONTAL,
-                        new Insets(0, 0, 0, 0),
-                        0, 0));
-
-        add(minimiseButton = createButton(new IconifyAction(),
-                minimise, minimisePressed, minimiseOver),
-                new GridBagConstraints(1, 0,
-                        1, 1,
-                        0.0, 1.0,
-                        GridBagConstraints.NORTHEAST,
-                        GridBagConstraints.NONE,
-                        new Insets(1, 0, 0, 2),
-                        0, 0));
-
-        add(maximiseButton = createButton(new ResizeAction(),
-                maximise, maximisePressed, maximiseOver),
-                new GridBagConstraints(2, 0,
-                        1, 1,
-                        0.0, 1.0,
-                        GridBagConstraints.NORTHEAST,
-                        GridBagConstraints.NONE,
-                        new Insets(1, 0, 0, 2),
-                        0, 0));
-
-    }
-
-    private class IconifyAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
-            iconify();
-        }
-    }
-
-    private void iconify() {
-        Frame frame = (Frame) SwingUtilities.getWindowAncestor(this);
-        if (frame != null) {
-            frame.setExtendedState(frame.getExtendedState() | Frame.ICONIFIED);
-        }
-    }
-
-    private class ResizeAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
-            resize();
-        }
-    }
-
-    private void resize() {
+    protected void resize() {
         Frame frame = (Frame) SwingUtilities.getWindowAncestor(this);
         if (frame != null) {
 
@@ -136,33 +70,12 @@ public class ConfigTitlePanel extends TitlePanel {
             Rectangle screenDimensions = env.getMaximumWindowBounds();
 
             if (screenDimensions.width == frame.getWidth() || screenDimensions.height == frame.getHeight()) {
-                frame.setSize(ISAcreatorConfigurator.WIDTH, ISAcreatorConfigurator.HEIGHT);
+                frame.setSize(ISAcreatorConfigurator.APP_WIDTH, ISAcreatorConfigurator.APP_HEIGHT);
                 frame.setLocation(screenDimensions.x, screenDimensions.y);
             } else {
                 frame.setSize(screenDimensions.width, screenDimensions.height);
                 frame.setLocation(screenDimensions.x, screenDimensions.y);
             }
         }
-    }
-
-    protected WindowAdapter getWindowHandler() {
-
-        return new WindowAdapter() {
-
-            public void windowActivated(WindowEvent ev) {
-                minimiseButton.setIcon(new ImageIcon(minimise));
-                maximiseButton.setIcon(new ImageIcon(maximise));
-                getRootPane().repaint();
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent ev) {
-                minimiseButton.setIcon(new ImageIcon(minimiseInactive));
-                maximiseButton.setIcon(new ImageIcon(maximiseInactive));
-                getRootPane().repaint();
-            }
-
-
-        };
     }
 }

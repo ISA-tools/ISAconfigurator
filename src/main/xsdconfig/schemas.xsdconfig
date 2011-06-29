@@ -7,8 +7,4 @@
         <xb:package>bioontology.bioportal.searchBean.schema</xb:package>
     </xb:namespace>
 
-    <xb:namespace uri="http://www.ebi.ac.uk/bii/isatab_configuration#">
-        <xb:package>org.isatools.isacreatorconfigurator.configurator.schema</xb:package>
-    </xb:namespace>
-    
 </xb:config>

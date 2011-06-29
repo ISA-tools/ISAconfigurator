@@ -37,24 +37,29 @@
 
 package org.isatools.isacreatorconfigurator.configui;
 
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.effects.FooterPanel;
-import org.isatools.isacreatorconfigurator.effects.MACTypeDialogFrame;
-import org.isatools.isacreatorconfigurator.effects.TitlePanel;
+import org.apache.log4j.Logger;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.effects.AnimatableJFrame;
+import org.isatools.isacreator.effects.FooterPanel;
+import org.isatools.isacreator.effects.TitlePanel;
+import org.isatools.isacreator.gui.ISAcreatorTitlePanel;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-public class ISAcreatorConfigurator extends MACTypeDialogFrame {
+public class ISAcreatorConfigurator extends AnimatableJFrame {
+    private static Logger log = Logger.getLogger(ISAcreatorConfigurator.class.getName());
 
-    public static final int WIDTH = 999;
-    public static final int HEIGHT = 668;
+    public static final int APP_WIDTH = 999;
+    public static final int APP_HEIGHT = 668;
 
     @InjectedResource
-    private Image isaConfigLogo;
+    private Image isaConfigLogo, grip, inactiveGrip, title, inactiveTitle;
 
     private JPanel glass;
     private GridBagConstraints c;
@@ -64,12 +69,21 @@ public class ISAcreatorConfigurator extends MACTypeDialogFrame {
     private JLayeredPane currentPage;
 
     static {
-        ResourceInjector.addModule("org.jdesktop.fuse.swing.SwingModule");
 
+        UIManager.put("Panel.background", UIHelper.BG_COLOR);
+        UIManager.put("ToolTip.foreground", UIHelper.BG_COLOR);
+        UIManager.put("ToolTip.background", UIHelper.DARK_GREEN_COLOR);
+        UIManager.put("Container.background", UIHelper.BG_COLOR);
+
+        UIManager.put("PopupMenuUI", "org.isatools.isacreator.common.CustomPopupMenuUI");
+        UIManager.put("MenuItemUI", "org.isatools.isacreator.common.CustomMenuItemUI");
+        UIManager.put("MenuUI", "org.isatools.isacreator.common.CustomMenuUI");
+        UIManager.put("SeparatorUI", "org.isatools.isacreator.common.CustomSeparatorUI");
+        UIManager.put("MenuBarUI", "org.isatools.isacreator.common.CustomMenuBarUI");
+
+        ResourceInjector.addModule("org.jdesktop.fuse.swing.SwingModule");
         ResourceInjector.get("config-ui-package.style").load(
                 ISAcreatorConfigurator.class.getResource("/dependency-injections/config-ui-package.properties"));
-        ResourceInjector.get("ontologyselectiontool-package.style").load(
-                ISAcreatorConfigurator.class.getResource("/dependency-injections/ontologyselectiontool-package.properties"));
         ResourceInjector.get("ontologyconfigtool-package.style").load(
                 ISAcreatorConfigurator.class.getResource("/dependency-injections/ontologyconfigtool-package.properties"));
     }
@@ -114,14 +128,21 @@ public class ISAcreatorConfigurator extends MACTypeDialogFrame {
         setTitle("ISAcreator Configurator");
         setIconImage(isaConfigLogo);
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setPreferredSize(new Dimension(APP_WIDTH, APP_HEIGHT));
         setBackground(UIHelper.BG_COLOR);
         setResizable(false);
         setUndecorated(true);
 
-        TitlePanel titlePan = new ConfigTitlePanel();
-        add(titlePan, BorderLayout.NORTH);
-        titlePan.installListeners();
+        TitlePanel titlePanel = new ConfigTitlePanel(grip, inactiveGrip, title, inactiveTitle);
+        titlePanel.addPropertyChangeListener(ISAcreatorTitlePanel.CLOSE_EVENT, new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                log.info("Exiting system");
+                System.exit(0);
+            }
+        });
+
+        add(titlePanel, BorderLayout.NORTH);
+        titlePanel.installListeners();
         getRootPane().setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         setCurrentPage(mp);
 
@@ -140,16 +161,6 @@ public class ISAcreatorConfigurator extends MACTypeDialogFrame {
 
 
     public static void main(String[] args) {
-        UIManager.put("Panel.background", UIHelper.BG_COLOR);
-        UIManager.put("ToolTip.foreground", Color.white);
-        UIManager.put("ToolTip.background", UIHelper.DARK_GREEN_COLOR);
-        UIManager.put("Container.background", UIHelper.BG_COLOR);
-        UIManager.put("PopupMenuUI", "org.isatools.isacreatorconfigurator.common.CustomPopupMenuUI");
-        UIManager.put("MenuItemUI", "org.isatools.isacreatorconfigurator.common.CustomMenuItemUI");
-        UIManager.put("MenuUI", "org.isatools.isacreatorconfigurator.common.CustomMenuUI");
-        UIManager.put("SeparatorUI", "org.isatools.isacreatorconfigurator.common.CustomSeparatorUI");
-        UIManager.put("MenuBarUI", "org.isatools.isacreatorconfigurator.common.CustomMenuBarUI");
-
         final ISAcreatorConfigurator main = new ISAcreatorConfigurator();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

@@ -36,8 +36,8 @@
 
 package org.isatools.isacreatorconfigurator.configui;
 
-import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
 
+import org.isatools.isacreator.configuration.FieldObject;
 
 public interface Display {
 

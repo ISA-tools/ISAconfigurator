@@ -1,14 +1,14 @@
 package org.isatools.isacreatorconfigurator.configui.mappingviewer;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
-import org.isatools.isacreatorconfigurator.autofiltercombo.AutoFilterCombo;
-import org.isatools.isacreatorconfigurator.autofiltercombo.AutoFilterComboCellEditor;
-import org.isatools.isacreatorconfigurator.common.MappingObject;
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.AssayTypes;
-import org.isatools.isacreatorconfigurator.configdefinition.DispatchTargets;
+import org.isatools.isacreator.autofiltercombo.AutoFilterCombo;
+import org.isatools.isacreator.autofiltercombo.AutoFilterComboCellEditor;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.configuration.AssayTypes;
+import org.isatools.isacreator.configuration.DispatchTargets;
+import org.isatools.isacreator.configuration.MappingObject;
+import org.isatools.isacreator.effects.borders.RoundedBorder;
 import org.isatools.isacreatorconfigurator.configui.DataEntryPanel;
-import org.isatools.isacreatorconfigurator.effects.RoundedBorder;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 

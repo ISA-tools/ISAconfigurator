@@ -37,19 +37,22 @@
 package org.isatools.isacreatorconfigurator.configui;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
+import org.apache.axis.holders.UnsignedIntHolder;
 import org.apache.commons.collections15.map.ListOrderedMap;
-import org.isatools.isacreatorconfigurator.common.*;
-import org.isatools.isacreatorconfigurator.configdefinition.*;
-import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
-import org.isatools.isacreatorconfigurator.effects.RoundedBorder;
-import org.isatools.isacreatorconfigurator.effects.components.RoundedFormattedTextField;
-import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextArea;
-import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
+import org.isatools.isacreator.common.*;
+import org.isatools.isacreator.configuration.DataTypes;
+import org.isatools.isacreator.configuration.FieldObject;
+import org.isatools.isacreator.configuration.Ontology;
+import org.isatools.isacreator.configuration.RecommendedOntology;
+import org.isatools.isacreator.effects.borders.RoundedBorder;
+import org.isatools.isacreator.effects.components.RoundedFormattedTextField;
+import org.isatools.isacreator.effects.components.RoundedJTextArea;
+import org.isatools.isacreator.effects.components.RoundedJTextField;
+import org.isatools.isacreator.ontologymanager.BioPortalClient;
+import org.isatools.isacreator.ontologymanager.OLSClient;
+import org.isatools.isacreator.ontologymanager.OntologyService;
+import org.isatools.isacreator.ontologyselectiontool.OntologySelectionTool;
 import org.isatools.isacreatorconfigurator.ontologyconfigurationtool.OntologyConfigUI;
-import org.isatools.isacreatorconfigurator.ontologymanager.BioPortalClient;
-import org.isatools.isacreatorconfigurator.ontologymanager.OLSClient;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyConsumer;
-import org.isatools.isacreatorconfigurator.ontologyselectiontool.OntologySelectionTool;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -108,17 +111,17 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
     // these panels are globally visible since they need their visibility to be set depending on whether or not validation
     // is required and whether or not multiple values need to be entered
-    private JPanel defaultValCont;
+    private Box defaultValCont;
     private JTextArea description;
     private JTextArea listValues;
 
 
     // fields for entry
-    private JFormattedTextField defaultValStd;
+    private RoundedFormattedTextField defaultValStd;
     private JTextField fieldName;
     private JTextField inputFormat;
     private JTextArea wizardTemplate;
-    private OntologyConsumer main;
+    private DataEntryPanel main;
     private JTable ontologiesToUse;
     private DefaultTableModel ontologiesToUseModel;
     private static OntologyConfigUI ontologyConfig;
@@ -126,19 +129,19 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     private FieldElement field;
 
     static {
-        BioPortalClient bpc = new BioPortalClient();
+        OntologyService bpc = new BioPortalClient();
         ontologiesToQuery = new ArrayList<Ontology>();
         if (bpc.getAllOntologies() != null) {
             ontologiesToQuery.addAll(bpc.getAllOntologies());
         }
 
-        OLSClient olsClient = new OLSClient();
+        OntologyService olsClient = new OLSClient();
 
-        ontologiesToQuery.addAll(olsClient.getOntologies());
+        ontologiesToQuery.addAll(olsClient.getAllOntologies());
         ontologyColumnHeaders = new String[]{"ontology", "search under"};
     }
 
-    public FieldInterface(OntologyConsumer main) {
+    public FieldInterface(DataEntryPanel main) {
         this.main = main;
     }
 
@@ -300,13 +303,15 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         defaultValContStd = new JPanel(new GridLayout(1, 2));
         defaultValContStd.setBackground(UIHelper.BG_COLOR);
 
-        defaultValCont = new JPanel(new GridLayout(1, 1));
+        defaultValCont = Box.createHorizontalBox();
+        defaultValCont.setPreferredSize(new Dimension(150, 25));
 
-        defaultValStd = new RoundedFormattedTextField();
-        defaultValStd.setSize(new Dimension(150, 19));
+        defaultValStd = new RoundedFormattedTextField(null, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR);
+        defaultValCont.setPreferredSize(new Dimension(120, 25));
         defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                new RegExFormatter(".*", defaultValStd)));
+                new RegExFormatter(".*", defaultValStd, false)));
         UIHelper.renderComponent(defaultValStd, UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
+        defaultValStd.setForeground(UIHelper.DARK_GREEN_COLOR);
 
         defaultValCont.add(defaultValStd);
 
@@ -604,14 +609,14 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         container.add(checkCont);
 
-        container.add(Box.createVerticalGlue());
+        container.add(Box.createGlue());
 
         // finally add overall container to the FieldData JPanel object
         JScrollPane contScroll = new JScrollPane(container,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         contScroll.setBorder(null);
-        contScroll.setSize(new Dimension(400, 350));
+        contScroll.setSize(new Dimension(400, 500));
 
         IAppWidgetFactory.makeIAppScrollPane(contScroll);
 
@@ -674,13 +679,12 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
      * @param recommendedOntologySource - A recommended ontology source.
      * @return DropDownComponent object.
      */
-    protected DropDownComponent createOntologyDropDown(final JTextField field, OntologyConsumer consumer,
+    protected DropDownComponent createOntologyDropDown(final JTextField field,
                                                        boolean allowsMultiple, Map<String, RecommendedOntology> recommendedOntologySource) {
-        final OntologySelectionTool ost = new OntologySelectionTool(consumer,
-                allowsMultiple, recommendedOntologySource);
+        final OntologySelectionTool ost = new OntologySelectionTool(allowsMultiple, recommendedOntologySource);
         ost.createGUI();
 
-        final DropDownComponent dropdown = new DropDownComponent(field, ost);
+        final DropDownComponent dropdown = new DropDownComponent(field, ost, DropDownComponent.ONTOLOGY);
         ost.addPropertyChangeListener("selectedOntology",
                 new PropertyChangeListener() {
                     public void propertyChange(PropertyChangeEvent evt) {
@@ -715,8 +719,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
      */
     private void populateFields() {
         try {
-            org.isatools.isacreatorconfigurator.configdefinition.FieldObject tfo = field.getFieldDetails();
+           FieldObject tfo = field.getFieldDetails();
             if (tfo != null) {
+
                 fieldName.setText(tfo.getFieldName());
                 description.setText(tfo.getDescription());
 
@@ -742,9 +747,11 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     // create a separate panel for the default value which can be switched
                     // with ontology lookup when the field is a protocol ref!
                     defaultValCont.removeAll();
-                    JComponent ontLookup = createOntologyDropDown(defaultValStd, main, false, null);
+                    JComponent ontLookup = createOntologyDropDown(defaultValStd, false, null);
 
                     defaultValCont.add(ontLookup);
+                    defaultValStd.setText(tfo.getDefaultVal());
+
                 } else {
                     defaultValLabStd.setText(DEFAULT_VAL_STR);
                     defaultValCont.removeAll();
@@ -780,7 +787,8 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     }
                 }
 
-                if (!tfo.getWizardTemplate().trim().equals("") && datatype.getSelectedItem() == DataTypes.STRING) {
+                if (tfo.getWizardTemplate() != null && !tfo.getWizardTemplate().trim().equals("")
+                        && datatype.getSelectedItem() == DataTypes.STRING) {
                     usesTemplateForWizard.setSelected(true);
                     wizardTemplatePanel.setVisible(true);
                     wizardTemplate.setText(tfo.getWizardTemplate());
@@ -861,7 +869,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
                 // set regex for any valid character.
                 defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                        new RegExFormatter(".*", defaultValStd)));
+                        new RegExFormatter(".*", defaultValStd, true)));
             }
 
             if (selected == DataTypes.INTEGER) {
@@ -889,7 +897,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
                 // set regex for default value to only accept integers.
                 defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                        new RegExFormatter("[0-9]+", defaultValStd)));
+                        new RegExFormatter("[0-9]+", defaultValStd, true)));
             }
 
             if (selected == DataTypes.DOUBLE) {
@@ -918,7 +926,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
                 // set the regular expression checker to handle double values.
                 defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                        new RegExFormatter("[0-9]+\\.[0-9]+", defaultValStd)));
+                        new RegExFormatter("[0-9]+\\.[0-9]+", defaultValStd, true)));
             }
 
             if (selected == DataTypes.DATE) {
@@ -926,7 +934,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 // initialise the default value field to be specific for date values
                 defaultValStd.setText("dd-MM-yyyy");
                 defaultValStd.setEnabled(false);
-                defaultValStd.setEditable(false);
+                defaultValStd.setEditable(true);
 
                 isInputFormatted.setVisible(false);
                 isInputFormatted.setSelected(false);

@@ -36,8 +36,8 @@
 
 package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.configuration.Ontology;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 

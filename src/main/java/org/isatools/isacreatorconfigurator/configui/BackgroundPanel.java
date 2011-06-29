@@ -36,7 +36,7 @@
 
 package org.isatools.isacreatorconfigurator.configui;
 
-import org.isatools.isacreatorconfigurator.effects.CurveEffectPanel;
+import org.isatools.isacreator.effects.GenericPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,7 +47,7 @@ import java.awt.*;
  */
 
 
-public class BackgroundPanel extends CurveEffectPanel {
+public class BackgroundPanel extends GenericPanel {
 
     private static Image logo = new ImageIcon(BackgroundPanel.class.getResource("/images/general_gui/config_Logo.png")).getImage();
 

@@ -38,17 +38,16 @@ package org.isatools.isacreatorconfigurator.configui;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.apache.commons.collections15.map.ListOrderedMap;
-import org.isatools.isacreatorconfigurator.common.MappingObject;
-import org.isatools.isacreatorconfigurator.common.ReorderableJList;
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
+import org.isatools.isacreator.common.ReOrderableJList;
+import org.isatools.isacreator.common.ReOrderableListCellRenderer;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.configuration.FieldObject;
+import org.isatools.isacreator.configuration.MappingObject;
+import org.isatools.isacreator.effects.CustomSplitPaneDivider;
+import org.isatools.isacreator.ontologymanager.OntologySourceRefObject;
+import org.isatools.isacreator.ontologyselectiontool.ResultCache;
 import org.isatools.isacreatorconfigurator.configui.io.Utils;
 import org.isatools.isacreatorconfigurator.configui.mappingviewer.TableMappingViewer;
-import org.isatools.isacreatorconfigurator.effects.CustomSplitPaneDivider;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyConsumer;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologySourceRefObject;
-import org.isatools.isacreatorconfigurator.ontologyselectiontool.OntologyObject;
-import org.isatools.isacreatorconfigurator.ontologyselectiontool.ResultCache;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -71,7 +70,7 @@ import java.util.*;
 import java.util.List;
 
 
-public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
+public class DataEntryPanel extends JLayeredPane {
 
     @InjectedResource
     private ImageIcon addTable, addTableOver, removeTable, removeTableOver, addElement,
@@ -82,7 +81,6 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     private static final String CUSTOM_XML_LOC = "/config/custom_isa_fields.xml";
     // Map of table to fields
     private Map<MappingObject, List<Display>> tableFields;
-    private Map<String, OntologyObject> userHistory;
     private ResultCache<String, Map<String, String>> resultCache;
     private List<OntologySourceRefObject> ontologiesUsed;
 
@@ -93,7 +91,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
     private JList tableList;
     private DefaultListModel tableModel;
     private JLabel tableCountInfo;
-    private ReorderableJList elementList;
+    private ReOrderableJList elementList;
     private DefaultListModel elementModel;
     private JLabel elementCountInfo;
     private JLabel removeElementButton;
@@ -128,7 +126,7 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         this.sourceFile = sourceFile;
 
         resultCache = new ResultCache<String, Map<String, String>>();
-        userHistory = new HashMap<String, OntologyObject>();
+
         ontologiesUsed = new ArrayList<OntologySourceRefObject>();
     }
 
@@ -160,17 +158,6 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
                 appCont.hideGlassPane();
             }
         });
-    }
-
-
-    public void addToUserHistory(OntologyObject oo) {
-        if (!userHistory.containsKey(oo.getUniqueId())) {
-            userHistory.put(oo.getUniqueId(), oo);
-        }
-    }
-
-    public Map<String, OntologyObject> getUserHistory() {
-        return userHistory;
     }
 
 
@@ -446,9 +433,6 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         bottomContainer.setLayout(new BoxLayout(bottomContainer, BoxLayout.PAGE_AXIS));
         bottomContainer.setBackground(UIHelper.BG_COLOR);
 
-        // create bottom closing panel.
-
-
         add(bottomContainer, BorderLayout.SOUTH);
 
     }
@@ -609,6 +593,8 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
         container.add(buttonPanel);
 
+        container.add(Box.createVerticalGlue());
+
         return container;
     }
 
@@ -666,7 +652,8 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
 
 
         elementModel = new DefaultListModel();
-        elementList = new ReorderableJList(elementModel);
+        elementList = new ReOrderableJList(elementModel);
+        elementList.setCellRenderer(new CustomReOrderableListCellRenderer(elementList));
         elementList.setDragEnabled(true);
         elementList.setBackground(UIHelper.BG_COLOR);
 
@@ -856,6 +843,8 @@ public class DataEntryPanel extends JLayeredPane implements OntologyConsumer {
         buttonPanel.add(moveUpButton);
 
         container.add(buttonPanel);
+
+        container.add(Box.createVerticalGlue());
 
         return container;
     }
