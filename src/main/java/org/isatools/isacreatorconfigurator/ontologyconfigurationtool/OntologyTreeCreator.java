@@ -36,7 +36,7 @@
 
 package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
-import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
+import org.isatools.isacreator.configuration.Ontology;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.io.FileNotFoundException;

@@ -37,12 +37,14 @@
 package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
-import org.isatools.isacreatorconfigurator.effects.SingleSelectionListCellRenderer;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.configuration.Ontology;
+import org.isatools.isacreator.effects.SingleSelectionListCellRenderer;
+import org.isatools.isacreator.ontologymanager.OntologyQueryAdapter;
+import org.isatools.isacreator.ontologymanager.OntologyService;
+import org.isatools.isacreator.ontologymanager.OntologySourceRefObject;
+import org.isatools.isacreator.ontologymanager.common.OntologyTerm;
 import org.isatools.isacreatorconfigurator.informationwindow.InformationPane;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyQueryAdapter;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyService;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -55,6 +57,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Map;
+import java.util.List;
 
 /**
  * SearchOntologyDialog
@@ -210,10 +213,12 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
     }
 
 
-    private void createOntologyResultList(Map<String, String> termsFound) {
+    private void createOntologyResultList(Map<OntologySourceRefObject, List<OntologyTerm>> termsFound) {
         DefaultListModel dlm = new DefaultListModel();
-        for (String termAccession : termsFound.keySet()) {
-            dlm.addElement(termsFound.get(termAccession) + "(" + termAccession + ")");
+        for (OntologySourceRefObject ontologySourceRefObject : termsFound.keySet()) {
+            for (OntologyTerm term : termsFound.get(ontologySourceRefObject)) {
+                dlm.addElement(term.getOntologyTermName() + "(" + term.getOntologySourceAccession() + ")");
+            }
         }
         ontologyResultList.setModel(dlm);
     }
@@ -226,7 +231,7 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
                     try {
                         setCurrentPage(new JLabel(LOADING));
                         SearchOntologyDialogUI.this.validate();
-                        Map<String, String> result;
+                        Map<OntologySourceRefObject, List<OntologyTerm>> result;
 
                         System.out.println("Search ontology is " + searchOntology.getOntologyID() + " version " + searchOntology.getOntologyVersion());
                         result = ontologyService.getTermsByPartialNameFromSource(searchField.getText(), new OntologyQueryAdapter(searchOntology).getOntologyQueryString(OntologyQueryAdapter.GET_ID), false);

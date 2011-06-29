@@ -1,6 +1,6 @@
 package org.isatools.isacreatorconfigurator.configui.mappingviewer;
 
-import org.isatools.isacreatorconfigurator.common.UIHelper;
+import org.isatools.isacreator.common.UIHelper;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

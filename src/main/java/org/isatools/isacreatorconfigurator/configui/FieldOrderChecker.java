@@ -37,7 +37,7 @@
 package org.isatools.isacreatorconfigurator.configui;
 
 import org.apache.commons.collections15.map.ListOrderedMap;
-import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
+import org.isatools.isacreator.configuration.DataTypes;
 
 import java.util.ArrayList;
 import java.util.List;

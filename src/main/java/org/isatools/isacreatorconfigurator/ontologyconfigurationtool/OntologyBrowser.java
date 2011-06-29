@@ -37,13 +37,12 @@
 package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
-import org.isatools.isacreatorconfigurator.configdefinition.OntologyBranch;
-import org.isatools.isacreatorconfigurator.configdefinition.OntologyFormats;
-import org.isatools.isacreatorconfigurator.ontologymanager.BioPortalClient;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyService;
-import org.isatools.isacreatorconfigurator.ontologymanager.bioportal.model.BioPortalOntology;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.configuration.Ontology;
+import org.isatools.isacreator.configuration.OntologyBranch;
+import org.isatools.isacreator.configuration.OntologyFormats;
+import org.isatools.isacreator.ontologymanager.BioPortalClient;
+import org.isatools.isacreator.ontologymanager.OntologyService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -129,11 +128,6 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
             root = new DefaultMutableTreeNode("problem processing " + ontologyToQuery.getOntologyDisplayLabel());
         }
 
-        if (ontologyTreeCreator instanceof OWLOntologyTreeCreator) {
-            DefaultTreeModel dtm = new DefaultTreeModel(root);
-            ontologyTree = new JTree(dtm);
-        }
-
         ontologyTree.setCellRenderer(new OntologyTreeRenderer());
         ontologyTree.setShowsRootHandles(false);
 
@@ -161,15 +155,10 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
 
                             // if from BioPortal, we need to make the accession the PURL
                             if (ontologyClient instanceof BioPortalClient) {
-                                BioPortalClient bpClient = (BioPortalClient) ontologyClient;
-                                BioPortalOntology bpOntology = bpClient.getSearchResults().get(selectedTreePart.getBranchIdentifier());
 
-                                if (bpOntology == null) {
-                                    System.err.println("no ontology matched " + selectedTreePart.getBranchIdentifier() + " in the client");
-                                } else {
-                                    System.out.println("found a match to " + selectedTreePart.getBranchIdentifier() + "...");
-                                    selectedTreePart = new OntologyBranch(bpOntology.getOntologySourceAccession(), selectedTreePart.getBranchName());
-                                }
+                                System.out.println("found a match to " + selectedTreePart.getBranchIdentifier() + "...");
+                                selectedTreePart = new OntologyBranch(selectedTreePart.getBranchIdentifier(), selectedTreePart.getBranchName());
+
                             }
 
                             ontologyToQuery.setSubsectionToQuery(selectedTreePart);

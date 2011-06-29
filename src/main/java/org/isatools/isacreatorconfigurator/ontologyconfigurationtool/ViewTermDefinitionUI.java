@@ -37,12 +37,12 @@
 package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
-import org.isatools.isacreatorconfigurator.configdefinition.OntologyBranch;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.configuration.Ontology;
+import org.isatools.isacreator.configuration.OntologyBranch;
+import org.isatools.isacreator.ontologymanager.OntologyQueryAdapter;
+import org.isatools.isacreator.ontologymanager.OntologyService;
 import org.isatools.isacreatorconfigurator.informationwindow.InformationPane;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyQueryAdapter;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

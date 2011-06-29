@@ -38,15 +38,20 @@ package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.apache.commons.collections15.map.ListOrderedMap;
-import org.isatools.isacreatorconfigurator.autofilteringlist.ExtendedJList;
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
-import org.isatools.isacreatorconfigurator.configdefinition.OntologyFormats;
-import org.isatools.isacreatorconfigurator.configdefinition.RecommendedOntology;
-import org.isatools.isacreatorconfigurator.effects.*;
-import org.isatools.isacreatorconfigurator.ontologymanager.BioPortalClient;
-import org.isatools.isacreatorconfigurator.ontologymanager.OLSClient;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyService;
+import org.isatools.isacreator.autofilteringlist.ExtendedJList;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.configuration.Ontology;
+import org.isatools.isacreator.configuration.OntologyFormats;
+import org.isatools.isacreator.configuration.RecommendedOntology;
+import org.isatools.isacreator.effects.FooterPanel;
+import org.isatools.isacreator.effects.HUDTitleBar;
+import org.isatools.isacreator.effects.InfiniteProgressPanel;
+import org.isatools.isacreator.effects.TitlePanel;
+import org.isatools.isacreator.effects.borders.RoundedBorder;
+import org.isatools.isacreator.ontologymanager.BioPortalClient;
+import org.isatools.isacreator.ontologymanager.OLSClient;
+import org.isatools.isacreator.ontologymanager.OntologyService;
+import org.isatools.isacreator.ontologymanager.OntologySourceRefObject;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -126,7 +131,7 @@ public class OntologyConfigUI extends JFrame {
     }
 
     public void createGUI() {
-        TitlePanel titlePanel = new OntologyConfigTitlePanel();
+        HUDTitleBar titlePanel = new HUDTitleBar(null, null, true);
         add(titlePanel, BorderLayout.NORTH);
         titlePanel.installListeners();
         titlePanel.addPropertyChangeListener("windowClosed", new PropertyChangeListener() {
@@ -352,7 +357,9 @@ public class OntologyConfigUI extends JFrame {
             public void mousePressed(MouseEvent mouseEvent) {
                 if (!availableOntologies.isSelectionEmpty()) {
                     String ontology = availableOntologies.getSelectedTerm();
-                    selectedOntologies.put(ontology, new RecommendedOntology(getOntologyByLabel(ontology)));
+
+                    selectedOntologies.put(ontology,
+                            new RecommendedOntology(getOntologyByLabel(ontology)));
                     updateSelectedOntologies();
                 }
 
@@ -396,7 +403,7 @@ public class OntologyConfigUI extends JFrame {
             if (bioportalQueryResult != null) {
                 ontologiesToBrowseOn.addAll(bioportalQueryResult);
             }
-            ontologiesToBrowseOn.addAll(olsClient.getOntologies());
+            ontologiesToBrowseOn.addAll(olsClient.getAllOntologies());
         }
 
         // precautionary check in case of having no ontologies available to search on.

@@ -36,8 +36,8 @@
 
 package org.isatools.isacreatorconfigurator.configui;
 
-import org.isatools.isacreatorconfigurator.common.MappingObject;
-import org.isatools.isacreatorconfigurator.common.TableObject;
+import org.isatools.isacreator.configuration.FieldObject;
+import org.isatools.isacreator.configuration.MappingObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,14 +51,14 @@ import java.util.List;
 public class TableConfigurationObject implements Serializable {
 
     private List<MappingObject> mappings;
-    private List<TableObject> tableData;
+    private List<FieldObject> tableData;
 
     public TableConfigurationObject(List<MappingObject> mappings) {
         this.mappings = mappings;
-        tableData = new ArrayList<TableObject>();
+        tableData = new ArrayList<FieldObject>();
     }
 
-    public void addTableObject(TableObject to) {
+    public void addTableObject(FieldObject to) {
         if (to != null) {
             tableData.add(to);
         }
@@ -68,7 +68,7 @@ public class TableConfigurationObject implements Serializable {
         return mappings;
     }
 
-    public List<TableObject> getTableData() {
+    public List<FieldObject> getTableData() {
         return tableData;
     }
 }

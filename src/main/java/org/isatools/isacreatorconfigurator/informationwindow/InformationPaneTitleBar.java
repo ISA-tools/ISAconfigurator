@@ -37,14 +37,12 @@
 package org.isatools.isacreatorconfigurator.informationwindow;
 
 
-import org.isatools.isacreatorconfigurator.effects.TitlePanel;
+import org.isatools.isacreator.effects.TitlePanel;
+import org.isatools.isacreator.gui.ISAcreator;
 import org.jdesktop.fuse.InjectedResource;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 /**
  * CustomHUD
@@ -68,43 +66,24 @@ public class InformationPaneTitleBar extends TitlePanel {
     @InjectedResource
     private Image close, closePressed, closeOver;
 
-    public InformationPaneTitleBar(Image activeLogo, Image inactiveLogo) {
-        super(BG_GRADIENT);
-        preferredHeight = 23;
-        this.activeLogo = activeLogo;
-        this.inactiveLogo = inactiveLogo;
+   protected void drawGrip(Graphics2D g2d, boolean active) {
     }
 
-    @Override
-    protected void createButtons() {
-        super.setLayout(new BorderLayout());
-        add(closeButton = createButton(new CloseAction(),
-                close, closePressed, closeOver),
-                BorderLayout.WEST);
+    protected void drawTitle(Graphics2D g2d, boolean active) {
+        g2d.drawImage(active ? activeLogo : inactiveLogo, getWidth() / 2 - activeLogo.getWidth(null) / 2, 0, null);
     }
 
-    protected void drawComponents(Graphics2D g2d, boolean active) {
-        g2d.drawImage(active ? activeLogo : inactiveLogo, getWidth() - activeLogo.getWidth(null), 0, null);
-    }
+    protected void resize() {
+        Frame frame = (Frame) SwingUtilities.getWindowAncestor(this);
+        if (frame != null) {
+            Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
 
-    public class CloseAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
+            if (screenDimensions.width == frame.getWidth() || screenDimensions.height == frame.getHeight()) {
+                frame.setSize(ISAcreator.APP_WIDTH, ISAcreator.APP_HEIGHT);
+            } else {
+                frame.setExtendedState(frame.getExtendedState() | Frame.MAXIMIZED_BOTH);
 
-            close();
+            }
         }
-    }
-
-    private void close() {
-        Window w = SwingUtilities.getWindowAncestor(this);
-
-        w.dispatchEvent(new WindowEvent(w,
-                WindowEvent.WINDOW_CLOSING));
-        w.dispose();
-
-        firePropertyChange("windowClosed", "", "closed");
-    }
-
-    protected WindowAdapter getWindowHandler() {
-        return null;
     }
 }

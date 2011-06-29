@@ -38,15 +38,16 @@ package org.isatools.isacreatorconfigurator.configui;
 
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.apache.log4j.Logger;
-import org.isatools.isacreatorconfigurator.common.MappingObject;
-import org.isatools.isacreatorconfigurator.common.TableObject;
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.Configuration;
-import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
-import org.isatools.isacreatorconfigurator.configdefinition.LegacyTCOToTFOMapper;
-import org.isatools.isacreatorconfigurator.configdefinition.TableConfiguration;
-import org.isatools.isacreatorconfigurator.configdefinition.io.ConfigXMLParser;
-import org.isatools.isacreatorconfigurator.effects.CurveEffectPanel;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.configuration.Configuration;
+import org.isatools.isacreator.configuration.FieldObject;
+import org.isatools.isacreator.configuration.MappingObject;
+import org.isatools.isacreator.configuration.TableConfiguration;
+import org.isatools.isacreator.configuration.io.ConfigXMLParser;
+import org.isatools.isacreator.configuration.io.ConfigurationLoadingSource;
+import org.isatools.isacreator.effects.GenericPanel;
+import org.isatools.isacreator.spreadsheet.TableReferenceObject;
+import org.isatools.isacreatorconfigurator.model.TableObject;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -65,7 +66,7 @@ import java.util.Map;
 public class MenuPanel extends JLayeredPane {
     private static final Logger log = Logger.getLogger(MenuPanel.class.getName());
 
-    private CurveEffectPanel generic;
+    private GenericPanel generic;
 
     private ISAcreatorConfigurator appCont;
     private CreateMenu menu;
@@ -316,16 +317,15 @@ public class MenuPanel extends JLayeredPane {
                 // we want to attempt to parse the XML since this directory should contain XML describing configurations
                 if (toLoad.isDirectory()) {
 
-                    ConfigXMLParser parser = new ConfigXMLParser(toLoad.getAbsolutePath());
+                    ConfigXMLParser parser = new ConfigXMLParser(ConfigurationLoadingSource.ISACONFIGURATOR, toLoad.getAbsolutePath());
                     parser.loadConfiguration();
                     Configuration c = new Configuration(parser.getMappings());
-                    for (TableConfiguration tc : parser.getTables()) {
-                        c.addTableObject(tc);
+                    for (TableReferenceObject tc : parser.getTables()) {
+                        c.addTableObject(tc.getTableFields());
                     }
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-
                             status.setText("<html>connecting to ontology resources...</html>");
                         }
                     });
@@ -339,17 +339,7 @@ public class MenuPanel extends JLayeredPane {
                     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
                             toLoad));
 
-                    if (ConfigurationFileFilter.getExtension(toLoad).equalsIgnoreCase("tco")) {
-                        TableConfigurationObject tco = (TableConfigurationObject) ois.readObject();
-                        ois.close();
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-
-                                status.setText("<html>connecting to ontology resources...</html>");
-                            }
-                        });
-                        loadTCO(tco, dep);
-                    } else {
+                    if (ConfigurationFileFilter.getExtension(toLoad).equalsIgnoreCase("tfo")) {
                         Configuration c = (Configuration) ois.readObject();
                         ois.close();
                         SwingUtilities.invokeLater(new Runnable() {
@@ -359,6 +349,10 @@ public class MenuPanel extends JLayeredPane {
                             }
                         });
                         loadTFO(c, dep);
+                    } else {
+                        log.info("This format is not supported...");
+                        status.setIcon(null);
+                        status.setText("<html>This file format is not supported...</html>");
                     }
                 }
 
@@ -375,40 +369,6 @@ public class MenuPanel extends JLayeredPane {
         status.setText("<html>no file was selected...</html>");
 
         return false;
-    }
-
-    private void loadTCO(TableConfigurationObject tco, DataEntryPanel dep) {
-        LegacyTCOToTFOMapper mapper = new LegacyTCOToTFOMapper();
-        for (TableObject to : tco.getTableData()) {
-
-            List<Display> fields = new ArrayList<Display>();
-
-            for (int i = 0; i < to.getTableStructure().keySet().size(); i++) {
-                String elementName = to.getTableStructure().get(i)[0];
-
-                Display ed = null;
-
-                boolean set = false;
-                for (org.isatools.isacreatorconfigurator.common.FieldObject fo : to.getFields()) {
-                    if (fo.getColNo() == i) {
-                        ed = new FieldElement(mapper.map(fo));
-                        set = true;
-                        break;
-                    }
-                }
-
-                if (!set) {
-                    ed = new StructuralElementDisplay(elementName);
-                }
-
-                fields.add(ed);
-            }
-
-            tableFields.put(to.getMappingObject(), fields);
-        }
-
-
-        dep.setTableFields(tableFields);
     }
 
     private void loadTFO(Configuration tfo, DataEntryPanel dep) {

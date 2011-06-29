@@ -36,12 +36,12 @@
 
 package org.isatools.isacreatorconfigurator.configui;
 
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.AssayTypes;
-import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
-import org.isatools.isacreatorconfigurator.configdefinition.DispatchTargets;
-import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
-import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.configuration.AssayTypes;
+import org.isatools.isacreator.configuration.DataTypes;
+import org.isatools.isacreator.configuration.DispatchTargets;
+import org.isatools.isacreator.configuration.FieldObject;
+import org.isatools.isacreator.effects.components.RoundedJTextField;
 
 import javax.swing.*;
 import java.awt.*;

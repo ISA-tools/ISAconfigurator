@@ -36,14 +36,13 @@
 
 package org.isatools.isacreatorconfigurator.configui;
 
-import org.isatools.isacreatorconfigurator.common.DropDownComponent;
-import org.isatools.isacreatorconfigurator.common.UIHelper;
-import org.isatools.isacreatorconfigurator.configdefinition.DataTypes;
-import org.isatools.isacreatorconfigurator.configdefinition.FieldObject;
-import org.isatools.isacreatorconfigurator.configdefinition.RecommendedOntology;
-import org.isatools.isacreatorconfigurator.effects.components.RoundedJTextField;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyConsumer;
-import org.isatools.isacreatorconfigurator.ontologyselectiontool.OntologySelectionTool;
+import org.isatools.isacreator.common.DropDownComponent;
+import org.isatools.isacreator.common.UIHelper;
+import org.isatools.isacreator.configuration.DataTypes;
+import org.isatools.isacreator.configuration.FieldObject;
+import org.isatools.isacreator.configuration.RecommendedOntology;
+import org.isatools.isacreator.effects.components.RoundedJTextField;
+import org.isatools.isacreator.ontologyselectiontool.OntologySelectionTool;
 
 import javax.swing.*;
 import java.awt.*;
@@ -263,7 +262,7 @@ public class AddElementGUI extends JDialog {
         UIHelper.renderComponent(customFieldQualifier, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
 
         customFieldSelectPanel.add(customFieldType);
-        customFieldSelectPanel.add(createOntologyDropDown(customFieldQualifier, parentGUI, false, null));
+        customFieldSelectPanel.add(createOntologyDropDown(customFieldQualifier, false, null));
 
         fieldCont.add(predefinedFieldSelectPanel);
 
@@ -350,18 +349,17 @@ public class AddElementGUI extends JDialog {
      * Create an DropDownComponent field.
      *
      * @param field                     - JTextField to be associated with the OntologySelectionTool.
-     * @param consumingResource         - this is the resource which contains the history!
      * @param allowsMultiple            - Should the OntologySelectionTool allow multiple terms to be selected.
      * @param recommendedOntologySource - A recommended ontology source.
      * @return DropDownComponent object.
      */
-    protected DropDownComponent createOntologyDropDown(final JTextField field, OntologyConsumer consumingResource,
+    protected DropDownComponent createOntologyDropDown(final JTextField field,
                                                        boolean allowsMultiple, Map<String, RecommendedOntology> recommendedOntologySource) {
-        final OntologySelectionTool ost = new OntologySelectionTool(consumingResource,
+        final OntologySelectionTool ost = new OntologySelectionTool(
                 allowsMultiple, recommendedOntologySource);
         ost.createGUI();
 
-        final DropDownComponent dropdown = new DropDownComponent(field, ost);
+        final DropDownComponent dropdown = new DropDownComponent(field, ost, DropDownComponent.ONTOLOGY);
         ost.addPropertyChangeListener("selectedOntology",
                 new PropertyChangeListener() {
                     public void propertyChange(PropertyChangeEvent evt) {

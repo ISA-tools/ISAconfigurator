@@ -36,11 +36,12 @@
 
 package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
-import org.isatools.isacreatorconfigurator.configdefinition.Ontology;
-import org.isatools.isacreatorconfigurator.configdefinition.OntologyBranch;
-import org.isatools.isacreatorconfigurator.ontologymanager.BioPortalClient;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyQueryAdapter;
-import org.isatools.isacreatorconfigurator.ontologymanager.OntologyService;
+import org.isatools.isacreator.configuration.Ontology;
+import org.isatools.isacreator.configuration.OntologyBranch;
+import org.isatools.isacreator.ontologymanager.BioPortalClient;
+import org.isatools.isacreator.ontologymanager.OntologyQueryAdapter;
+import org.isatools.isacreator.ontologymanager.OntologyService;
+import org.isatools.isacreator.ontologymanager.common.OntologyTerm;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -112,16 +113,16 @@ public class WSOntologyTreeCreator implements OntologyTreeCreator, TreeSelection
         }
         System.out.println("Ontology version is: " + ontology.getOntologyVersion());
 
-        Map<String, String> rootTerms = ontologyClient.getOntologyRoots(new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
+        Map<String, OntologyTerm> rootTerms = ontologyClient.getOntologyRoots(new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
         System.out.println("found " + rootTerms.size() + " roots");
         // update the tree
         for (String termId : rootTerms.keySet()) {
-            addTermToTree(termId, rootTerms.get(termId));
+            addTermToTree(null, rootTerms.get(termId));
         }
 
         // not root terms found
         if (rootTerms.size() == 0) {
-            addTermToTree("Something has gone wrong on when loading from " + ((ontologyClient instanceof BioPortalClient) ? "BioPortal" : "Ontology lookup service"), "");
+            addTermToTree(new DefaultMutableTreeNode("Something has gone wrong on when loading from " + ((ontologyClient instanceof BioPortalClient) ? "BioPortal" : "Ontology lookup service")), null);
         }
         updateTree();
         browser.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -152,25 +153,22 @@ public class WSOntologyTreeCreator implements OntologyTreeCreator, TreeSelection
     private void preloadNextOntologyLevel(final String termAccession, final DefaultMutableTreeNode parentTerm) {
         browser.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-        Map<String, String> termChildren = ontologyClient.getTermChildren(termAccession, new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
+        Map<String, OntologyTerm> termChildren = ontologyClient.getTermChildren(termAccession, new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
 
         // add the level of non visible nodes
 
         for (String accession : termChildren.keySet()) {
-            addTermToTree(parentTerm, accession, termChildren.get(accession));
+            addTermToTree(parentTerm, termChildren.get(accession));
         }
 
 
         browser.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
-    private void addTermToTree(String termId, String termName) {
-        addTermToTree(null, termId, termName);
-    }
 
-    private void addTermToTree(DefaultMutableTreeNode parent, String termId, String termName) {
+    private void addTermToTree(DefaultMutableTreeNode parent, OntologyTerm term) {
         DefaultMutableTreeNode childNode =
-                new DefaultMutableTreeNode(new OntologyBranch(termId, termName));
+                new DefaultMutableTreeNode(new OntologyBranch(term.getOntologySourceAccession(), term.getOntologyTermName()));
 
         if (parent == null) {
             parent = rootNode;
@@ -181,16 +179,16 @@ public class WSOntologyTreeCreator implements OntologyTreeCreator, TreeSelection
 
     public void expandTreeToReachTerm(String termAccession) {
         Enumeration treeVisitor = rootNode.breadthFirstEnumeration();
-        Map<String, String> nodeParentsFromRoot = ontologyClient.getAllTermParents(termAccession, new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_ID));
+        Map<String, OntologyTerm> nodeParentsFromRoot = ontologyClient.getAllTermParents(termAccession, new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_ID));
         TreePath lastPath = null;
 
-        for (String node : nodeParentsFromRoot.values()) {
+        for (OntologyTerm node : nodeParentsFromRoot.values()) {
             while (treeVisitor.hasMoreElements()) {
                 DefaultMutableTreeNode visitingNode = (DefaultMutableTreeNode) treeVisitor.nextElement();
                 if (visitingNode.getUserObject() instanceof OntologyBranch) {
                     OntologyBranch termNode = (OntologyBranch) visitingNode.getUserObject();
 
-                    if (termNode.getBranchName().toLowerCase().equalsIgnoreCase(node) || termNode.getBranchIdentifier().equalsIgnoreCase(node)) {
+                    if (termNode.getBranchName().toLowerCase().equalsIgnoreCase(node.getOntologyTermName()) || termNode.getBranchIdentifier().equalsIgnoreCase(node.getOntologySourceAccession())) {
                         TreePath pathToNode = new TreePath(visitingNode.getPath());
                         tree.expandPath(pathToNode);
                         tree.setSelectionPath(pathToNode);
@@ -253,7 +251,7 @@ public class WSOntologyTreeCreator implements OntologyTreeCreator, TreeSelection
                 if (node.isLeaf() && node.getAllowsChildren()) {
 
                     // load children. if no children, set allowsChildren to false
-                    Map<String, String> termChildren = ontologyClient.getTermChildren(ontologyTerm.getBranchIdentifier(), new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
+                    Map<String, OntologyTerm> termChildren = ontologyClient.getTermChildren(ontologyTerm.getBranchIdentifier(), new OntologyQueryAdapter(ontology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
                     if (termChildren.size() > 0) {
                         node.setAllowsChildren(true);
                     }
