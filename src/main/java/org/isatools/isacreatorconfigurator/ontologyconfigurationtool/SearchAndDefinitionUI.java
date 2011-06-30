@@ -40,6 +40,7 @@ import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Ontology;
 import org.isatools.isacreator.configuration.OntologyBranch;
 import org.isatools.isacreator.ontologybrowsingutils.OntologyTreeCreator;
+import org.isatools.isacreator.ontologybrowsingutils.OntologyTreeItem;
 import org.isatools.isacreator.ontologybrowsingutils.TreeObserver;
 import org.isatools.isacreator.ontologybrowsingutils.WSOntologyTreeCreator;
 import org.isatools.isacreator.ontologymanager.BioPortalClient;
@@ -182,13 +183,13 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
                         createViewDefinitionPane();
                     }
 
-                    if (treeObject instanceof OntologyBranch) {
+                    if (treeObject instanceof OntologyTreeItem) {
                         resetButtons();
                         mode = DEFINITION;
                         viewTermDefinition.setIcon(viewMetadataIconOver);
 
                         setCurrentPage(viewTerm);
-                        viewTerm.setContent((OntologyBranch) treeObject,
+                        viewTerm.setContent(((OntologyTreeItem) treeObject).getBranch(),
                                 ontologyToQuery, ontologyClient);
                     }
                 }
@@ -229,7 +230,7 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
     public void notifyOfSelection() {
         if (viewTerm != null) {
             if (viewTerm.isShowing()) {
-                viewTerm.setContent((OntologyBranch) ((DefaultMutableTreeNode) ontologyTree.getSelectionPath().getLastPathComponent()).getUserObject(),
+                viewTerm.setContent(((OntologyTreeItem) ((DefaultMutableTreeNode) ontologyTree.getSelectionPath().getLastPathComponent()).getUserObject()).getBranch(),
                         ontologyToQuery, getOntologyClient());
             }
         }

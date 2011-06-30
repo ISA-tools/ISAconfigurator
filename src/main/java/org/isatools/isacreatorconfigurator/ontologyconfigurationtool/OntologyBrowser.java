@@ -37,15 +37,13 @@
 package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
+import org.apache.log4j.Logger;
 import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Ontology;
 import org.isatools.isacreator.configuration.OntologyBranch;
 import org.isatools.isacreator.configuration.OntologyFormats;
 import org.isatools.isacreator.configuration.RecommendedOntology;
-import org.isatools.isacreator.ontologybrowsingutils.OntologyTreeCreator;
-import org.isatools.isacreator.ontologybrowsingutils.TreeObserver;
-import org.isatools.isacreator.ontologybrowsingutils.TreeSubject;
-import org.isatools.isacreator.ontologybrowsingutils.WSOntologyTreeCreator;
+import org.isatools.isacreator.ontologybrowsingutils.*;
 import org.isatools.isacreator.ontologymanager.BioPortalClient;
 import org.isatools.isacreator.ontologymanager.OntologyService;
 
@@ -67,22 +65,19 @@ import java.util.List;
  * to generate a view of the ontology and for OWL files, we download the files from BioPortal, reason over them and build the
  * JTree representation of the Ontology through recursive access of the subclasses.
  *
- * @author eamonnmaguire
- * @date Jul 17, 2009
  */
 
 public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject {
 
+    private static Logger log = Logger.getLogger(OntologyBrowser.class.getName());
 
     private JTree ontologyTree;
     private OntologyBranch selectedTreePart;
+
     private JLabel selectedTreePartInfo;
     private Ontology ontologyToQuery;
-    private OntologyService ontologyClient;
     private OntologyTreeCreator ontologyTreeCreator;
-
     private List<TreeObserver> observers;
-
     private Dimension browserSize;
 
     /**
@@ -93,7 +88,6 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
      */
     public OntologyBrowser(Ontology ontologyToQuery, OntologyService ontologyClient, Dimension browserSize) {
         this.ontologyToQuery = ontologyToQuery;
-        this.ontologyClient = ontologyClient;
         this.browserSize = browserSize;
         this.observers = new ArrayList<TreeObserver>();
         instantiate();
@@ -107,9 +101,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
         ontologyTreeCreator = ontologyToQuery.getFormat() == OntologyFormats.OBO ? new WSOntologyTreeCreator(this, ontologyTree) :
                 new WSOntologyTreeCreator(this, ontologyTree);
 
-        if (ontologyTreeCreator instanceof WSOntologyTreeCreator) {
-            ((WSOntologyTreeCreator) ontologyTreeCreator).registerObserver(this);
-        }
+        ((WSOntologyTreeCreator) ontologyTreeCreator).registerObserver(this);
 
         this.selectedTreePart = ontologyToQuery.getSubsectionToQuery();
         createGUI();
@@ -126,11 +118,9 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
             root = ontologyTreeCreator.createTree(Collections.singletonMap(ontologyToQuery.getOntologyAbbreviation(), new RecommendedOntology(ontologyToQuery, null)));
             ontologyToQuery.setView(root);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            root = new DefaultMutableTreeNode("problem processing " + ontologyToQuery.getOntologyDisplayLabel());
+            log.error(e.getMessage());
         } catch (RuntimeException re) {
-            re.printStackTrace();
-            root = new DefaultMutableTreeNode("problem processing " + ontologyToQuery.getOntologyDisplayLabel());
+            log.error(re.getMessage());
         }
 
         ontologyTree.setCellRenderer(new OntologyTreeRenderer());
@@ -155,19 +145,20 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
                 if (ontologyTree.getSelectionCount() > 0) {
                     DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) ontologyTree.getLastSelectedPathComponent();
                     if (!selectedNode.isLeaf()) {
-                        if (selectedNode.getUserObject() instanceof OntologyBranch) {
-                            selectedTreePart = (OntologyBranch) selectedNode.getUserObject();
 
-                            // if from BioPortal, we need to make the accession the PURL
-                            if (ontologyClient instanceof BioPortalClient) {
+                        System.out.println("Class: " + selectedNode.getUserObject().getClass());
 
-                                System.out.println("found a match to " + selectedTreePart.getBranchIdentifier() + "...");
-                                selectedTreePart = new OntologyBranch(selectedTreePart.getBranchIdentifier(), selectedTreePart.getBranchName());
+                        if (selectedNode.getUserObject() instanceof OntologyTreeItem) {
 
-                            }
+                            OntologyTreeItem treeItem = (OntologyTreeItem) selectedNode.getUserObject();
+                            selectedTreePart = treeItem.getBranch();
 
+
+                            System.out.println("Setting subsection to query as " + selectedTreePart.getBranchName());
                             ontologyToQuery.setSubsectionToQuery(selectedTreePart);
                             updateSelectedTreePartText(selectedTreePart);
+                        } else {
+                            System.out.println("Object is not of type ontology branch");
                         }
                     } else {
                         updateSelectedTreePartText(null);
@@ -262,4 +253,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
         this.browserSize = browserSize;
     }
 
+    public Ontology getOntologyToQuery() {
+        return ontologyToQuery;
+    }
 }

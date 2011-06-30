@@ -48,6 +48,7 @@ import org.isatools.isacreator.effects.HUDTitleBar;
 import org.isatools.isacreator.effects.InfiniteProgressPanel;
 import org.isatools.isacreator.effects.TitlePanel;
 import org.isatools.isacreator.effects.borders.RoundedBorder;
+import org.isatools.isacreator.ontologybrowsingutils.TreeObserver;
 import org.isatools.isacreator.ontologymanager.BioPortalClient;
 import org.isatools.isacreator.ontologymanager.OLSClient;
 import org.isatools.isacreator.ontologymanager.OntologyService;
@@ -59,6 +60,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
@@ -143,7 +146,6 @@ public class OntologyConfigUI extends JFrame {
         createOntologySelectionPanel();
         // create right panel containing tree showing the entirety of the ontology selected from the left pane.
         JPanel ontologySelectionPanel = new JPanel(new BorderLayout());
-
 
         ontologyViewContainer = new JPanel(new BorderLayout());
         ontologyViewContainer.setPreferredSize(new Dimension(500, 300));
@@ -271,11 +273,17 @@ public class OntologyConfigUI extends JFrame {
         // create List containing selected ontologies
         selectedOntologyListModel = new DefaultListModel();
         selectedOntologyList = new JList(selectedOntologyListModel);
-        selectedOntologyList.setCellRenderer(listRenderer);
+        selectedOntologyList.setCellRenderer(new SelectedOntologyListRenderer());
         selectedOntologyList.setBackground(UIHelper.BG_COLOR);
 
+        selectedOntologyList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                setOntologySelectionPanelPlaceholder(infoImage);
+            }
+        });
+
         JScrollPane selectedOntologiesScroller = new JScrollPane(selectedOntologyList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        selectedOntologiesScroller.setPreferredSize(new Dimension(200, 230));
+        selectedOntologiesScroller.setPreferredSize(new Dimension(200, 255));
         selectedOntologiesScroller.setBackground(UIHelper.BG_COLOR);
         selectedOntologiesScroller.getViewport().setBackground(UIHelper.BG_COLOR);
 
@@ -320,7 +328,6 @@ public class OntologyConfigUI extends JFrame {
         viewOntologyButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
-                // todo show ontology
                 performTransition();
                 viewOntologyButton.setIcon(browseOntologyButtonIcon);
             }
@@ -361,6 +368,8 @@ public class OntologyConfigUI extends JFrame {
                     selectedOntologies.put(ontology,
                             new RecommendedOntology(getOntologyByLabel(ontology)));
                     updateSelectedOntologies();
+
+                    setOntologySelectionPanelPlaceholder(infoImage);
                 }
 
                 addOntologyButton.setIcon(addOntologyButtonIcon);
@@ -420,7 +429,7 @@ public class OntologyConfigUI extends JFrame {
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         availableOntologiesScroller.getViewport().setBackground(UIHelper.BG_COLOR);
-        availableOntologiesScroller.setPreferredSize(new Dimension(200, 150));
+        availableOntologiesScroller.setPreferredSize(new Dimension(200, 125));
         availableOntologiesScroller.setBorder(new EmptyBorder(0, 0, 0, 0));
 
         IAppWidgetFactory.makeIAppScrollPane(availableOntologiesScroller);
@@ -439,7 +448,7 @@ public class OntologyConfigUI extends JFrame {
         selectedOntologyListModel.removeAllElements();
         for (String ro : selectedOntologies.keySet()) {
             if (selectedOntologies.get(ro).getOntology() != null) {
-                selectedOntologyListModel.addElement(selectedOntologies.get(ro).getOntology());
+                selectedOntologyListModel.addElement(selectedOntologies.get(ro));
             }
         }
         repaint();
@@ -459,11 +468,13 @@ public class OntologyConfigUI extends JFrame {
         Thread performer = new Thread(new Runnable() {
             public void run() {
                 try {
-                    Ontology o = getOntologyByLabel(selectedOntologyList.getSelectedValue().toString());
+                    RecommendedOntology recommendedOntology = (RecommendedOntology) selectedOntologyList.getSelectedValue();
 
-                    if (o != null) {
-                        System.err.println("Got ontology: " + o.getOntologyAbbreviation());
-                        String ontLabel = o.getOntologyAbbreviation() == null ? "ontology" : o.getOntologyAbbreviation();
+                    Ontology ontology = recommendedOntology.getOntology();
+
+                    if (ontology != null) {
+                        System.err.println("Got ontology: " + ontology.getOntologyAbbreviation());
+                        String ontLabel = ontology.getOntologyAbbreviation() == null ? "ontology" : ontology.getOntologyAbbreviation();
                         glassPane = new InfiniteProgressPanel(
                                 "loading " + ontLabel + " for display...");
                         glassPane.setSize(new Dimension(
@@ -474,18 +485,17 @@ public class OntologyConfigUI extends JFrame {
                         validate();
 
                         ontologyViewContainer.removeAll();
-                        if (selectedOntologies.containsKey(o.getOntologyDisplayLabel())) {
-                            o.setSubsectionToQuery(selectedOntologies.get(o.getOntologyDisplayLabel()).getBranchToSearchUnder());
+                        if (selectedOntologies.containsKey(ontology.getOntologyDisplayLabel())) {
+                            ontology.setSubsectionToQuery(selectedOntologies.get(ontology.getOntologyDisplayLabel()).getBranchToSearchUnder());
                         }
 
-                        if (o.getFormat() == OntologyFormats.OWL || o.getFormat() == OntologyFormats.RRF) {
-                            System.out.println("ontology format is OWL");
-                            currentlyActiveBrowser = new OntologyBrowser(o, bioportalClient, getMaxBrowserSize());
-                            configureSearchAndTermDefinitionPanel(o, bioportalClient);
+                        if (ontology.getFormat() == OntologyFormats.OWL || ontology.getFormat() == OntologyFormats.RRF) {
+                            currentlyActiveBrowser = new OntologyBrowser(ontology, bioportalClient, getMaxBrowserSize());
+                            configureSearchAndTermDefinitionPanel(ontology, bioportalClient);
                             ontologyViewContainer.add(currentlyActiveBrowser);
                         } else {
-                            currentlyActiveBrowser = new OntologyBrowser(o, olsClient, getMaxBrowserSize());
-                            configureSearchAndTermDefinitionPanel(o, olsClient);
+                            currentlyActiveBrowser = new OntologyBrowser(ontology, olsClient, getMaxBrowserSize());
+                            configureSearchAndTermDefinitionPanel(ontology, olsClient);
                             ontologyViewContainer.add(currentlyActiveBrowser);
                         }
 
@@ -529,6 +539,22 @@ public class OntologyConfigUI extends JFrame {
         searchAndTermDefinitionViewer.updateView();
 
         currentlyActiveBrowser.registerObserver(searchAndTermDefinitionViewer);
+        currentlyActiveBrowser.registerObserver(new TreeObserver() {
+            public void notifyOfSelection() {
+                System.out.println("Updating selected branch: " + currentlyActiveBrowser.getSelectedTreePart());
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        Ontology currentOntology = currentlyActiveBrowser.getOntologyToQuery();
+                        RecommendedOntology selectedOntologyItem = (RecommendedOntology) selectedOntologyList.getSelectedValue();
+
+                        if (selectedOntologyItem.getOntology() == currentOntology) {
+                            selectedOntologyItem.setBranchToSearchUnder(currentlyActiveBrowser.getSelectedTreePart());
+                            selectedOntologyList.repaint();
+                        }
+                    }
+                });
+            }
+        });
     }
 
 }
