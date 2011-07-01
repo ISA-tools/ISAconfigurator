@@ -40,6 +40,7 @@ import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Ontology;
 import org.isatools.isacreator.effects.SingleSelectionListCellRenderer;
+import org.isatools.isacreator.ontologymanager.BioPortalClient;
 import org.isatools.isacreator.ontologymanager.OntologyQueryAdapter;
 import org.isatools.isacreator.ontologymanager.OntologyService;
 import org.isatools.isacreator.ontologymanager.OntologySourceRefObject;
@@ -138,10 +139,11 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
                             try {
                                 setCurrentPage(new JLabel(LOADING));
                                 SearchOntologyDialogUI.this.validate();
-                                firePropertyChange("termSelected", "", ontologyResultList.getSelectedValue().toString());
+                                firePropertyChange("termSelected", "", ontologyResultList.getSelectedValue());
 
                             } catch (Exception e) {
                                 System.err.println("Failed to resolve tree: " + e.getMessage());
+                                e.printStackTrace();
                             } finally {
                                 setCurrentPage(resultScroller);
                                 SearchOntologyDialogUI.this.validate();
@@ -233,7 +235,6 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
                         SearchOntologyDialogUI.this.validate();
                         Map<OntologySourceRefObject, List<OntologyTerm>> result;
 
-                        System.out.println("Search ontology is " + searchOntology.getOntologyID() + " version " + searchOntology.getOntologyVersion());
                         result = ontologyService.getTermsByPartialNameFromSource(searchField.getText(), new OntologyQueryAdapter(searchOntology).getOntologyQueryString(OntologyQueryAdapter.GET_ID), false);
 
                         if (result.size() == 0) {
@@ -303,7 +304,7 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
     }
 
 
-//	public static void main(String[] args) {
-//		new SearchOntologyDialogUI(new Ontology("1013", "chebi_v1.62", "CHEBI", "Chemicals of Biological Interest"), new OLSClient());
-//	}
+	public static void main(String[] args) {
+		new SearchOntologyDialogUI(new Ontology("1013", "45788", "CHEBI", "Chemicals of Biological Interest"), new BioPortalClient());
+	}
 }
