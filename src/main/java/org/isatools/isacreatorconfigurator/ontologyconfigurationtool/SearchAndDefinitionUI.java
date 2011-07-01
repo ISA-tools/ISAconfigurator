@@ -215,8 +215,11 @@ public class SearchAndDefinitionUI extends JPanel implements TreeObserver {
         searchOntologyDialogUI = new SearchOntologyDialogUI(ontologyToQuery, getOntologyClient());
         searchOntologyDialogUI.addPropertyChangeListener("termSelected", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                System.out.println(propertyChangeEvent.getNewValue().getClass());
                 if (propertyChangeEvent.getNewValue() instanceof OntologyTerm) {
                     OntologyTerm term = (OntologyTerm) propertyChangeEvent.getNewValue();
+                    ontologyToQuery.getOntologyID();
+
                     ((WSOntologyTreeCreator) ontologyTreeCreator).expandTreeToReachTerm(term);
                 }
             }

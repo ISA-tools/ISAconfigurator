@@ -83,7 +83,8 @@ public class OntologyConfigUI extends JFrame {
 
     @InjectedResource
     private ImageIcon infoImage, confirmButton, confirmButtonOver, addOntologyButtonIcon, addOntologyButtonIconOver,
-            removeOntologyButtonIcon, removeOntologyButtonIconOver, browseOntologyButtonIcon, browseOntologyButtonIconOver;
+            removeOntologyButtonIcon, removeOntologyButtonIconOver, browseOntologyButtonIcon, browseOntologyButtonIconOver,
+            removeRestrictionButtonIcon, removeRestrictionButtonIconOver;
 
     private DefaultListModel selectedOntologyListModel;
     private JList selectedOntologyList;
@@ -94,6 +95,8 @@ public class OntologyConfigUI extends JFrame {
 
     // map from ontology display label to the recommended ontology record
     private Map<String, RecommendedOntology> selectedOntologies = new ListOrderedMap<String, RecommendedOntology>();
+
+    private JLabel removeRestrictionButton, viewOntologyButton, removeOntologyButton;
 
     private List<Ontology> ontologiesToBrowseOn;
     // only want to create one instance in memory of the glass pane.
@@ -279,6 +282,8 @@ public class OntologyConfigUI extends JFrame {
         selectedOntologyList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 setOntologySelectionPanelPlaceholder(infoImage);
+
+                setSelectedOntologyButtonVisibility(selectedOntologyList.isSelectionEmpty());
             }
         });
 
@@ -294,7 +299,7 @@ public class OntologyConfigUI extends JFrame {
         selectedOntologiesContainer.add(selectedOntologiesScroller, BorderLayout.CENTER);
 
         // ADD BUTTONS
-        final JLabel removeOntologyButton = new JLabel(removeOntologyButtonIcon);
+        removeOntologyButton = new JLabel(removeOntologyButtonIcon);
         removeOntologyButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
@@ -324,7 +329,9 @@ public class OntologyConfigUI extends JFrame {
             }
         });
 
-        final JLabel viewOntologyButton = new JLabel(browseOntologyButtonIcon);
+        removeOntologyButton.setVisible(false);
+
+        viewOntologyButton = new JLabel(browseOntologyButtonIcon);
         viewOntologyButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
@@ -343,11 +350,40 @@ public class OntologyConfigUI extends JFrame {
             }
         });
 
+        viewOntologyButton.setVisible(false);
+
+        removeRestrictionButton = new JLabel(removeRestrictionButtonIcon);
+        removeRestrictionButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                if (!selectedOntologyList.isSelectionEmpty()) {
+                    ((RecommendedOntology) selectedOntologyList.getSelectedValue()).setBranchToSearchUnder(null);
+                    removeRestrictionButton.setVisible(false);
+                    selectedOntologyList.repaint();
+                }
+
+                removeRestrictionButton.setIcon(removeRestrictionButtonIcon);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+                removeRestrictionButton.setIcon(removeRestrictionButtonIconOver);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+                removeRestrictionButton.setIcon(removeRestrictionButtonIcon);
+            }
+        });
+
+        removeRestrictionButton.setVisible(false);
+
         Box selectedOntologiesOptionContainer = Box.createHorizontalBox();
         selectedOntologiesOptionContainer.setOpaque(false);
 
         selectedOntologiesOptionContainer.add(removeOntologyButton);
         selectedOntologiesOptionContainer.add(viewOntologyButton);
+        selectedOntologiesOptionContainer.add(removeRestrictionButton);
 
         selectedOntologiesContainer.add(selectedOntologiesOptionContainer, BorderLayout.SOUTH);
 
@@ -363,10 +399,10 @@ public class OntologyConfigUI extends JFrame {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
                 if (!availableOntologies.isSelectionEmpty()) {
-                    String ontology = availableOntologies.getSelectedTerm();
+                    Ontology ontology = (Ontology) availableOntologies.getSelectedValue();
 
-                    selectedOntologies.put(ontology,
-                            new RecommendedOntology(getOntologyByLabel(ontology)));
+                    selectedOntologies.put(ontology.getOntologyDisplayLabel(),
+                            new RecommendedOntology(ontology));
                     updateSelectedOntologies();
 
                     setOntologySelectionPanelPlaceholder(infoImage);
@@ -444,23 +480,31 @@ public class OntologyConfigUI extends JFrame {
         add(westPanel, BorderLayout.WEST);
     }
 
+    private void setSelectedOntologyButtonVisibility(boolean selectionEmpty) {
+        removeOntologyButton.setVisible(!selectionEmpty);
+        viewOntologyButton.setVisible(!selectionEmpty);
+
+        removeRestrictionButton.setVisible(showRemoveRestrictionButton(selectionEmpty));
+    }
+
+    private boolean showRemoveRestrictionButton(boolean selectionEmpty) {
+        if(selectionEmpty) {
+            return !selectionEmpty;
+        }
+
+        RecommendedOntology selectedOntology = (RecommendedOntology) selectedOntologyList.getSelectedValue();
+
+        return selectedOntology.getBranchToSearchUnder() != null;
+    }
+
     private void updateSelectedOntologies() {
         selectedOntologyListModel.removeAllElements();
         for (String ro : selectedOntologies.keySet()) {
-            if (selectedOntologies.get(ro).getOntology() != null) {
+            if (selectedOntologies.get(ro) != null) {
                 selectedOntologyListModel.addElement(selectedOntologies.get(ro));
             }
         }
         repaint();
-    }
-
-    public static void main(String[] args) {
-        UIManager.put("Panel.background", UIHelper.BG_COLOR);
-        UIManager.put("ToolTip.foreground", Color.WHITE);
-        UIManager.put("ToolTip.background", UIHelper.DARK_GREEN_COLOR);
-        UIManager.put("Container.background", UIHelper.BG_COLOR);
-        new OntologyConfigUI();
-
     }
 
     private void performTransition() {
@@ -541,7 +585,7 @@ public class OntologyConfigUI extends JFrame {
         currentlyActiveBrowser.registerObserver(searchAndTermDefinitionViewer);
         currentlyActiveBrowser.registerObserver(new TreeObserver() {
             public void notifyOfSelection() {
-                System.out.println("Updating selected branch: " + currentlyActiveBrowser.getSelectedTreePart());
+
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         Ontology currentOntology = currentlyActiveBrowser.getOntologyToQuery();
@@ -549,7 +593,8 @@ public class OntologyConfigUI extends JFrame {
 
                         if (selectedOntologyItem.getOntology() == currentOntology) {
                             selectedOntologyItem.setBranchToSearchUnder(currentlyActiveBrowser.getSelectedTreePart());
-                            selectedOntologyList.repaint();
+                            removeRestrictionButton.setVisible(true);
+                            repaint();
                         }
                     }
                 });

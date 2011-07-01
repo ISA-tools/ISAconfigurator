@@ -37,7 +37,6 @@
 package org.isatools.isacreatorconfigurator.configui;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
-import org.apache.axis.holders.UnsignedIntHolder;
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreator.common.*;
 import org.isatools.isacreator.configuration.DataTypes;
@@ -81,8 +80,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     private static final String PROTOCOL_STR = "Protocol REF";
     private static final String DEFAULT_VAL_STR = "Default Value:";
     private static final String PROTOCOL_TYPE_STR = "Protocol Type:";
-
-    // todo change images to use fuse method of import.
 
     @InjectedResource
     private ImageIcon ontologyConfigIcon, ontologyConfigIconOver, fieldDefinitionHeader, preferredOntologiesSidePanelIcon, checkRegExIcon;
@@ -148,94 +145,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     public void createGUI() {
         ResourceInjector.get("config-ui-package.style").inject(this);
         instantiateFrame("");
-    }
-
-    /**
-     * Saves the currently acquired Field object. Will be used to export field information.
-     *
-     * @return FieldObject holding data contained entered using this interface
-     * @throws DataNotCompleteException - if data is not complete, this exception is thrown
-     */
-    public void saveFieldObject(boolean checkDesc) throws DataNotCompleteException {
-
-        if (field != null) {
-
-            String defaultValAsString = defaultValStd.getText();
-
-            if (datatype.getSelectedItem() == DataTypes.BOOLEAN) {
-                defaultValAsString = defaultValBool.getSelectedItem().toString();
-            }
-
-            FieldObject tfo = new FieldObject(field.getFieldDetails().getColNo(), fieldName.getText(), description.getText(),
-                    DataTypes.resolveDataType(datatype.getSelectedItem().toString()), defaultValAsString,"",
-                    required.isSelected(),
-                    acceptsMultipleValues.isSelected(),
-                    acceptsFileLocations.isSelected(), hidden.isSelected());
-
-            if (usesTemplateForWizard.isSelected()) {
-                tfo.setWizardTemplate(wizardTemplate.getText());
-            } else {
-                tfo.setWizardTemplate("");
-            }
-
-            tfo.setInputFormatted(isInputFormatted.isSelected());
-
-            String finalInputFormat = "";
-
-            if (isInputFormatted.isSelected()) {
-                String s = inputFormat.getText();
-
-                if (!s.equals("Input Format as RegExp")) {
-                    tfo.setInputFormat(inputFormat.getText());
-                    finalInputFormat += s;
-                }
-            } else if (datatype.getSelectedItem() == DataTypes.STRING) {
-                // allow any character
-                finalInputFormat += ".*";
-            }
-
-            if (!finalInputFormat.equals("")) {
-                tfo.setInputFormat(finalInputFormat);
-            }
-
-            if (datatype.getSelectedItem() == DataTypes.LIST) {
-
-                String[] fields = listValues.getText().split(",");
-
-                for (int i = 0; i < fields.length; i++) {
-                    fields[i] = fields[i].trim();
-                }
-                tfo.setFieldList(fields);
-            }
-
-            if (datatype.getSelectedItem() == DataTypes.ONTOLOGY_TERM) {
-                if (recommendOntologySource.isSelected()) {
-                    if (ontologiesToUseModel.getRowCount() > 0) {
-                        Map<String, RecommendedOntology> toBeUpdated = new HashMap<String, RecommendedOntology>();
-                        toBeUpdated.putAll(selectedOntologies);
-                        tfo.setRecommmendedOntologySource(toBeUpdated);
-                    }
-                }
-            }
-
-            field.setFieldObject(tfo);
-
-            if (checkDesc) {
-                if (description.getText().equals("")) {
-                    throw new DataNotCompleteException(
-                            "Description not entered for field " + tfo.getFieldName());
-                }
-            }
-        }
-    }
-
-
-    public String getDataType() {
-        return datatype.getSelectedItem().toString();
-    }
-
-    public String getFieldName() {
-        return fieldName.getText();
     }
 
     private void instantiateFields(String initFieldName) {
@@ -306,16 +215,17 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         defaultValCont = Box.createHorizontalBox();
         defaultValCont.setPreferredSize(new Dimension(150, 25));
 
-        defaultValStd = new RoundedFormattedTextField(null, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR);
+        defaultValStd = new RoundedFormattedTextField(null, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.DARK_GREEN_COLOR);
         defaultValCont.setPreferredSize(new Dimension(120, 25));
         defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                new RegExFormatter(".*", defaultValStd, false)));
-        UIHelper.renderComponent(defaultValStd, UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
+                new RegExFormatter(".*", defaultValStd, false, UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
         defaultValStd.setForeground(UIHelper.DARK_GREEN_COLOR);
+        defaultValStd.setFont(UIHelper.VER_11_PLAIN);
 
         defaultValCont.add(defaultValStd);
 
         defaultValLabStd = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
+
         defaultValContStd.add(defaultValLabStd);
         defaultValContStd.add(defaultValCont);
         container.add(defaultValContStd);
@@ -440,15 +350,8 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                                     selectedOntologies = (ListOrderedMap<String, RecommendedOntology>) propertyChangeEvent.getNewValue();
                                     updateTable();
-//                                    openConfigButton.setEnabled(true);
                                 }
                             });
-//                            ontologyConfig.addPropertyChangeListener("ontologyClosed", new PropertyChangeListener() {
-//                                public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-//                                    openConfigButton.setEnabled(true);
-//                                }
-//                            });
-//                            openConfigButton.setEnabled(false);
                             showPopupInCenter(ontologyConfig);
                         }
                     }
@@ -523,12 +426,12 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 regexChecker.addPropertyChangeListener("close",
                         new PropertyChangeListener() {
                             public void propertyChange(PropertyChangeEvent evt) {
-                                ((DataEntryPanel) main).getApplicationContainer().hideSheet();
+                                main.getApplicationContainer().hideSheet();
                             }
                         });
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        ((DataEntryPanel) main).getApplicationContainer().showJDialogAsSheet(regexChecker);
+                        main.getApplicationContainer().showJDialogAsSheet(regexChecker);
                     }
                 });
             }
@@ -608,15 +511,12 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         checkCont.add(hidden);
 
         container.add(checkCont);
-
         container.add(Box.createGlue());
 
-        // finally add overall container to the FieldData JPanel object
         JScrollPane contScroll = new JScrollPane(container,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         contScroll.setBorder(null);
-        contScroll.setSize(new Dimension(400, 500));
 
         IAppWidgetFactory.makeIAppScrollPane(contScroll);
 
@@ -662,7 +562,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     }
 
     private void instantiateFrame(String initFieldName) {
-        setPreferredSize(new Dimension(400, 500));
         setLayout(new BorderLayout());
         setBackground(UIHelper.BG_COLOR);
         instantiateFields(initFieldName);
@@ -719,7 +618,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
      */
     private void populateFields() {
         try {
-           FieldObject tfo = field.getFieldDetails();
+            FieldObject tfo = field.getFieldDetails();
             if (tfo != null) {
 
                 fieldName.setText(tfo.getFieldName());
@@ -751,6 +650,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
                     defaultValCont.add(ontLookup);
                     defaultValStd.setText(tfo.getDefaultVal());
+
 
                 } else {
                     defaultValLabStd.setText(DEFAULT_VAL_STR);
@@ -821,14 +721,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         }
     }
 
-    public boolean usesTemplate() {
-        return usesTemplateForWizard.isSelected();
-    }
-
-    public String getWizardTemplate() {
-        return wizardTemplate.getText();
-    }
-
     public String toString() {
         return fieldName.getText();
     }
@@ -869,7 +761,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
                 // set regex for any valid character.
                 defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                        new RegExFormatter(".*", defaultValStd, true)));
+                        new RegExFormatter(".*", defaultValStd, true, UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
             }
 
             if (selected == DataTypes.INTEGER) {
@@ -897,7 +789,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
                 // set regex for default value to only accept integers.
                 defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                        new RegExFormatter("[0-9]+", defaultValStd, true)));
+                        new RegExFormatter("[0-9]+", defaultValStd, true, UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
             }
 
             if (selected == DataTypes.DOUBLE) {
@@ -926,7 +818,8 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
                 // set the regular expression checker to handle double values.
                 defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                        new RegExFormatter("[0-9]+\\.[0-9]+", defaultValStd, true)));
+                        new RegExFormatter("[0-9]+\\.[0-9]+", defaultValStd, true,
+                                UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
             }
 
             if (selected == DataTypes.DATE) {
@@ -1015,6 +908,85 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         if (event.getSource() == usesTemplateForWizard) {
             wizardTemplatePanel.setVisible(usesTemplateForWizard.isSelected());
+        }
+    }
+
+    /**
+     * Saves the currently acquired Field object. Will be used to export field information.
+     *
+     * @return FieldObject holding data contained entered using this interface
+     * @throws DataNotCompleteException - if data is not complete, this exception is thrown
+     */
+    public void saveFieldObject(boolean checkDesc) throws DataNotCompleteException {
+
+        if (field != null) {
+
+            String defaultValAsString = defaultValStd.getText();
+
+            if (datatype.getSelectedItem() == DataTypes.BOOLEAN) {
+                defaultValAsString = defaultValBool.getSelectedItem().toString();
+            }
+
+            FieldObject tfo = new FieldObject(field.getFieldDetails().getColNo(), fieldName.getText(), description.getText(),
+                    DataTypes.resolveDataType(datatype.getSelectedItem().toString()), defaultValAsString, "",
+                    required.isSelected(),
+                    acceptsMultipleValues.isSelected(),
+                    acceptsFileLocations.isSelected(), hidden.isSelected());
+
+            if (usesTemplateForWizard.isSelected()) {
+                tfo.setWizardTemplate(wizardTemplate.getText());
+            } else {
+                tfo.setWizardTemplate("");
+            }
+
+            tfo.setInputFormatted(isInputFormatted.isSelected());
+
+            String finalInputFormat = "";
+
+            if (isInputFormatted.isSelected()) {
+                String s = inputFormat.getText();
+
+                if (!s.equals("Input Format as RegExp")) {
+                    tfo.setInputFormat(inputFormat.getText());
+                    finalInputFormat += s;
+                }
+            } else if (datatype.getSelectedItem() == DataTypes.STRING) {
+                // allow any character
+                finalInputFormat += ".*";
+            }
+
+            if (!finalInputFormat.equals("")) {
+                tfo.setInputFormat(finalInputFormat);
+            }
+
+            if (datatype.getSelectedItem() == DataTypes.LIST) {
+
+                String[] fields = listValues.getText().split(",");
+
+                for (int i = 0; i < fields.length; i++) {
+                    fields[i] = fields[i].trim();
+                }
+                tfo.setFieldList(fields);
+            }
+
+            if (datatype.getSelectedItem() == DataTypes.ONTOLOGY_TERM) {
+                if (recommendOntologySource.isSelected()) {
+                    if (ontologiesToUseModel.getRowCount() > 0) {
+                        Map<String, RecommendedOntology> toBeUpdated = new HashMap<String, RecommendedOntology>();
+                        toBeUpdated.putAll(selectedOntologies);
+                        tfo.setRecommmendedOntologySource(toBeUpdated);
+                    }
+                }
+            }
+
+            field.setFieldObject(tfo);
+
+            if (checkDesc) {
+                if (description.getText().equals("")) {
+                    throw new DataNotCompleteException(
+                            "Description not entered for field " + tfo.getFieldName());
+                }
+            }
         }
     }
 
