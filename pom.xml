@@ -19,6 +19,20 @@
         </developer>
     </developers>
 
+
+    <licenses>
+        <license>
+            <name>CPAL</name>
+            <distribution>Version 1.0</distribution>
+            <url>http://isa-tools.org/licenses/ISAconfigurator-license.html</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>http://www.github.com/ISA-tools/ISAconfigurator</url>
+    </scm>
+
+
     <repositories>
 
         <repository>
@@ -168,24 +182,24 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>osxappbundle-maven-plugin</artifactId>
-                <version>1.0-alpha-1</version>
-                <configuration>
-                    <mainClass>org.isatools.isacreatorconfigurator.configui.ISAcreatorConfigurator</mainClass>
-                    <iconFile>target/classes/images/icon/isaconfigurator-icon.icns</iconFile>
-                    <dictionaryFile>target/classes/config/Info.plist</dictionaryFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>osxappbundle-maven-plugin</artifactId>-->
+                <!--<version>1.0-alpha-1</version>-->
+                <!--<configuration>-->
+                    <!--<mainClass>org.isatools.isacreatorconfigurator.configui.ISAcreatorConfigurator</mainClass>-->
+                    <!--<iconFile>target/classes/images/icon/isaconfigurator-icon.icns</iconFile>-->
+                    <!--<dictionaryFile>target/classes/config/Info.plist</dictionaryFile>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>bundle</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -283,7 +297,6 @@
             <artifactId>ISAcreator</artifactId>
             <version>1.4.Final</version>
             <classifier>jar-with-dependencies</classifier>
-
         </dependency>
 
 
