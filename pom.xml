@@ -135,52 +135,52 @@
 
             </plugin>
 
-            <plugin>
-                <groupId>com.akathist.maven.plugins.launch4j</groupId>
-                <artifactId>launch4j-maven-plugin</artifactId>
-                <version>1.3</version>
-                <executions>
-                    <execution>
-                        <id>l4j-clui</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>launch4j</goal>
-                        </goals>
+            <!--<plugin>-->
+                <!--<groupId>com.akathist.maven.plugins.launch4j</groupId>-->
+                <!--<artifactId>launch4j-maven-plugin</artifactId>-->
+                <!--<version>1.3</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>l4j-clui</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>launch4j</goal>-->
+                        <!--</goals>-->
 
-                        <configuration>
-                            <headerType>gui</headerType>
-                            <icon>target/classes/images/icon/isaconfigurator-icon.ico</icon>
+                        <!--<configuration>-->
+                            <!--<headerType>gui</headerType>-->
+                            <!--<icon>target/classes/images/icon/isaconfigurator-icon.ico</icon>-->
 
-                            <!--<splash>target/classes/images/general_gui/splashscreen.gif</splash>-->
-                            <outfile>target/ISAconfigurator.exe</outfile>
-                            <jar>target/ISACreatorConfigurator-${project.version}-jar-with-dependencies.jar</jar>
-                            <errTitle>ISAconfigurator</errTitle>
-                            <classPath>
-                                <mainClass>org.isatools.isacreatorconfigurator.configui.ISAcreatorConfigurator
-                                </mainClass>
-                                <addDependencies>true</addDependencies>
-                            </classPath>
-                            <jre>
-                                <minVersion>1.6.0</minVersion>
-                                <initialHeapSize>128</initialHeapSize>
-                                <maxHeapSize>512</maxHeapSize>
-                            </jre>
-                            <versionInfo>
-                                <fileVersion>1.3.0.0</fileVersion>
-                                <txtFileVersion>1.3.0.0</txtFileVersion>
-                                <fileDescription>ISAconfigurator tool. Part of ISAtools (http://isa-tools.org)
-                                </fileDescription>
-                                <copyright>Common Public Attribution License version 1.0 (CPAL)</copyright>
-                                <productVersion>1.3.0.0</productVersion>
-                                <txtProductVersion>1.3.0.0</txtProductVersion>
-                                <productName>ISAconfigurator</productName>
-                                <internalName>ISAconfigurator</internalName>
-                                <originalFilename>ISAconfigurator.exe</originalFilename>
-                            </versionInfo>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+                            <!--&lt;!&ndash;<splash>target/classes/images/general_gui/splashscreen.gif</splash>&ndash;&gt;-->
+                            <!--<outfile>target/ISAconfigurator.exe</outfile>-->
+                            <!--<jar>target/ISACreatorConfigurator-${project.version}-jar-with-dependencies.jar</jar>-->
+                            <!--<errTitle>ISAconfigurator</errTitle>-->
+                            <!--<classPath>-->
+                                <!--<mainClass>org.isatools.isacreatorconfigurator.configui.ISAcreatorConfigurator-->
+                                <!--</mainClass>-->
+                                <!--<addDependencies>true</addDependencies>-->
+                            <!--</classPath>-->
+                            <!--<jre>-->
+                                <!--<minVersion>1.6.0</minVersion>-->
+                                <!--<initialHeapSize>128</initialHeapSize>-->
+                                <!--<maxHeapSize>512</maxHeapSize>-->
+                            <!--</jre>-->
+                            <!--<versionInfo>-->
+                                <!--<fileVersion>1.3.0.0</fileVersion>-->
+                                <!--<txtFileVersion>1.3.0.0</txtFileVersion>-->
+                                <!--<fileDescription>ISAconfigurator tool. Part of ISAtools (http://isa-tools.org)-->
+                                <!--</fileDescription>-->
+                                <!--<copyright>Common Public Attribution License version 1.0 (CPAL)</copyright>-->
+                                <!--<productVersion>1.3.0.0</productVersion>-->
+                                <!--<txtProductVersion>1.3.0.0</txtProductVersion>-->
+                                <!--<productName>ISAconfigurator</productName>-->
+                                <!--<internalName>ISAconfigurator</internalName>-->
+                                <!--<originalFilename>ISAconfigurator.exe</originalFilename>-->
+                            <!--</versionInfo>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
 
             <!--<plugin>-->
                 <!--<groupId>org.codehaus.mojo</groupId>-->
