@@ -939,6 +939,10 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 tfo.setWizardTemplate("");
             }
 
+            if(field.getFieldDetails().getSection() != null && !field.getFieldDetails().getSection().equals("")) {
+            tfo.setSection(field.getFieldDetails().getSection());
+            }
+
             tfo.setInputFormatted(isInputFormatted.isSelected());
 
             String finalInputFormat = "";
