@@ -61,6 +61,7 @@ public class FieldXMLCreator {
     }
 
     public StringBuffer createTableXML() throws DataNotCompleteException {
+        System.out.println("Creating Table XML");
         StringBuffer entireTableDef = new StringBuffer();
 
         entireTableDef.append("<isatab-config-file xmlns=\"http://www.ebi.ac.uk/bii/isatab_configuration#\">");
@@ -83,6 +84,7 @@ public class FieldXMLCreator {
         String currentSection = null;
 
         for (Display fo : fields) {
+
             if (fo instanceof FieldElement) {
                 FieldElement fed = (FieldElement) fo;
                 FieldObject fd = fed.getFieldDetails();
@@ -100,6 +102,7 @@ public class FieldXMLCreator {
                 }
 
             } else if (fo instanceof SectionDisplay) {
+                System.out.println("Current section is " + fo.toString());
                 currentSection = fo.toString();
             } else {
                 entireTableDef.append("<structured-field name=\"").append(fo.toString()).append("\"/>");

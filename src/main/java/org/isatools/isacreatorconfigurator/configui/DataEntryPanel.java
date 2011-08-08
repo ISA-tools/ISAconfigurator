@@ -384,6 +384,7 @@ public class DataEntryPanel extends JLayeredPane {
 
     private void save() {
         try {
+            updateFieldOrder();
             showMessagePane(Utils.createTableConfigurationXML(sourceFile.getAbsolutePath(), tableFields), JOptionPane.INFORMATION_MESSAGE);
         } catch (DataNotCompleteException e) {
             showMessagePane(e.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -860,6 +861,7 @@ public class DataEntryPanel extends JLayeredPane {
      */
     private void save(boolean doFinalChecks, boolean doDescriptionCheck) throws DataNotCompleteException {
 
+
         if (currentPage == fieldInterface) {
             fieldInterface.saveFieldObject(doFinalChecks);
         }
@@ -1065,6 +1067,7 @@ public class DataEntryPanel extends JLayeredPane {
 
             while (fields.hasNext()) {
                 Display d = fields.next();
+
 
                 if (d.getFieldDetails() != null) {
                     if (d.getFieldDetails().getSection() != null && !d.getFieldDetails().getSection().equals("")) {
