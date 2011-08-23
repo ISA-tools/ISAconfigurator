@@ -61,7 +61,6 @@ public class FieldXMLCreator {
     }
 
     public StringBuffer createTableXML() throws DataNotCompleteException {
-        System.out.println("Creating Table XML");
         StringBuffer entireTableDef = new StringBuffer();
 
         entireTableDef.append("<isatab-config-file xmlns=\"http://www.ebi.ac.uk/bii/isatab_configuration#\">");
@@ -89,7 +88,7 @@ public class FieldXMLCreator {
                 FieldElement fed = (FieldElement) fo;
                 FieldObject fd = fed.getFieldDetails();
 
-                if(currentSection != null) {
+                if (currentSection != null) {
                     fd.setSection(currentSection);
                 }
 
@@ -102,7 +101,6 @@ public class FieldXMLCreator {
                 }
 
             } else if (fo instanceof SectionDisplay) {
-                System.out.println("Current section is " + fo.toString());
                 currentSection = fo.toString();
             } else {
                 entireTableDef.append("<structured-field name=\"").append(fo.toString()).append("\"/>");
@@ -138,9 +136,10 @@ public class FieldXMLCreator {
                 append("\" is-file-field=\"").append(String.valueOf(field.isAcceptsFileLocations())).
                 append("\" is-multiple-value=\"").append(String.valueOf(field.isAcceptsMultipleValues())).
                 append("\" is-required=\"").append(String.valueOf(field.isRequired())).
-                append("\" is-hidden=\"").append(String.valueOf(field.isHidden()));
+                append("\" is-hidden=\"").append(String.valueOf(field.isHidden())).
+                append("\" is-forced-ontology=\"").append(String.valueOf(field.isForceOntologySelection()));
 
-        if(field.getSection() != null && !field.getSection().equals("")) {
+        if (field.getSection() != null && !field.getSection().equals("")) {
             xmlRep.append("\" section=\"").append(String.valueOf(field.getSection())).append("\">");
         } else {
             xmlRep.append("\">");
@@ -194,7 +193,8 @@ public class FieldXMLCreator {
 
         xmlRep.append("<unit-field data-type=\"").append(field.getDatatype()).
                 append("\" is-multiple-value=\"").append(String.valueOf(field.isAcceptsMultipleValues())).
-                append("\" is-required=\"").append(String.valueOf(field.isRequired())).append("\">");
+                append("\" is-required=\"").append(String.valueOf(field.isRequired())).append("\">").
+        append("\" is-forced-ontology=\"").append(String.valueOf(field.isForceOntologySelection()));
 
         // output field description
         xmlRep.append("<description>").append(StringUtils.cleanUpString(field.getDescription())).append("\"</description>");

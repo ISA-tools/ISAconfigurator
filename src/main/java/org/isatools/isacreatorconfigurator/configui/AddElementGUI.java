@@ -356,7 +356,7 @@ public class AddElementGUI extends JDialog {
     protected DropDownComponent createOntologyDropDown(final JTextField field,
                                                        boolean allowsMultiple, Map<String, RecommendedOntology> recommendedOntologySource) {
         final OntologySelectionTool ost = new OntologySelectionTool(
-                allowsMultiple, recommendedOntologySource);
+                allowsMultiple, false, recommendedOntologySource);
         ost.createGUI();
 
         final DropDownComponent dropdown = new DropDownComponent(field, ost, DropDownComponent.ONTOLOGY);
