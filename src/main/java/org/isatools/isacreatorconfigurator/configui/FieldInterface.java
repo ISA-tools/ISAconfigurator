@@ -93,7 +93,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
 
     //private JCheckBox isFixedLength;
-    private JCheckBox isInputFormatted, usesTemplateForWizard, required, recommendOntologySource, hidden;
+    private JCheckBox isInputFormatted, usesTemplateForWizard, required,
+            hidden, recommendOntologySource, forceOntologySelection;
+
     private JLabel defaultValLabStd;
     private JComboBox datatype;
     private JComboBox defaultValBool;
@@ -156,7 +158,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         JLabel fieldDefinitionLab = new JLabel(fieldDefinitionHeader, JLabel.CENTER);
         container.add(fieldDefinitionLab);
 
-        container.add(Box.createVerticalStrut(15));
+        container.add(Box.createVerticalStrut(5));
 
         // FIELD LABEL & INPUT BOX CONTAINER
         JPanel fieldCont = new JPanel(new GridLayout(1, 2));
@@ -477,9 +479,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         container.add(wizardTemplatePanel);
 
-        JPanel checkCont = new JPanel(new GridLayout(2, 2));
+        JPanel checkCont = new JPanel(new GridLayout(3, 2));
         checkCont.setBackground(UIHelper.BG_COLOR);
-        checkCont.setBorder(new TitledBorder(new RoundedBorder(UIHelper.DARK_GREEN_COLOR, 3),
+        checkCont.setBorder(new TitledBorder(new RoundedBorder(UIHelper.DARK_GREEN_COLOR, 4),
                 "Behavioural Attributes", TitledBorder.DEFAULT_JUSTIFICATION,
                 TitledBorder.DEFAULT_POSITION, UIHelper.VER_11_BOLD,
                 UIHelper.DARK_GREEN_COLOR));
@@ -510,13 +512,18 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         UIHelper.renderComponent(hidden, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
         checkCont.add(hidden);
 
+        forceOntologySelection = new JCheckBox("Force ontology selection", false);
+        UIHelper.renderComponent(forceOntologySelection, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
+
+        checkCont.add(forceOntologySelection);
+
         container.add(checkCont);
-        container.add(Box.createGlue());
 
         JScrollPane contScroll = new JScrollPane(container,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         contScroll.setBorder(null);
+        contScroll.setAutoscrolls(true);
 
         IAppWidgetFactory.makeIAppScrollPane(contScroll);
 
@@ -547,7 +554,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     }
 
     private void showPopupInCenter(Window container) {
-        Container parent = (Container) main;
+        Container parent = main;
         Point parentLocation = parent.getLocationOnScreen();
 
         Dimension parentSize = parent.getSize();
@@ -580,7 +587,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
      */
     protected DropDownComponent createOntologyDropDown(final JTextField field,
                                                        boolean allowsMultiple, Map<String, RecommendedOntology> recommendedOntologySource) {
-        final OntologySelectionTool ost = new OntologySelectionTool(allowsMultiple, recommendedOntologySource);
+        final OntologySelectionTool ost = new OntologySelectionTool(allowsMultiple, false, recommendedOntologySource);
         ost.createGUI();
 
         final DropDownComponent dropdown = new DropDownComponent(field, ost, DropDownComponent.ONTOLOGY);
@@ -702,6 +709,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 acceptsMultipleValues.setSelected(tfo.isAcceptsMultipleValues());
                 acceptsFileLocations.setSelected(tfo.isAcceptsFileLocations());
                 hidden.setSelected(tfo.isHidden());
+                forceOntologySelection.setSelected(tfo.isForceOntologySelection());
 
                 if (tfo.getFieldList() != null) {
                     String s = "";
@@ -931,7 +939,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     DataTypes.resolveDataType(datatype.getSelectedItem().toString()), defaultValAsString, "",
                     required.isSelected(),
                     acceptsMultipleValues.isSelected(),
-                    acceptsFileLocations.isSelected(), hidden.isSelected());
+                    acceptsFileLocations.isSelected(), hidden.isSelected(), forceOntologySelection.isSelected());
 
             if (usesTemplateForWizard.isSelected()) {
                 tfo.setWizardTemplate(wizardTemplate.getText());
@@ -939,8 +947,8 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 tfo.setWizardTemplate("");
             }
 
-            if(field.getFieldDetails().getSection() != null && !field.getFieldDetails().getSection().equals("")) {
-            tfo.setSection(field.getFieldDetails().getSection());
+            if (field.getFieldDetails().getSection() != null && !field.getFieldDetails().getSection().equals("")) {
+                tfo.setSection(field.getFieldDetails().getSection());
             }
 
             tfo.setInputFormatted(isInputFormatted.isSelected());
