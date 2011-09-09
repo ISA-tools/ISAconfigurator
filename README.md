@@ -1,5 +1,9 @@
 #### The ISAconfigurator allows for creation of XML files (configuration files) used to build spreadsheets in the ISAcreator and for validation in the creator and ISAvalidation code.
 
+<p>
+<img src="http://isatools.files.wordpress.com/2011/09/isaconfig.png" alt="ISAcreator configurator"/>
+</p>
+
 - General info: <http://isa-tools.org>
 - Tools' overview in this short paper: <http://bioinformatics.oxfordjournals.org/content/26/18/2354.full.pdf+html>
 - Issue tracking and bug reporting: <https://github.com/ISA-tools/ISAconfigurator/issues>
