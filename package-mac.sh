@@ -1,4 +1,4 @@
-mvn clean assembly:assembly
+mvn clean assembly:assembly -Dmaven.test.skip=true
 
 get_tag_data () {
     local tag=$1
