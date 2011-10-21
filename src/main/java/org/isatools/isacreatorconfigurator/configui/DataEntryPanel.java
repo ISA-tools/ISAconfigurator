@@ -966,7 +966,7 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     private DataEntryPanel getCurrentInstance() {
-        return this;
+        return DataEntryPanel.this;
     }
 
     public Set<MappingObject> getTableTypeMapping() {
