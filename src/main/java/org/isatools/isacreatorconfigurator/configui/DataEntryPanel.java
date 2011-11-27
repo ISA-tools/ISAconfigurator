@@ -769,7 +769,7 @@ public class DataEntryPanel extends JLayeredPane {
                         if (selectedIndex != -1) {
                             Display fd = getCurrentlySelectedField();
                             if (fd != null) {
-                                tableFields.get(getCurrentlySelectedTable()).remove(getCurrentlySelectedField());
+                                tableFields.get(getCurrentlySelectedTable()).remove(fd);
                                 reformFieldList(getCurrentlySelectedTable());
                             }
                         }
@@ -976,11 +976,11 @@ public class DataEntryPanel extends JLayeredPane {
     private Display getCurrentlySelectedField() {
         MappingObject mo = getCurrentlySelectedTable();
         if (mo != null) {
-            String selectedField = (elementList.getSelectedValue() != null) ? elementList.getSelectedValue().toString() : null;
-
+            Display selectedField = (elementList.getSelectedValue() != null) ?
+                    (Display) elementList.getSelectedValue() : null;
             if (selectedField != null) {
                 for (Display fd : tableFields.get(mo)) {
-                    if (fd.toString().equals(selectedField)) {
+                    if (fd == selectedField) {
                         return fd;
                     }
                 }
