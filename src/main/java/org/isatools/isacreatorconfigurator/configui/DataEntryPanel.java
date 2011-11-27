@@ -39,13 +39,10 @@ package org.isatools.isacreatorconfigurator.configui;
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreator.common.ReOrderableJList;
-import org.isatools.isacreator.common.ReOrderableListCellRenderer;
 import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.FieldObject;
 import org.isatools.isacreator.configuration.MappingObject;
 import org.isatools.isacreator.effects.CustomSplitPaneDivider;
-import org.isatools.isacreator.ontologymanager.OntologySourceRefObject;
-import org.isatools.isacreator.ontologyselectiontool.ResultCache;
 import org.isatools.isacreatorconfigurator.configui.io.Utils;
 import org.isatools.isacreatorconfigurator.configui.mappingviewer.TableMappingViewer;
 import org.jdesktop.fuse.InjectedResource;
@@ -81,8 +78,6 @@ public class DataEntryPanel extends JLayeredPane {
     private static final String CUSTOM_XML_LOC = "/config/custom_isa_fields.xml";
     // Map of table to fields
     private Map<MappingObject, List<Display>> tableFields;
-    private ResultCache<String, Map<String, String>> resultCache;
-    private List<OntologySourceRefObject> ontologiesUsed;
 
     private AddTableGUI atGUI;
     private AddElementGUI aeGUI;
@@ -97,8 +92,6 @@ public class DataEntryPanel extends JLayeredPane {
     private JLabel removeElementButton;
 
     private JLayeredPane currentPage;
-
-    private JFileChooser jfc;
 
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
@@ -125,20 +118,20 @@ public class DataEntryPanel extends JLayeredPane {
         this.tableFields = tableFields;
         this.sourceFile = sourceFile;
 
-        resultCache = new ResultCache<String, Map<String, String>>();
-
-        ontologiesUsed = new ArrayList<OntologySourceRefObject>();
     }
 
     public void setTableFields(Map<MappingObject, List<Display>> tableFields) {
         this.tableFields = tableFields;
     }
 
+    public Map<MappingObject, List<Display>> getTableFields() {
+        return tableFields;
+    }
+
     public void createGUI() {
         atGUI = new AddTableGUI(this);
         aeGUI = new AddElementGUI(this);
         setupAboutPanel();
-        jfc = new JFileChooser();
         fieldInterface = new FieldInterface(getCurrentInstance());
         fieldInterface.createGUI();
         setLayout(new BorderLayout());
@@ -160,38 +153,8 @@ public class DataEntryPanel extends JLayeredPane {
         });
     }
 
-
-    public ResultCache<String, Map<String, String>> getResultCache() {
-        return resultCache;
-    }
-
     public Fields getFields() {
         return fields;
-    }
-
-    /**
-     * Add an OntologySourceRefObject to the list of defined Ontologies
-     *
-     * @param osro - OntologySourceReferenceObject to be added.
-     */
-    public void addToUsedOntologies(OntologySourceRefObject osro) {
-        if (!checkOntologySourceRefExists(osro)) {
-            ontologiesUsed.add(osro);
-        }
-    }
-
-    private boolean checkOntologySourceRefExists(OntologySourceRefObject osro) {
-        for (OntologySourceRefObject o : ontologiesUsed) {
-            if (o.getSourceName().equals(osro.getSourceName())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public List<OntologySourceRefObject> getOntologiesUsed() {
-        return ontologiesUsed;
     }
 
     private void loadPredefinedFieldNames() {
@@ -247,7 +210,8 @@ public class DataEntryPanel extends JLayeredPane {
         save.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    save(true, true);
+                    updateFieldOrder();
+                    saveCurrentField(true, true);
                     if (sourceFile == null) {
                         createOutput();
                     } else {
@@ -265,7 +229,7 @@ public class DataEntryPanel extends JLayeredPane {
         createFile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    save(true, true);
+                    saveCurrentField(true, true);
                     createOutput();
                 } catch (DataNotCompleteException dce) {
                     showMessagePane(dce.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -486,8 +450,7 @@ public class DataEntryPanel extends JLayeredPane {
         tableList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
                 try {
-                    save(false, false);
-                    // we want to save the field order at this point for the current table.
+                    saveCurrentField(false, false);
                 } catch (DataNotCompleteException dce) {
                     showMessagePane(dce.getMessage(), JOptionPane.ERROR_MESSAGE);
                 }
@@ -600,7 +563,7 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     private void updateTableInfoDisplay(MappingObject currentTable) {
-        StringBuffer message = new StringBuffer();
+        StringBuilder message = new StringBuilder();
 
         if (currentTable != null) {
 
@@ -662,9 +625,8 @@ public class DataEntryPanel extends JLayeredPane {
             public void valueChanged(ListSelectionEvent event) {
                 Display selectedNode = (Display) elementList.getSelectedValue();
                 if (selectedNode != null) {
-                    // save the current field object
                     try {
-                        save(false, false);
+                        saveCurrentField(false, false);
                     } catch (DataNotCompleteException dce) {
                         showMessagePane(dce.getMessage(), JOptionPane.ERROR_MESSAGE);
                     }
@@ -766,10 +728,19 @@ public class DataEntryPanel extends JLayeredPane {
                     if (elementList.getSelectedValue() != null) {
                         int selectedIndex = elementList.getSelectedIndex();
 
+                        updateFieldOrder();
+
                         if (selectedIndex != -1) {
                             Display fd = getCurrentlySelectedField();
                             if (fd != null) {
-                                tableFields.get(getCurrentlySelectedTable()).remove(fd);
+                                if (tableFields.get(getCurrentlySelectedTable()).contains(fd)) {
+                                    tableFields.get(getCurrentlySelectedTable()).remove(fd);
+                                } else {
+                                    Display field = findTableFieldToRemove(fd.getFieldDetails());
+                                    if (field != null) {
+                                        tableFields.get(getCurrentlySelectedTable()).remove(field);
+                                    }
+                                }
                                 reformFieldList(getCurrentlySelectedTable());
                             }
                         }
@@ -859,11 +830,14 @@ public class DataEntryPanel extends JLayeredPane {
      *      catches a DataNotCompleteException to prevent users from not entering a description
      * @see org.isatools.isacreatorconfigurator.configui.DataNotCompleteException
      */
-    private void save(boolean doFinalChecks, boolean doDescriptionCheck) throws DataNotCompleteException {
+    private void saveCurrentField(boolean doFinalChecks, boolean doDescriptionCheck) throws DataNotCompleteException {
 
 
         if (currentPage == fieldInterface) {
-            fieldInterface.saveFieldObject(doFinalChecks);
+
+            FieldInterface currentField = (FieldInterface) currentPage;
+            System.out.println("Saving current field, which is " + currentField.toString());
+            currentField.saveFieldObject();
         }
 
         if (doFinalChecks) {
@@ -871,16 +845,27 @@ public class DataEntryPanel extends JLayeredPane {
 
         }
         if (doDescriptionCheck) {
-            checkForDescriptionFieldPresence();
+            checkForSalientFieldPresence();
         }
     }
 
-    private void checkForDescriptionFieldPresence() throws DataNotCompleteException {
+    private void checkForSalientFieldPresence() throws DataNotCompleteException {
+        updateFieldOrder();
+
         for (MappingObject mo : tableFields.keySet()) {
+
             for (Display disp : tableFields.get(mo)) {
                 if (disp instanceof FieldElement) {
                     FieldElement fe = (FieldElement) disp;
-                    if (fe.getFieldDetails().getDescription().trim().equals("")) {
+
+                    if (fe.getFieldDetails().getFieldName().equalsIgnoreCase("protocol ref")) {
+                        if (fe.getFieldDetails().getDefaultVal().trim().equals("")) {
+                            throw new DataNotCompleteException("<p><b>" + fe.getFieldDetails().getFieldName() +
+                                    "</b> in table <b>" + mo.getAssayName() +
+                                    "</p></b><p> is missing it's <b>protocol type</b>.</p>");
+                        }
+                    } else if (fe.getFieldDetails().getDescription().trim().equals("")) {
+                        System.out.println("No description found :(");
                         throw new DataNotCompleteException("<p><b>" + fe.getFieldDetails().getFieldName() +
                                 "</b> in table <b>" + mo.getAssayName() +
                                 "</p></b><p> is missing it's <b>description</b>.</p>");
@@ -976,15 +961,8 @@ public class DataEntryPanel extends JLayeredPane {
     private Display getCurrentlySelectedField() {
         MappingObject mo = getCurrentlySelectedTable();
         if (mo != null) {
-            Display selectedField = (elementList.getSelectedValue() != null) ?
+            return (elementList.getSelectedValue() != null) ?
                     (Display) elementList.getSelectedValue() : null;
-            if (selectedField != null) {
-                for (Display fd : tableFields.get(mo)) {
-                    if (fd == selectedField) {
-                        return fd;
-                    }
-                }
-            }
         }
         return null;
     }
@@ -1015,22 +993,33 @@ public class DataEntryPanel extends JLayeredPane {
     public boolean addField(Display element) {
         MappingObject currentlySelectedTable = getCurrentlySelectedTable();
         if (currentlySelectedTable != null) {
-            if (!checkPreExistingFields(currentlySelectedTable, element.toString()) || element.toString().equals("Unit") || element.toString().equals("Protocol REF")) {
+            if (!checkPreExistingFields(currentlySelectedTable, element.toString())
+                    || element.toString().equals("Unit")
+                    || element.toString().equals("Protocol REF")) {
                 // add field to table
                 tableFields.get(currentlySelectedTable).add(element);
                 reformFieldList(currentlySelectedTable);
                 return true;
             }
-
         }
-
         return false;
     }
 
+    private Display findTableFieldToRemove(FieldObject fieldToRemove) {
+        for (Display d : tableFields.get(getCurrentlySelectedTable())) {
+            if (d != null && d.getFieldDetails() != null) {
+                if (d.getFieldDetails().getFieldName().equals(fieldToRemove.getFieldName())) {
+                    if (d.getFieldDetails().getColNo() == fieldToRemove.getColNo()) {
+                        return d;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
-    private MappingObject getCurrentlySelectedTable() {
+    public MappingObject getCurrentlySelectedTable() {
         String s = (tableList.getSelectedValue() != null) ? tableList.getSelectedValue().toString() : null;
-
         if (s != null) {
             for (MappingObject mo : tableFields.keySet()) {
                 if (mo.getAssayName().equals(s)) {
@@ -1038,7 +1027,6 @@ public class DataEntryPanel extends JLayeredPane {
                 }
             }
         }
-
         return null;
     }
 
@@ -1051,7 +1039,6 @@ public class DataEntryPanel extends JLayeredPane {
         if (tableModel.getSize() == 0) {
             setCurrentPage(tableInfo);
         }
-
         tableCountInfo.setText("<html><strong>" + tableModel.getSize() + "</strong> tables...</html>");
     }
 
@@ -1101,25 +1088,6 @@ public class DataEntryPanel extends JLayeredPane {
         elementCountInfo.setText("<html><strong>" + elementModel.getSize() + "</strong> elements...</html>");
     }
 
-
-    /**
-     * Saves current session to a user defined location.
-     * throws IOException - When problem occures on save file attempt
-     *
-     * @throws DataNotCompleteException - When fields are missing.
-     * @throws java.io.IOException      /
-     */
-    private void saveSession() throws IOException, DataNotCompleteException, InvalidFieldOrderException {
-
-        if (jfc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-
-            File toSave = jfc.getSelectedFile();
-
-            if (jfc.getSelectedFile() != null) {
-                showMessagePane(Utils.saveSession(tableFields, toSave), JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
-    }
 
     private boolean checkPreExistingFields(MappingObject tableUsed, String fieldName) {
 

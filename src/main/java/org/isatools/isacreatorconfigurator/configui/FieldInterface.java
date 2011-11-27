@@ -125,6 +125,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     private DefaultTableModel ontologiesToUseModel;
     private static OntologyConfigUI ontologyConfig;
     private Map<String, RecommendedOntology> selectedOntologies = new ListOrderedMap<String, RecommendedOntology>();
+
     private FieldElement field;
 
     static {
@@ -925,7 +926,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
      * @return FieldObject holding data contained entered using this interface
      * @throws DataNotCompleteException - if data is not complete, this exception is thrown
      */
-    public void saveFieldObject(boolean checkDesc) throws DataNotCompleteException {
+    public void saveFieldObject() throws DataNotCompleteException {
 
         if (field != null) {
 
@@ -992,13 +993,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
             }
 
             field.setFieldObject(tfo);
-
-            if (checkDesc) {
-                if (description.getText().equals("")) {
-                    throw new DataNotCompleteException(
-                            "Description not entered for field " + tfo.getFieldName());
-                }
-            }
         }
     }
 
