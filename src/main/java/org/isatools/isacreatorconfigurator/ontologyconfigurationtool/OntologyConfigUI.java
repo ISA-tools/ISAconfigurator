@@ -79,27 +79,6 @@ import java.util.List;
 
 public class OntologyConfigUI extends JFrame {
 
-     static {
-
-        UIManager.put("Panel.background", UIHelper.BG_COLOR);
-        UIManager.put("ToolTip.foreground", UIHelper.DARK_GREEN_COLOR);
-        UIManager.put("ToolTip.background", UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR);
-        UIManager.put("Container.background", UIHelper.BG_COLOR);
-
-        UIManager.put("PopupMenuUI", "org.isatools.isacreator.common.CustomPopupMenuUI");
-        UIManager.put("MenuItemUI", "org.isatools.isacreator.common.CustomMenuItemUI");
-        UIManager.put("MenuUI", "org.isatools.isacreator.common.CustomMenuUI");
-        UIManager.put("SeparatorUI", "org.isatools.isacreator.common.CustomSeparatorUI");
-        UIManager.put("MenuBarUI", "org.isatools.isacreator.common.CustomMenuBarUI");
-
-        ResourceInjector.addModule("org.jdesktop.fuse.swing.SwingModule");
-        ResourceInjector.get("config-ui-package.style").load(
-                OntologyConfigUI.class.getResource("/dependency-injections/config-ui-package.properties"));
-        ResourceInjector.get("ontologyconfigtool-package.style").load(
-                OntologyConfigUI.class.getResource("/dependency-injections/ontologyconfigtool-package.properties"));
-    }
-
-    // we create one BioportalClient to be shared by all instances of the OntologyConfigUI
     private static final BioPortalClient bioportalClient = new BioPortalClient();
     private static final OLSClient olsClient = new OLSClient();
 
@@ -594,9 +573,6 @@ public class OntologyConfigUI extends JFrame {
     }
 
     private void configureSearchAndTermDefinitionPanel(Ontology ontologyToQuery, OntologyService ontologyClient) {
-
-
-
         searchAndTermDefinitionViewer.setOntologyToQuery(ontologyToQuery);
         searchAndTermDefinitionViewer.setOntologyTree(currentlyActiveBrowser.getOntologyTree());
         searchAndTermDefinitionViewer.setOntologyTreeCreator(currentlyActiveBrowser.getOntologyTreeCreator());
