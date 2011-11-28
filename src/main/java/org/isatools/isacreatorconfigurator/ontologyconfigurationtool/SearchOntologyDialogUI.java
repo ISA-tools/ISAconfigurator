@@ -303,8 +303,4 @@ public class SearchOntologyDialogUI extends InformationPane implements ListSelec
         swappableContainer.repaint();
     }
 
-
-	public static void main(String[] args) {
-		new SearchOntologyDialogUI(new Ontology("1013", "45788", "CHEBI", "Chemicals of Biological Interest"), new BioPortalClient());
-	}
 }

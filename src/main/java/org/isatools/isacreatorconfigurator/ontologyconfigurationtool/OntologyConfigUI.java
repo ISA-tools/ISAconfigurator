@@ -53,6 +53,8 @@ import org.isatools.isacreator.ontologymanager.BioPortalClient;
 import org.isatools.isacreator.ontologymanager.OLSClient;
 import org.isatools.isacreator.ontologymanager.OntologyService;
 import org.isatools.isacreator.ontologymanager.OntologySourceRefObject;
+import org.isatools.isacreator.ontologymanager.bioportal.model.OntologyPortal;
+import org.isatools.isacreator.ontologymanager.utils.OntologyUtils;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -76,6 +78,26 @@ import java.util.List;
 
 
 public class OntologyConfigUI extends JFrame {
+
+     static {
+
+        UIManager.put("Panel.background", UIHelper.BG_COLOR);
+        UIManager.put("ToolTip.foreground", UIHelper.DARK_GREEN_COLOR);
+        UIManager.put("ToolTip.background", UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR);
+        UIManager.put("Container.background", UIHelper.BG_COLOR);
+
+        UIManager.put("PopupMenuUI", "org.isatools.isacreator.common.CustomPopupMenuUI");
+        UIManager.put("MenuItemUI", "org.isatools.isacreator.common.CustomMenuItemUI");
+        UIManager.put("MenuUI", "org.isatools.isacreator.common.CustomMenuUI");
+        UIManager.put("SeparatorUI", "org.isatools.isacreator.common.CustomSeparatorUI");
+        UIManager.put("MenuBarUI", "org.isatools.isacreator.common.CustomMenuBarUI");
+
+        ResourceInjector.addModule("org.jdesktop.fuse.swing.SwingModule");
+        ResourceInjector.get("config-ui-package.style").load(
+                OntologyConfigUI.class.getResource("/dependency-injections/config-ui-package.properties"));
+        ResourceInjector.get("ontologyconfigtool-package.style").load(
+                OntologyConfigUI.class.getResource("/dependency-injections/ontologyconfigtool-package.properties"));
+    }
 
     // we create one BioportalClient to be shared by all instances of the OntologyConfigUI
     private static final BioPortalClient bioportalClient = new BioPortalClient();
@@ -311,8 +333,6 @@ public class OntologyConfigUI extends JFrame {
                     setOntologySelectionPanelPlaceholder(infoImage);
 
                     updateSelectedOntologies();
-
-                    // reset central image to that of the original image.
                 }
 
                 removeOntologyButton.setIcon(removeOntologyButtonIcon);
@@ -533,7 +553,7 @@ public class OntologyConfigUI extends JFrame {
                             ontology.setSubsectionToQuery(selectedOntologies.get(ontology.getOntologyDisplayLabel()).getBranchToSearchUnder());
                         }
 
-                        if (ontology.getFormat() == OntologyFormats.OWL || ontology.getFormat() == OntologyFormats.RRF) {
+                        if (OntologyUtils.getSourceOntologyPortal(ontology) == OntologyPortal.BIOPORTAL) {
                             currentlyActiveBrowser = new OntologyBrowser(ontology, bioportalClient, getMaxBrowserSize());
                             configureSearchAndTermDefinitionPanel(ontology, bioportalClient);
                             ontologyViewContainer.add(currentlyActiveBrowser);
@@ -575,11 +595,12 @@ public class OntologyConfigUI extends JFrame {
 
     private void configureSearchAndTermDefinitionPanel(Ontology ontologyToQuery, OntologyService ontologyClient) {
 
+
+
         searchAndTermDefinitionViewer.setOntologyToQuery(ontologyToQuery);
         searchAndTermDefinitionViewer.setOntologyTree(currentlyActiveBrowser.getOntologyTree());
         searchAndTermDefinitionViewer.setOntologyTreeCreator(currentlyActiveBrowser.getOntologyTreeCreator());
         searchAndTermDefinitionViewer.setOntologyClient(ontologyClient);
-
         searchAndTermDefinitionViewer.updateView();
 
         currentlyActiveBrowser.registerObserver(searchAndTermDefinitionViewer);
@@ -600,6 +621,11 @@ public class OntologyConfigUI extends JFrame {
                 });
             }
         });
+    }
+
+    public static void main(String[] args) {
+        OntologyConfigUI ui = new OntologyConfigUI();
+        ui.createGUI();
     }
 
 }
