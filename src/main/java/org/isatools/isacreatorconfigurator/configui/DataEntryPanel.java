@@ -832,11 +832,8 @@ public class DataEntryPanel extends JLayeredPane {
      */
     private void saveCurrentField(boolean doFinalChecks, boolean doDescriptionCheck) throws DataNotCompleteException {
 
-
         if (currentPage == fieldInterface) {
-
             FieldInterface currentField = (FieldInterface) currentPage;
-            System.out.println("Saving current field, which is " + currentField.toString());
             currentField.saveFieldObject();
         }
 
@@ -865,7 +862,6 @@ public class DataEntryPanel extends JLayeredPane {
                                     "</p></b><p> is missing it's <b>protocol type</b>.</p>");
                         }
                     } else if (fe.getFieldDetails().getDescription().trim().equals("")) {
-                        System.out.println("No description found :(");
                         throw new DataNotCompleteException("<p><b>" + fe.getFieldDetails().getFieldName() +
                                 "</b> in table <b>" + mo.getAssayName() +
                                 "</p></b><p> is missing it's <b>description</b>.</p>");
