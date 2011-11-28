@@ -37,9 +37,11 @@
 package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
+import org.geneontology.swing.SwingUtil;
 import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Ontology;
 import org.isatools.isacreator.configuration.OntologyBranch;
+import org.isatools.isacreator.ontologymanager.OLSClient;
 import org.isatools.isacreator.ontologymanager.OntologyQueryAdapter;
 import org.isatools.isacreator.ontologymanager.OntologyService;
 import org.isatools.isacreatorconfigurator.informationwindow.InformationPane;
@@ -140,8 +142,19 @@ public class ViewTermDefinitionUI extends InformationPane {
         Thread performer = new Thread(new Runnable() {
             public void run() {
                 try {
+
+                    System.out.println("Searching for " + term.getBranchIdentifier() + " in " +
+                            searchOntology.getOntologyAbbreviation() + " version " +
+                            new OntologyQueryAdapter(searchOntology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
+
+                    System.out.println("Ontology service is " + (ontologyService instanceof OLSClient ? "OLS client" : "BioPortal Client"));
+
                     properties = ontologyService.getTermMetadata(term.getBranchIdentifier(), new OntologyQueryAdapter(searchOntology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
-                    setCurrentPage(createOntologyInformationPane(term));
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            setCurrentPage(createOntologyInformationPane(term));
+                        }
+                    });
                 } catch (Exception e) {
                     setCurrentPage(createOntologyInformationPane(term));
                     System.err.println("Failed to connect to ontology client: " + e.getMessage());
