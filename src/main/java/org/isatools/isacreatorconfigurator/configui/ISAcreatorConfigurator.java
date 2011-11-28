@@ -75,6 +75,9 @@ public class ISAcreatorConfigurator extends AnimatableJFrame {
         UIManager.put("ToolTip.background", UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR);
         UIManager.put("Container.background", UIHelper.BG_COLOR);
 
+        UIManager.put("Menu.selectionBackground", UIHelper.LIGHT_GREEN_COLOR);
+        UIManager.put("MenuItem.selectionBackground", UIHelper.LIGHT_GREEN_COLOR);
+
         UIManager.put("PopupMenuUI", "org.isatools.isacreator.common.CustomPopupMenuUI");
         UIManager.put("MenuItemUI", "org.isatools.isacreator.common.CustomMenuItemUI");
         UIManager.put("MenuUI", "org.isatools.isacreator.common.CustomMenuUI");
