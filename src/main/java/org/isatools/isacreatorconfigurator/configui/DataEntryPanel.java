@@ -689,11 +689,15 @@ public class DataEntryPanel extends JLayeredPane {
                     aeGUI.updateFieldList(filterAvailableFieldsByTableType(fields,
                             Location.resolveLocationIdentifier(getCurrentlySelectedTable().getTableType())));
 
+                    String tableType = getCurrentlySelectedTable().getTableType().equalsIgnoreCase("investigation")
+                            ? "Investigation file"
+                            : getCurrentlySelectedTable().getTableType();
+
                     aeGUI.updateCustomFieldList(filterAvailableFieldsByTableType(customFields,
-                            Location.resolveLocationIdentifier(getCurrentlySelectedTable().getTableType())));
+                            Location.resolveLocationIdentifier(tableType)));
 
 
-                    aeGUI.setCurrentTableType(Location.resolveLocationIdentifier(getCurrentlySelectedTable().getTableType()));
+                    aeGUI.setCurrentTableType(Location.resolveLocationIdentifier(tableType));
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
