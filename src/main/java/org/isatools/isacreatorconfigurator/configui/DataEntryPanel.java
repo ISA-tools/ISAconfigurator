@@ -200,8 +200,10 @@ public class DataEntryPanel extends JLayeredPane {
     private JPanel createMenu() {
         JPanel topPanel = new JPanel(new GridLayout(1, 1));
         topPanel.setBackground(UIHelper.BG_COLOR);
+        topPanel.setBorder(null);
 
         JMenuBar menu_container = new JMenuBar();
+        menu_container.setBorder(null);
 
         JMenu file = new JMenu("File");
 
@@ -407,6 +409,7 @@ public class DataEntryPanel extends JLayeredPane {
 
         JSplitPane tablesAndElements = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
                 createTableListPanel(), createFieldListPanel());
+        tablesAndElements.setBorder(null);
 
         customiseJSplitPaneLookAndFeel(tablesAndElements);
 
