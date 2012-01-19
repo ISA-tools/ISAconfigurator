@@ -5,13 +5,13 @@
  ISAconfigurator is licensed under the Common Public Attribution License version 1.0 (CPAL)
 
  EXHIBIT A. CPAL version 1.0
- ÒThe contents of this file are subject to the CPAL version 1.0 (the ÒLicenseÓ); you may not use this file except
+ ï¿½The contents of this file are subject to the CPAL version 1.0 (the ï¿½Licenseï¿½); you may not use this file except
  in compliance with the License. You may obtain a copy of the License at http://isa-tools.org/licenses/ISAconfigurator-license.html.
  The License is based on the Mozilla Public License version 1.1 but Sections 14 and 15 have been added to cover use of software over
  a computer network and provide for limited attribution for the Original Developer. In addition, Exhibit A has been modified to be
  consistent with Exhibit B.
 
- Software distributed under the License is distributed on an ÒAS ISÓ basis, WITHOUT WARRANTY OF ANY KIND, either express
+ Software distributed under the License is distributed on an ï¿½AS ISï¿½ basis, WITHOUT WARRANTY OF ANY KIND, either express
  or implied. See the License for the specific language governing rights and limitations under the License.
 
  The Original Code is ISAconfigurator.
@@ -69,10 +69,10 @@ public class Fields {
 
     public List<String> getFieldsByLocation(Location location) {
         List<String> result = new ArrayList<String>();
-        for (Field f : fields) {
-            for (Location l : f.getAppearsIn()) {
+        for (Field field : fields) {
+            for (Location l : field.getAppearsIn()) {
                 if (l == location) {
-                    result.add(f.getName());
+                    result.add(field.getName());
                     break;
                 }
             }
@@ -83,14 +83,14 @@ public class Fields {
 
     public List<String> getDefaultFieldsByLocation(Location location) {
         List<String> result = new ArrayList<String>();
-        for (Field f : fields) {
-            for (Location l : f.getAppearsIn()) {
-                if (l == location) {
-                    if (location == Location.ASSAY && f.isAssayDefault()) {
-                        result.add(f.getName());
+        for (Field field : fields) {
+            for (Location fieldAppearsIn : field.getAppearsIn()) {
+                if (fieldAppearsIn == location) {
+                    if (location == Location.ASSAY && field.isAssayDefault()) {
+                        result.add(field.getName());
                         break;
-                    } else if (location == Location.STUDY_SAMPLE && f.isStudyDefault()) {
-                        result.add(f.getName());
+                    } else if (location == Location.STUDY_SAMPLE && field.isStudyDefault()) {
+                        result.add(field.getName());
                         break;
                     }
                 }
@@ -100,9 +100,9 @@ public class Fields {
     }
 
     public String getDefaultWizardTemplateForField(String fieldName) {
-        for (Field f : fields) {
-            if (f.getName().equals(fieldName)) {
-                return f.getDefaultWizardTemplate();
+        for (Field field : fields) {
+            if (field.getName().equals(fieldName)) {
+                return field.getDefaultWizardTemplate();
             }
         }
 
@@ -110,9 +110,9 @@ public class Fields {
     }
 
     public boolean isFieldRequired(String fieldName) {
-        for (Field f : fields) {
-            if (f.getName().equals(fieldName)) {
-                return f.isAssayDefault() || f.isStudyDefault();
+        for (Field field : fields) {
+            if (field.getName().equals(fieldName)) {
+                return field.isAssayDefault() || field.isStudyDefault();
             }
         }
 
