@@ -44,6 +44,7 @@ import org.isatools.isacreator.configuration.FieldObject;
 import org.isatools.isacreator.configuration.MappingObject;
 import org.isatools.isacreator.effects.CustomSplitPaneDivider;
 import org.isatools.isacreatorconfigurator.configui.io.Utils;
+import org.isatools.isacreatorconfigurator.configui.xml.ProcessStandardFieldsXML;
 import org.isatools.isacreatorconfigurator.configui.mappingviewer.TableMappingViewer;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
@@ -159,9 +160,8 @@ public class DataEntryPanel extends JLayeredPane {
 
     private void loadPredefinedFieldNames() {
         ProcessStandardFieldsXML process = new ProcessStandardFieldsXML();
-
-        fields = process.parseFile(getClass().getResource(FIELD_XML_LOC));
-        customFields = process.parseFile(getClass().getResource(CUSTOM_XML_LOC));
+        fields = process.loadFieldsFromFile(ProcessStandardFieldsXML.STANDARD_FIELDS_XML);
+        customFields = process.loadFieldsFromFile(ProcessStandardFieldsXML.CUSTOM_FIELDS_XML);
     }
 
     private void instantiateFrame() {
@@ -596,8 +596,13 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     private String[] filterAvailableFieldsByTableType(Fields fieldList, Location type) {
+
         List<String> result = fieldList.getFieldsByLocation(type);
+
+        //List<String> result= fieldList.getFields().toString();
         Collections.sort(result);
+
+        System.out.println("-----" + result.toString());
         return result.toArray(new String[result.size()]);
     }
 
