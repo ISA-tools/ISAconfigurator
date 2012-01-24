@@ -17,12 +17,13 @@ import javax.xml.xpath.XPathConstants;
  */
 public class ProcessStandardFieldsXML {
 
-    private static final String STANDARD_FIELDS_XML = "/config/std_isa_fields.xml";
+    public static final String STANDARD_FIELDS_XML = "/config/std_isa_fields.xml";
+    public static final String CUSTOM_FIELDS_XML = "/config/custom_isa_fields.xml";
 
 
-    public Fields loadFieldsFromFile() {
+    public Fields loadFieldsFromFile(String fileName) {
 
-        XPathReader reader = new XPathReader(getClass().getResourceAsStream(STANDARD_FIELDS_XML));
+        XPathReader reader = new XPathReader(getClass().getResourceAsStream(fileName));
 
         NodeList fields = (NodeList) reader.read("/fields/field", XPathConstants.NODESET);
 
@@ -70,17 +71,4 @@ public class ProcessStandardFieldsXML {
 
     }
 
-    public static void main(String[] args) {
-        ProcessStandardFieldsXML xml = new ProcessStandardFieldsXML();
-
-        Fields fields = xml.loadFieldsFromFile();
-
-        for (Field field : fields.getFields()) {
-            System.out.println(field.getName());
-            for (Location location : field.getAppearsIn()) {
-                System.out.println("\t" + location.getType());
-            }
-
-        }
-    }
 }
