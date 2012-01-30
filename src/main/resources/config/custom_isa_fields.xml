@@ -6,26 +6,23 @@
             <location>Assay</location>
         </appearsIn>
     </field>
-
-    <field>
-        <name>Factor Value</name>
-        <appearsIn>
-            <location>Study Sample</location>
-            <location>Assay</location>
-        </appearsIn>
-    </field>
-
     <field>
         <name>Comment</name>
         <appearsIn>
-            <location>Study Sample</location>
             <location>Investigation file</location>
+            <location>Study Sample</location>
             <location>Assay</location>
         </appearsIn>
     </field>
-    
     <field>
         <name>Parameter Value</name>
+        <appearsIn>
+            <location>Study Sample</location>
+            <location>Assay</location>
+        </appearsIn>
+    </field>
+     <field>
+        <name>Factor Value</name>
         <appearsIn>
             <location>Study Sample</location>
             <location>Assay</location>
