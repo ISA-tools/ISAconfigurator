@@ -385,7 +385,11 @@ public class AddTableGUI extends JDialog {
         // populate initial fields with the default fields
         Fields fieldList = parentGUI.getFields();
 
+        System.out.println("Looking for default fields in " + typeCombo.getSelectedItem().toString());
+
         List<String> defaultFields = fieldList.getDefaultFieldsByLocation(Location.resolveLocationIdentifier(typeCombo.getSelectedItem().toString()));
+
+        System.out.println("Found " + defaultFields.size() + " default fields");
 
         if (defaultFields.size() > 0) {
             initialFieldsList = new ArrayList<FieldObject>();

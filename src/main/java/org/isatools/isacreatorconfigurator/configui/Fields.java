@@ -92,6 +92,9 @@ public class Fields {
                     } else if (location == Location.STUDY_SAMPLE && field.isStudyDefault()) {
                         result.add(field.getName());
                         break;
+                    } else if(location == Location.INVESTIGATION && field.isInvDefault()) {
+                        result.add(field.getName());
+                        break;
                     }
                 }
             }

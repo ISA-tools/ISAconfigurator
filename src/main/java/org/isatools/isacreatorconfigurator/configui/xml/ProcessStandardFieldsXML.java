@@ -32,32 +32,36 @@ public class ProcessStandardFieldsXML {
         if (fields.getLength() > 0) {
             // carry on
 
-            for (int fieldIndex = 0; fieldIndex < fields.getLength(); fieldIndex++) {
+            for (int fieldIndex = 1; fieldIndex < fields.getLength() + 1; fieldIndex++) {
                 Field newField = new Field();
 
                 String fieldName = (String) reader.read("/fields/field[" + fieldIndex + "]/name", XPathConstants.STRING);
+                System.out.println("Processing :" + fieldName);
                 newField.setName(fieldName);
 
-                NodeList appearsIn = (NodeList) reader.read("/fields/field[" + fieldIndex + "]/appearsIn/location/text()",XPathConstants.NODESET);
+                NodeList appearsIn = (NodeList) reader.read("/fields/field[" + fieldIndex + "]/appearsIn/location",XPathConstants.NODESET);
 
-                for (int locationIndex = 0; locationIndex < appearsIn.getLength(); locationIndex++) {
+                for (int locationIndex = 1; locationIndex < appearsIn.getLength() + 1; locationIndex++) {
 
-                    //System.out.println("found at rank: " + locationIndex);
+                    String location = (String) reader.read("/fields/field[" + fieldIndex + "]/appearsIn/location[" + locationIndex + "]",XPathConstants.STRING);
 
-                    //String location = (String) reader.read("/fields/field[" + fieldIndex + "]/appearsIn/location[" + locationIndex + "]",XPathConstants.STRING);
-
-                    String location = appearsIn.item(locationIndex).getNodeValue().toString();
-
-                    //System.out.println("location is: " + appearsIn.item(locationIndex).getNodeValue());
+                    System.out.println("location is: " + location);
 
                     Location newLocation = Location.resolveLocationIdentifier(location);
-
 
                     if (newLocation != null) {
                        // System.out.println(newLocation);
                         newField.addAppearsIn(newLocation);
                     }
                 }
+
+                boolean assayDefault = (Boolean) reader.read("/fields/field[" + fieldIndex + "]/assayDefault", XPathConstants.BOOLEAN);
+                boolean studyDefault = (Boolean) reader.read("/fields/field[" + fieldIndex + "]/studyDefault", XPathConstants.BOOLEAN);
+                boolean invDefault = (Boolean) reader.read("/fields/field[" + fieldIndex + "]/invDefault", XPathConstants.BOOLEAN);
+
+                newField.setAssayDefault(assayDefault);
+                newField.setStudyDefault(studyDefault);
+                newField.setInvDefault(invDefault);
 
                 if (fieldName != null) {
                     fieldsList.addField(newField);
