@@ -159,9 +159,10 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     private void loadPredefinedFieldNames() {
-        ProcessStandardFieldsXML process = new ProcessStandardFieldsXML();
-        fields = process.loadFieldsFromFile(ProcessStandardFieldsXML.STANDARD_FIELDS_XML);
-        customFields = process.loadFieldsFromFile(ProcessStandardFieldsXML.CUSTOM_FIELDS_XML);
+        ProcessStandardFieldsXML processStdFields = new ProcessStandardFieldsXML();
+        ProcessStandardFieldsXML processCustomFields = new ProcessStandardFieldsXML();
+        fields = processStdFields.loadFieldsFromFile(ProcessStandardFieldsXML.STANDARD_FIELDS_XML);
+        customFields = processCustomFields.loadFieldsFromFile(ProcessStandardFieldsXML.CUSTOM_FIELDS_XML);
     }
 
     private void instantiateFrame() {

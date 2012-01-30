@@ -12,7 +12,7 @@ import java.io.Serializable;
  *         Date: 29/03/2011
  *         Time: 17:50
  */
-public class SectionDisplay implements Display, Serializable {
+public class    SectionDisplay implements Display, Serializable {
 
     private String fieldName;
 
