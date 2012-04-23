@@ -46,7 +46,7 @@ import org.isatools.isacreator.configuration.TableConfiguration;
 import org.isatools.isacreator.configuration.io.ConfigXMLParser;
 import org.isatools.isacreator.configuration.io.ConfigurationLoadingSource;
 import org.isatools.isacreator.effects.GenericPanel;
-import org.isatools.isacreator.spreadsheet.TableReferenceObject;
+import org.isatools.isacreator.spreadsheet.model.TableReferenceObject;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
