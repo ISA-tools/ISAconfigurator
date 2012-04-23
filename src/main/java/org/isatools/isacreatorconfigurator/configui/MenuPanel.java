@@ -47,7 +47,6 @@ import org.isatools.isacreator.configuration.io.ConfigXMLParser;
 import org.isatools.isacreator.configuration.io.ConfigurationLoadingSource;
 import org.isatools.isacreator.effects.GenericPanel;
 import org.isatools.isacreator.spreadsheet.TableReferenceObject;
-import org.isatools.isacreatorconfigurator.model.TableObject;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -290,7 +289,7 @@ public class MenuPanel extends JLayeredPane {
      * @throws ClassNotFoundException - When object being read in from input stream doesn't read in properly
      */
     private boolean loadSession() throws IOException, ClassNotFoundException {
-        jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         jfc.setFileFilter(new ConfigurationFileFilter());
         jfc.setDialogTitle("Select configuration file directory");
         jfc.setApproveButtonText("load configuration");
@@ -302,7 +301,7 @@ public class MenuPanel extends JLayeredPane {
 
             toLoad = jfc.getSelectedFile();
 
-            if (toLoad != null) {
+            if (toLoad != null && checkDirectoryContentIsOk(toLoad)) {
                 DataEntryPanel dep = new DataEntryPanel(appCont, toLoad);
 
 
@@ -324,13 +323,20 @@ public class MenuPanel extends JLayeredPane {
                         c.addTableObject(tc.getTableFields());
                     }
 
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            status.setText("<html>connecting to ontology resources...</html>");
-                        }
-                    });
+                    if (c.getTableData().size() == 0) {
+                        log.info("No configuration files detected within this directory...");
+                        showErrorInStatus("<html>No configuration XML files found in this directory...</html>");
+                        return false;
+                    } else {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                status.setText("<html>connecting to ontology resources...</html>");
+                            }
+                        });
 
-                    loadTFO(c, dep);
+                        loadTFO(c, dep);
+                        displayDataEntryEnvironment(dep);
+                    }
 
                 }
                 // otherwise, this is a legacy TFO or TCO file.
@@ -344,31 +350,43 @@ public class MenuPanel extends JLayeredPane {
                         ois.close();
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-
                                 status.setText("<html>connecting to ontology resources...</html>");
                             }
                         });
                         loadTFO(c, dep);
+                        displayDataEntryEnvironment(dep);
                     } else {
                         log.info("This format is not supported...");
-                        status.setIcon(null);
-                        status.setText("<html>This file format is not supported...</html>");
+                        showErrorInStatus("<html>This file format is not supported...</html>");
+                        return false;
                     }
                 }
 
-                dep.createGUI();
-                status.setText("");
-                status.setIcon(null);
-                appCont.hideGlassPane();
-                appCont.setCurrentPage(dep);
+                displayDataEntryEnvironment(dep);
                 return true;
 
+            } else {
+                showErrorInStatus("<html>Directory has no configuration XML contained within it...</html>");
             }
         }
-        status.setForeground(UIHelper.RED_COLOR);
-        status.setText("<html>no file was selected...</html>");
+
+        showErrorInStatus("<html>Invalid directory was selected. Please ensure it is a configuration directory...</html>");
 
         return false;
+    }
+
+    private void showErrorInStatus(String message) {
+        status.setForeground(UIHelper.RED_COLOR);
+        status.setIcon(null);
+        status.setText(message);
+    }
+
+    private void displayDataEntryEnvironment(DataEntryPanel dep) {
+        dep.createGUI();
+        status.setText("");
+        status.setIcon(null);
+        appCont.hideGlassPane();
+        appCont.setCurrentPage(dep);
     }
 
     private void loadTFO(Configuration tfo, DataEntryPanel dep) {
@@ -402,6 +420,18 @@ public class MenuPanel extends JLayeredPane {
 
 
         dep.setTableFields(tableFields);
+    }
+    
+    private boolean checkDirectoryContentIsOk(File directory) {
+        File[] files = directory.listFiles();
+
+        for(File file : files) {
+            if(ConfigurationFileFilter.getExtension(file).equalsIgnoreCase("xml")) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
 }
