@@ -36,7 +36,6 @@ public class ProcessStandardFieldsXML {
                 Field newField = new Field();
 
                 String fieldName = (String) reader.read("/fields/field[" + fieldIndex + "]/name", XPathConstants.STRING);
-                System.out.println("Processing :" + fieldName);
                 newField.setName(fieldName);
 
                 NodeList appearsIn = (NodeList) reader.read("/fields/field[" + fieldIndex + "]/appearsIn/location",XPathConstants.NODESET);
@@ -44,8 +43,6 @@ public class ProcessStandardFieldsXML {
                 for (int locationIndex = 1; locationIndex < appearsIn.getLength() + 1; locationIndex++) {
 
                     String location = (String) reader.read("/fields/field[" + fieldIndex + "]/appearsIn/location[" + locationIndex + "]",XPathConstants.STRING);
-
-                    System.out.println("location is: " + location);
 
                     Location newLocation = Location.resolveLocationIdentifier(location);
 
