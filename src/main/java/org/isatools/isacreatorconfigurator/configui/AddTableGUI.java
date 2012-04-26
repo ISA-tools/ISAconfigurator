@@ -383,7 +383,7 @@ public class AddTableGUI extends JDialog {
         List<FieldObject> initialFieldsList = null;
 
         // populate initial fields with the default fields
-        Fields fieldList = parentGUI.getFields();
+        Fields fieldList = parentGUI.getStandardISAFields();
 
         System.out.println("Looking for default fields in " + typeCombo.getSelectedItem().toString());
 

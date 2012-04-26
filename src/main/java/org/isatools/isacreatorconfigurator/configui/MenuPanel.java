@@ -100,14 +100,10 @@ public class MenuPanel extends JLayeredPane {
                 generic = new BackgroundPanel();
                 add(generic, JLayeredPane.DEFAULT_LAYER);
                 startAnimation();
-
                 menu = new CreateMenu();
                 menu.createGUI();
-
                 setGlassPaneToMenu();
-
                 setVisible(true);
-
             }
         });
     }
@@ -195,6 +191,7 @@ public class MenuPanel extends JLayeredPane {
                                     showErrorInStatus("<html>The table configuration file you have loaded is incorrectly formed!</html>");
                                     e.printStackTrace();
                                 } catch (Exception e) {
+                                    e.printStackTrace();
                                     showErrorInStatus("<html>Invalid selection made. Please choose a valid ISA configuration directory...</html>");
                                 }
                             }
