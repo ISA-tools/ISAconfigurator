@@ -13,74 +13,63 @@ import java.util.*;
 public class ValidationReport {
 
     // maps from the file name to the error messages received
-    private Map<ReportType, Map<String, Set<String>>> reports;
+    private Map<String, Map<ReportType, Set<String>>> reports;
 
 
     public ValidationReport() {
-        reports= new HashMap<ReportType, Map<String, Set<String>>>();
-        for(ReportType type : ReportType.values()) {
-            reports.put(type, new HashMap<String, Set<String>>());
-        }
-    }
-
-    public Map<String, Set<String>> getReport(ReportType reportType) {
-        return reports.get(reportType);
+        reports= new HashMap<String, Map<ReportType, Set<String>>>();
+        
     }
 
     public void addToReport(ReportType reportType, String fileName, String message) {
         addFileRecord(reportType, fileName);
-
-        reports.get(reportType).get(fileName).add(message);
+        
+        reports.get(fileName).get(reportType).add(message);
     }
 
     public void addToReport(ReportType reportType, String fileName, Set<String> messages) {
         addFileRecord(reportType, fileName);
 
-        reports.get(reportType).get(fileName).addAll(messages);
+        reports.get(fileName).get(reportType).addAll(messages);
     }
 
     private void addFileRecord(ReportType reportType, String fileName) {
-        if(!reports.get(reportType).containsKey(fileName)) {
-            reports.get(reportType).put(fileName, new HashSet<String>());
+        if(!reports.containsKey(fileName)) {
+            reports.put(fileName, new HashMap<ReportType, Set<String>>());
+        }
+        
+        if(!reports.get(fileName).containsKey(reportType)) {
+            reports.get(fileName).put(reportType, new HashSet<String>());
         }
     }
     
     public boolean isValid() {
-        boolean valid = true;
-        for(ReportType reportType : reports.keySet()) {
-            valid = reports.get(reportType).isEmpty();
-            if (!valid) {
-                return valid;
-            }
-        }
-        return valid;
+
+        return reports.isEmpty();
     }
     
     public boolean isValid(String fileName) {
-        boolean valid = true;
-        for(ReportType reportType : reports.keySet()) {
-            valid = !reports.get(reportType).containsKey(fileName);
-
-            if (!valid) {
-                return valid;
-            }
-        }
-        return valid;
+        return !reports.containsKey(fileName);
     }
-    
+
+    public Map<String, Map<ReportType, Set<String>>> getReports() {
+        return reports;
+    }
+
     public String toString() {
         StringBuilder output = new StringBuilder();
-        for(ReportType reportType : reports.keySet()) {
-            output.append(reportType).append("\n");
+        for(String fileName : reports.keySet()) {
+            output.append(fileName).append("\n");
             
-            for(String fileName : reports.get(reportType).keySet()) {
-                output.append("\t").append(fileName).append("\n");
+            for(ReportType reportType : reports.get(fileName).keySet()) {
+                output.append("\t").append(reportType).append("\n");
                 
-                for(String message : reports.get(reportType).get(fileName)) {
+                for(String message : reports.get(fileName).get(reportType)) {
                     output.append("\t\t").append(message).append("\n");
                 }
             }
         }
         return output.toString();
     }
+     
 }
