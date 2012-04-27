@@ -37,20 +37,20 @@ public class TableMappingViewer extends JDialog {
 
 
     private Set<MappingObject> mappingList;
-    private DefaultTableModel subTM;
+    private DefaultTableModel tableModel;
     private JLabel statusInfo;
     private JTable mappings;
-    private DataEntryPanel dep;
+    private DataEntryPanel dataEntryPanel;
     private Object[] columnNames;
 
     @InjectedResource
     private ImageIcon cancelIcon, updateIcon, headerIcon;
 
-    public TableMappingViewer(DataEntryPanel dep,
+    public TableMappingViewer(DataEntryPanel dataEntryPanel,
                               Set<MappingObject> mappingList) {
         ResourceInjector.get("config-ui-package.style").inject(this);
 
-        this.dep = dep;
+        this.dataEntryPanel = dataEntryPanel;
         this.mappingList = mappingList;
 
 
@@ -70,16 +70,16 @@ public class TableMappingViewer extends JDialog {
                 "table type", "measurement type", "technology type","conversion target", "assay type", "table name"
         };
 
-        subTM = new DefaultTableModel() {
+        tableModel = new DefaultTableModel() {
             public boolean isCellEditable(int row, int col) {
                 return !getValueAt(row, 0).toString().equals("study sample") && !(col == 0) && !(col == 5);
             }
         };
 
-        subTM.setColumnIdentifiers(columnNames);
-        subTM.setDataVector(updateItems(convertSetToList(mappingList)), columnNames);
+        tableModel.setColumnIdentifiers(columnNames);
+        tableModel.setDataVector(updateItems(convertSetToList(mappingList)), columnNames);
 
-        mappings = new JTable(subTM);
+        mappings = new JTable(tableModel);
         mappings.setGridColor(UIHelper.LIGHT_GREEN_COLOR);
 
         setupCellEditors();
@@ -121,7 +121,7 @@ public class TableMappingViewer extends JDialog {
         cancel.addMouseListener(new MouseAdapter() {
 
             public void mousePressed(MouseEvent event) {
-                dep.getApplicationContainer().hideSheet();
+                dataEntryPanel.getApplicationContainer().hideSheet();
             }
 
         });
@@ -133,7 +133,7 @@ public class TableMappingViewer extends JDialog {
         update.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent event) {
                 saveUpdates();
-                dep.getApplicationContainer().hideSheet();
+                dataEntryPanel.getApplicationContainer().hideSheet();
             }
         });
 
@@ -180,8 +180,8 @@ public class TableMappingViewer extends JDialog {
      * @param mappingList - the List of mappings to use for the update.
      */
     public void refreshList(List<MappingObject> mappingList) {
-        subTM.setDataVector(updateItems(mappingList), columnNames);
-        subTM.fireTableDataChanged();
+        tableModel.setDataVector(updateItems(mappingList), columnNames);
+        tableModel.fireTableDataChanged();
     }
 
     /**
@@ -193,7 +193,7 @@ public class TableMappingViewer extends JDialog {
             String[] newVals = new String[6];
 
             for (int col = 0; col < mappings.getColumnCount(); col++) {
-                Object value = subTM.getValueAt(row, col);
+                Object value = tableModel.getValueAt(row, col);
                 CellEditor editor = mappings.getCellEditor();
                 if(editor != null) {
                     editor.stopCellEditing();
@@ -201,7 +201,7 @@ public class TableMappingViewer extends JDialog {
                 newVals[col] = value == null ? "" : value.toString();
             }
 
-            for (MappingObject mo : dep.getTableTypeMapping()) {
+            for (MappingObject mo : dataEntryPanel.getTableTypeMapping()) {
                 if (mo.getAssayName().equals(newVals[5])) {
                     if (!newVals[1].equals("") && !newVals[2].equals("")) {
                         mo.setMeasurementEndpointType(newVals[1]);
@@ -214,6 +214,8 @@ public class TableMappingViewer extends JDialog {
                 }
             }
         }
+
+        dataEntryPanel.validateAll();
     }
 
     private void setHeaderProperties(JTableHeader tableHeader, TableCellRenderer renderer) {

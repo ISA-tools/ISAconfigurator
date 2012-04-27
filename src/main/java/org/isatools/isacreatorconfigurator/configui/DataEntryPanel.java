@@ -330,7 +330,7 @@ public class DataEntryPanel extends JLayeredPane {
         return topPanel;
     }
 
-    private void validateAll() {
+    public void validateAll() {
         Validator validator = new Validator();
         validateAll(validator, false);
     }
@@ -349,16 +349,13 @@ public class DataEntryPanel extends JLayeredPane {
                 validateFormOrTable(validator, mappingObject);
             }
         }
-
         updateErrorReports(validator.getReport().getReports());
     }
 
     private void validateFormOrTable(MappingObject mappingObject) {
         Validator validator = new Validator();
         validateAll(validator, false);
-
         validateFormOrTable(validator, mappingObject);
-
         updateErrorReports(validator.getReport().getReports());
     }
 
@@ -375,8 +372,6 @@ public class DataEntryPanel extends JLayeredPane {
             if (display.getFieldDetails() != null)
                 fields.add(display.getFieldDetails());
         }
-
-        System.out.println("Validating " + mappingObject.getAssayName() + " with " + fields.size() + " fields.");
 
         validator.validate(mappingObject.getAssayName(), tableType, fields);
     }
@@ -403,7 +398,12 @@ public class DataEntryPanel extends JLayeredPane {
             // process each of the messages to find the indexes which have errors.
         }
 
+        viewErrorsButton.setVisible(areThereErrorsInThisCurrentObject());
         tableList.getParent().repaint();
+    }
+
+    private boolean areThereErrorsInThisCurrentObject() {
+        return ApplicationManager.getFileErrors().containsKey(ApplicationManager.getCurrentMappingObject());
     }
 
 
@@ -569,11 +569,10 @@ public class DataEntryPanel extends JLayeredPane {
                 }
 
                 MappingObject currentlyEditedTable = getCurrentlySelectedTable();
-
                 ApplicationManager.setCurrentMappingObject(currentlyEditedTable);
 
                 // update the view error button visibility depending on selected tables error state.
-                viewErrorsButton.setVisible(ApplicationManager.getFileErrors().containsKey(currentlyEditedTable));
+                viewErrorsButton.setVisible(areThereErrorsInThisCurrentObject());
 
                 updateTableInfoDisplay(currentlyEditedTable);
                 reformFieldList(currentlyEditedTable);
