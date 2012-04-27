@@ -78,7 +78,8 @@ public class DataEntryPanel extends JLayeredPane {
     @InjectedResource
     private ImageIcon addTable, addTableOver, removeTable, removeTableOver, addElement,
             addElementOver, removeElement, removeElementOver, moveUp, moveUpOver, moveDown, moveDownOver,
-            informationIcon, isaConfigLogo, viewMappingsIcon, warningIcon, aboutIcon, fieldListTitle, tableListTitle;
+            informationIcon, isaConfigLogo, viewMappingsIcon, warningIcon, aboutIcon, fieldListTitle, tableListTitle,
+            viewErrorsIcon, viewErrorsIconOver;
 
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
@@ -100,7 +101,7 @@ public class DataEntryPanel extends JLayeredPane {
     private DefaultListModel elementModel;
     private JLabel elementCountInfo;
 
-    private JLabel removeElementButton;
+    private JLabel removeElementButton, viewErrorsButton;
 
     private Fields standardISAFields;
     private static Fields customISAFields;
@@ -401,8 +402,7 @@ public class DataEntryPanel extends JLayeredPane {
             }
             // process each of the messages to find the indexes which have errors.
         }
-//        tableList.revalidate();
-//        tableList.getParent().validate();
+
         tableList.getParent().repaint();
     }
 
@@ -563,7 +563,6 @@ public class DataEntryPanel extends JLayeredPane {
         tableList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
                 try {
-
                     saveCurrentField(false, false);
                 } catch (DataNotCompleteException dce) {
                     showMessagePane(dce.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -572,6 +571,9 @@ public class DataEntryPanel extends JLayeredPane {
                 MappingObject currentlyEditedTable = getCurrentlySelectedTable();
 
                 ApplicationManager.setCurrentMappingObject(currentlyEditedTable);
+
+                // update the view error button visibility depending on selected tables error state.
+                viewErrorsButton.setVisible(ApplicationManager.getFileErrors().containsKey(currentlyEditedTable));
 
                 updateTableInfoDisplay(currentlyEditedTable);
                 reformFieldList(currentlyEditedTable);
@@ -668,8 +670,40 @@ public class DataEntryPanel extends JLayeredPane {
 
         removeTableButton.setToolTipText("<html><b>Remove table</b><p>Remove table from definitions?</p></html>");
 
+        viewErrorsButton = new JLabel(viewErrorsIcon);
+        viewErrorsButton.setVisible(false);
+        viewErrorsButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                viewErrorsButton.setIcon(viewErrorsIcon);
+                // show error pane for current table only.
+
+                Validator validator = new Validator();
+                validateFormOrTable(validator, ApplicationManager.getCurrentMappingObject());
+
+                ValidationReport report = validator.getReport();
+
+                ConfigurationValidationUI validationUI = new ConfigurationValidationUI(tableFields.keySet(), report);
+                validationUI.createGUI();
+                validationUI.setLocationRelativeTo(getApplicationContainer());
+                validationUI.setAlwaysOnTop(true);
+                validationUI.setVisible(true);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+                viewErrorsButton.setIcon(viewErrorsIconOver);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+                viewErrorsButton.setIcon(viewErrorsIcon);
+            }
+        });
+
         buttonPanel.add(addTableButton);
         buttonPanel.add(removeTableButton);
+        buttonPanel.add(viewErrorsButton);
         buttonPanel.add(Box.createHorizontalGlue());
 
         container.add(buttonPanel);
@@ -866,6 +900,9 @@ public class DataEntryPanel extends JLayeredPane {
                     if (toMoveDown != (elementModel.getSize() - 1)) {
                         swapElements(elementList, elementModel, toMoveDown, toMoveDown + 1);
                     }
+
+                    updateFieldOrder();
+                    validateFormOrTable(ApplicationManager.getCurrentMappingObject());
                 }
             }
         });
@@ -894,6 +931,10 @@ public class DataEntryPanel extends JLayeredPane {
                     if (toMoveUp != 0) {
                         swapElements(elementList, elementModel, toMoveUp, toMoveUp - 1);
                     }
+
+                    updateFieldOrder();
+                    validateFormOrTable(ApplicationManager.getCurrentMappingObject());
+
                 }
             }
 
@@ -1050,7 +1091,6 @@ public class DataEntryPanel extends JLayeredPane {
 
         fields.set(a, e2);
         fields.set(b, e1);
-
 
         list.setSelectedIndex(b);
         list.ensureIndexIsVisible(b);

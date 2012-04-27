@@ -22,6 +22,7 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,13 +47,18 @@ public class ConfigurationValidationUI extends JFrame {
     private ImageIcon validationSuccess;
     
     private Set<MappingObject> mappingObjects;
-    private ValidationReport report;
+    private Map<String, Map<ReportType, Set<String>>> reports;
 
     public ConfigurationValidationUI(Set<MappingObject> mappingObjects, ValidationReport report) {
+        this(mappingObjects, report.getReports());
+    }
+
+    public ConfigurationValidationUI(Set<MappingObject> mappingObjects, Map<String, Map<ReportType, Set<String>>> reports) {
         this.mappingObjects = mappingObjects;
-        this.report = report;
+        this.reports = reports;
         ResourceInjector.get("configuration-validation-package.style").inject(this);
     }
+
 
     public void createGUI() {
         setTitle("Configuration Validator");
@@ -80,7 +86,9 @@ public class ConfigurationValidationUI extends JFrame {
     private void showErrorOrSuccessPanel() {
 
         List<ISAFileErrorReport> errors = new ArrayList<ISAFileErrorReport>();
-        for (String fileName : report.getReports().keySet()) {
+        System.out.println("There are " + reports.size() +  " reports.");
+        for (String fileName : reports.keySet()) {
+
 
             MappingObject mappingObject = ConfigurationValidationUtils.findMappingObjectForTable(fileName, mappingObjects);
 
@@ -88,8 +96,8 @@ public class ConfigurationValidationUI extends JFrame {
 
             List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
 
-            for (ReportType reportType : report.getReports().get(fileName).keySet()) {
-                for (String message : report.getReports().get(fileName).get(reportType)) {
+            for (ReportType reportType : reports.get(fileName).keySet()) {
+                for (String message : reports.get(fileName).get(reportType)) {
                     errorMessages.add(new ErrorMessage(ErrorLevel.ERROR, reportType.toString() + ": " + message));
                 }
             }

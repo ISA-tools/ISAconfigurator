@@ -124,7 +124,9 @@ public class Validator {
                         if (fieldExists(nodeField.getId(), headers)) {
                             messages.add(nodeField.getId() + " should follow " + consField);
                         } else {
-                            messages.add(nodeField.getId() + " should be present in this file.");
+                            if (followsConstraint.isMandatory()) {
+                                messages.add(nodeField.getId() + " should be present in this file.");
+                            }
                         }
                     }
 
@@ -137,7 +139,9 @@ public class Validator {
                         if (fieldExists(nodeField.getId(), headers)) {
                             messages.add(nodeField.getId() + " should precede" + consField);
                         } else {
-                            messages.add(nodeField.getId() + " should be present in this file.");
+                            if (precedesConstraint.isMandatory()) {
+                                messages.add(nodeField.getId() + " should be present in this file.");
+                            }
                         }
                     }
                 }
