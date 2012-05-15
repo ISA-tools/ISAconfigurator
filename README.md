@@ -1,5 +1,8 @@
 #### The ISAconfigurator allows for creation of XML files (configuration files) used to build spreadsheets in the ISAcreator and for validation in the creator and ISAvalidation code.
 
+[![build status](https://secure.travis-ci.org/ISA-tools/ISAconfigurator.png)](https://secure.travis-ci.org/ISA-tools/ISAconfigurator)
+
+
 <p align="center">
 <img src="http://isatools.files.wordpress.com/2011/09/isaconfig.png" alt="ISAcreator configurator"/>
 </p>
