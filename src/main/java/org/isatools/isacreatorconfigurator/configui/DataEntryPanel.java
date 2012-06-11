@@ -75,15 +75,25 @@ import java.util.List;
 
 public class DataEntryPanel extends JLayeredPane {
 
+    private static final int WIDTH = 900;
+    private static final int HEIGHT = 700;
+    private static final TableElementInfo tableInfo = new TableElementInfo();
+
+    private static Fields standardISAFields;
+    private static Fields customISAFields;
+
+    static {
+        ProcessStandardFieldsXML processStdFields = new ProcessStandardFieldsXML();
+        ProcessStandardFieldsXML processCustomFields = new ProcessStandardFieldsXML();
+        standardISAFields = processStdFields.loadFieldsFromFile(ProcessStandardFieldsXML.STANDARD_FIELDS_XML);
+        customISAFields = processCustomFields.loadFieldsFromFile(ProcessStandardFieldsXML.CUSTOM_FIELDS_XML);
+    }
+
     @InjectedResource
     private ImageIcon addTable, addTableOver, removeTable, removeTableOver, addElement,
             addElementOver, removeElement, removeElementOver, moveUp, moveUpOver, moveDown, moveDownOver,
             informationIcon, isaConfigLogo, viewMappingsIcon, warningIcon, aboutIcon, fieldListTitle, tableListTitle,
             viewErrorsIcon, viewErrorsIconOver;
-
-    private static final int WIDTH = 900;
-    private static final int HEIGHT = 700;
-    private static final TableElementInfo tableInfo = new TableElementInfo();
 
     private JLayeredPane currentPage;
 
@@ -102,9 +112,6 @@ public class DataEntryPanel extends JLayeredPane {
     private JLabel elementCountInfo;
 
     private JLabel removeElementButton, viewErrorsButton;
-
-    private Fields standardISAFields;
-    private static Fields customISAFields;
 
     private ISAcreatorConfigurator applicationContainer;
 
@@ -143,7 +150,6 @@ public class DataEntryPanel extends JLayeredPane {
         setBackground(UIHelper.BG_COLOR);
         setBorder(null);
         instantiateFrame();
-        loadPredefinedFieldNames();
 
         validateAll();
 
@@ -162,13 +168,6 @@ public class DataEntryPanel extends JLayeredPane {
 
     public Fields getStandardISAFields() {
         return standardISAFields;
-    }
-
-    private void loadPredefinedFieldNames() {
-        ProcessStandardFieldsXML processStdFields = new ProcessStandardFieldsXML();
-        ProcessStandardFieldsXML processCustomFields = new ProcessStandardFieldsXML();
-        standardISAFields = processStdFields.loadFieldsFromFile(ProcessStandardFieldsXML.STANDARD_FIELDS_XML);
-        customISAFields = processCustomFields.loadFieldsFromFile(ProcessStandardFieldsXML.CUSTOM_FIELDS_XML);
     }
 
     private void instantiateFrame() {
@@ -744,6 +743,8 @@ public class DataEntryPanel extends JLayeredPane {
 
     private String[] filterAvailableFieldsByTableType(Fields fieldList, Location type) {
 
+        System.out.println("Type is " + type);
+
         List<String> result = fieldList.getFieldsByLocation(type);
 
         //List<String> result= fieldList.getFields().toString();
@@ -979,12 +980,14 @@ public class DataEntryPanel extends JLayeredPane {
     private void showAddFieldUI() {
         if (getCurrentlySelectedTable() != null) {
 
-            addElementUI.updateFieldList(filterAvailableFieldsByTableType(standardISAFields,
-                    Location.resolveLocationIdentifier(getCurrentlySelectedTable().getTableType())));
+            System.out.println("Table type: " + getCurrentlySelectedTable().getTableType());
 
-            String tableType = getCurrentlySelectedTable().getTableType().equalsIgnoreCase("[investigation]")
-                    ? "Investigation file"
+            String tableType = getCurrentlySelectedTable().getTableType().contains("investigation")
+                    ? "Investigation File"
                     : getCurrentlySelectedTable().getTableType();
+
+            addElementUI.updateFieldList(filterAvailableFieldsByTableType(standardISAFields,
+                    Location.resolveLocationIdentifier(tableType)));
 
             addElementUI.updateCustomFieldList(filterAvailableFieldsByTableType(customISAFields,
                     Location.resolveLocationIdentifier(tableType)));
