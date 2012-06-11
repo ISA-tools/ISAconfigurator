@@ -7,6 +7,7 @@ import org.w3c.dom.NodeList;
 import uk.ac.ebi.utils.xml.XPathReader;
 
 import javax.xml.xpath.XPathConstants;
+import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,8 +18,8 @@ import javax.xml.xpath.XPathConstants;
  */
 public class ProcessStandardFieldsXML {
 
-    public static final String STANDARD_FIELDS_XML = "/config/std_isa_fields.xml";
-    public static final String CUSTOM_FIELDS_XML = "/config/custom_isa_fields.xml";
+    public static final String STANDARD_FIELDS_XML = File.separator + "config" + File.separator + "std_isa_fields.xml";
+    public static final String CUSTOM_FIELDS_XML = File.separator + "config" + File.separator + "custom_isa_fields.xml";
 
 
     public Fields loadFieldsFromFile(String fileName) {
@@ -38,16 +39,15 @@ public class ProcessStandardFieldsXML {
                 String fieldName = (String) reader.read("/fields/field[" + fieldIndex + "]/name", XPathConstants.STRING);
                 newField.setName(fieldName);
 
-                NodeList appearsIn = (NodeList) reader.read("/fields/field[" + fieldIndex + "]/appearsIn/location",XPathConstants.NODESET);
+                NodeList appearsIn = (NodeList) reader.read("/fields/field[" + fieldIndex + "]/appearsIn/location", XPathConstants.NODESET);
 
                 for (int locationIndex = 1; locationIndex < appearsIn.getLength() + 1; locationIndex++) {
 
-                    String location = (String) reader.read("/fields/field[" + fieldIndex + "]/appearsIn/location[" + locationIndex + "]",XPathConstants.STRING);
-
+                    String location = (String) reader.read("/fields/field[" + fieldIndex + "]/appearsIn/location[" + locationIndex + "]", XPathConstants.STRING);
                     Location newLocation = Location.resolveLocationIdentifier(location);
 
                     if (newLocation != null) {
-                       // System.out.println(newLocation);
+                        // System.out.println(newLocation);
                         newField.addAppearsIn(newLocation);
                     }
                 }
