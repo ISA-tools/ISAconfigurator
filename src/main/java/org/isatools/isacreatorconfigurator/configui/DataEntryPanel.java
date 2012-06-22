@@ -359,20 +359,22 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     private void validateFormOrTable(Validator validator, MappingObject mappingObject) {
-        String tableType = mappingObject.getAssayType().equals("")
-                ? mappingObject.getTableType() : mappingObject.getAssayType();
+        if (mappingObject != null) {
+            String tableType = mappingObject.getAssayType() == null || mappingObject.getAssayType().equals("")
+                    ? mappingObject.getTableType() : mappingObject.getAssayType();
 
-        if (mappingObject.getAssayName().equalsIgnoreCase("investigation")) {
-            tableType = "investigation";
+            if (mappingObject.getAssayName().equalsIgnoreCase("investigation")) {
+                tableType = "investigation";
+            }
+
+            List<FieldObject> fields = new ArrayList<FieldObject>();
+            for (Display display : tableFields.get(mappingObject)) {
+                if (display.getFieldDetails() != null)
+                    fields.add(display.getFieldDetails());
+            }
+
+            validator.validate(mappingObject.getAssayName(), tableType, fields);
         }
-
-        List<FieldObject> fields = new ArrayList<FieldObject>();
-        for (Display display : tableFields.get(mappingObject)) {
-            if (display.getFieldDetails() != null)
-                fields.add(display.getFieldDetails());
-        }
-
-        validator.validate(mappingObject.getAssayName(), tableType, fields);
     }
 
     private void updateErrorReports(Map<String, Map<ReportType, Set<String>>> validationReport) {
@@ -719,7 +721,7 @@ public class DataEntryPanel extends JLayeredPane {
             if (sourceFile != null) {
                 message.append("<html><div align=\"right\">Currently editing <strong>").append(sourceFile.getName()).append("</strong><br/>");
             } else {
-                message.append("<html><div align=\"right\">New Configuration file<strong></br>");
+                message.append("<html><div align=\"right\">New Configuration file <strong></br>");
             }
 
             if (currentTable.getTableType().contains("sample")) {
@@ -1207,6 +1209,11 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     private void reformTableList() {
+        try {
+            saveCurrentField(false, false);
+        } catch (DataNotCompleteException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         tableModel.clear();
 
         for (MappingObject mo : tableFields.keySet()) {
