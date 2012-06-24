@@ -50,7 +50,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -385,17 +387,19 @@ public class AddTableGUI extends JDialog {
         // populate initial fields with the default fields
         Fields fieldList = parentGUI.getStandardISAFields();
 
-        System.out.println("Looking for default fields in " + typeCombo.getSelectedItem().toString());
-
         List<String> defaultFields = fieldList.getDefaultFieldsByLocation(Location.resolveLocationIdentifier(typeCombo.getSelectedItem().toString()));
-
-        System.out.println("Found " + defaultFields.size() + " default fields");
-
+        
         if (defaultFields.size() > 0) {
             initialFieldsList = new ArrayList<FieldObject>();
 
             for (String fieldName : defaultFields) {
+                String sectionName = "";
+                if(fieldName.lastIndexOf(":") > -1) {
+                    String[] fieldInfo = fieldName.split(":");
+                    sectionName = fieldInfo[1];
+                }
                 FieldObject tfo = new FieldObject(fieldName, "", DataTypes.STRING, "", true, false, false);
+                tfo.setSection(sectionName);
                 tfo.setWizardTemplate(fieldList.getDefaultWizardTemplateForField(fieldName));
                 initialFieldsList.add(tfo);
             }

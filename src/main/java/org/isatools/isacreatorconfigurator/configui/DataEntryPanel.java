@@ -485,7 +485,7 @@ public class DataEntryPanel extends JLayeredPane {
         JPanel headerImagePanel = new JPanel(new GridLayout(1, 2));
         headerImagePanel.setOpaque(false);
 
-        JLabel logo = new JLabel(isaConfigLogo, JLabel.LEFT);
+        JLabel logo = new JLabel("");
         logo.setOpaque(false);
 
         headerImagePanel.add(logo);
@@ -1155,8 +1155,18 @@ public class DataEntryPanel extends JLayeredPane {
             mo.setDispatchTarget(dispatchTarget);
             tableFields.put(mo, new ArrayList<Display>());
             // reform table list
+
+            Set<String> addedSections = new HashSet<String>();
+
             if (initialFields != null) {
                 for (FieldObject field : initialFields) {
+                    // todo add section information...
+                    if (!addedSections.contains(field.getSection())) {
+                        if (!field.getSection().equals("")) {
+                            tableFields.get(mo).add(new SectionDisplay(field.getSection()));
+                            addedSections.add(field.getSection());
+                        }
+                    }
                     tableFields.get(mo).add(new FieldElement(field));
                 }
             }

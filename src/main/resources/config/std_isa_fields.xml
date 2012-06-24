@@ -2,7 +2,8 @@
 
     <!--for investigation section!-->
     <field>
-        <name>Investigation Identifier</name>
+        <!--TODO Section will be parsed out later. -->
+        <name>Investigation Identifier:INVESTIGATION</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -10,7 +11,7 @@
     </field>
 
     <field>
-        <name>Investigation Title</name>
+        <name>Investigation Title:INVESTIGATION</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -18,7 +19,7 @@
     </field>
 
     <field>
-        <name>Investigation Description</name>
+        <name>Investigation Description:INVESTIGATION</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -26,7 +27,7 @@
     </field>
 
     <field>
-        <name>Investigation Submission Date</name>
+        <name>Investigation Submission Date:INVESTIGATION</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -34,7 +35,7 @@
     </field>
 
     <field>
-        <name>Investigation Public Release Date</name>
+        <name>Investigation Public Release Date:INVESTIGATION</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -42,14 +43,14 @@
     </field>
 
     <field>
-        <name>Comment [Created with configuration]</name>
+        <name>Comment [Created with configuration]:INVESTIGATION</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Comment [Last Opened With Configuration]</name>
+        <name>Comment [Last Opened With Configuration]:INVESTIGATION</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -58,22 +59,14 @@
 
     <!--for Investigation file -> Investigation publication section!-->
     <field>
-        <name>Investigation PubMed ID</name>
+        <name>Investigation PubMed ID:INVESTIGATION PUBLICATIONS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Investigation Publication DOI</name>
-        <appearsIn>
-            <location>Investigation file</location>
-        </appearsIn>
-        <invDefault>true</invDefault>
-    </field>
-
-    <field>
-        <name>Investigation Publication Author List</name>
+        <name>Investigation Publication DOI:INVESTIGATION PUBLICATIONS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -81,14 +74,22 @@
     </field>
 
     <field>
-        <name>Investigation Publication Title</name>
+        <name>Investigation Publication Author List:INVESTIGATION PUBLICATIONS</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+        <invDefault>true</invDefault>
+    </field>
+
+    <field>
+        <name>Investigation Publication Title:INVESTIGATION PUBLICATIONS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Investigation Publication Status</name>
+        <name>Investigation Publication Status:INVESTIGATION PUBLICATIONS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -97,28 +98,28 @@
 
     <!--for Investigation file -> Investigation contacts section!-->
     <field>
-        <name>Investigation Person Last Name</name>
+        <name>Investigation Person Last Name:INVESTIGATION CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Investigation Person First Name</name>
+        <name>Investigation Person First Name:INVESTIGATION CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Investigation Person Mid Initials</name>
+        <name>Investigation Person Mid Initials:INVESTIGATION CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Investigation Person Email</name>
+        <name>Investigation Person Email:INVESTIGATION CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -126,35 +127,35 @@
     </field>
 
     <field>
-        <name>Investigation Person Phone</name>
+        <name>Investigation Person Phone:INVESTIGATION CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Investigation Person Fax</name>
+        <name>Investigation Person Fax:INVESTIGATION CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Investigation Person Address</name>
+        <name>Investigation Person Address:INVESTIGATION CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Investigation Person Affiliation</name>
+        <name>Investigation Person Affiliation:INVESTIGATION CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Investigation Person Roles</name>
+        <name>Investigation Person Roles:INVESTIGATION CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -164,7 +165,7 @@
     <!--for Investigation file -> study section!-->
 
     <field>
-        <name>Study Identifier</name>
+        <name>Study Identifier:STUDY</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -172,7 +173,7 @@
     </field>
 
     <field>
-        <name>Study Title</name>
+        <name>Study Title:STUDY</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -180,7 +181,7 @@
     </field>
 
     <field>
-        <name>Study Description</name>
+        <name>Study Description:STUDY</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -188,7 +189,7 @@
     </field>
 
     <field>
-        <name>Study Submission Date</name>
+        <name>Study Submission Date:STUDY</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -196,7 +197,7 @@
     </field>
 
     <field>
-        <name>Study Public Release Date</name>
+        <name>Study Public Release Date:STUDY</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -204,7 +205,7 @@
     </field>
 
     <field>
-        <name>Study File Name</name>
+        <name>Study File Name:STUDY</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -213,22 +214,14 @@
 
     <!--for Investigation file -> Study publication section!-->
     <field>
-        <name>Study PubMed ID</name>
+        <name>Study PubMed ID:STUDY PUBLICATIONS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Publication DOI</name>
-        <appearsIn>
-            <location>Investigation file</location>
-        </appearsIn>
-        <invDefault>true</invDefault>
-    </field>
-
-    <field>
-        <name>Study Publication Author List</name>
+        <name>Study Publication DOI:STUDY PUBLICATIONS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -236,14 +229,22 @@
     </field>
 
     <field>
-        <name>Study Publication Title</name>
+        <name>Study Publication Author List:STUDY PUBLICATIONS</name>
+        <appearsIn>
+            <location>Investigation file</location>
+        </appearsIn>
+        <invDefault>true</invDefault>
+    </field>
+
+    <field>
+        <name>Study Publication Title:STUDY PUBLICATIONS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Publication Status</name>
+        <name>Study Publication Status:STUDY PUBLICATIONS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -252,28 +253,28 @@
 
     <!--for Investigation file -> Study contacts section!-->
     <field>
-        <name>Study Person Last Name</name>
+        <name>Study Person Last Name:STUDY CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Person First Name</name>
+        <name>Study Person First Name:STUDY CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Person Mid Initials</name>
+        <name>Study Person Mid Initials:STUDY CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Person Email</name>
+        <name>Study Person Email:STUDY CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -281,34 +282,34 @@
     </field>
 
     <field>
-        <name>Study Person Phone</name>
+        <name>Study Person Phone:STUDY CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Person Fax</name>
+        <name>Study Person Fax:STUDY CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Person Address</name>
+        <name>Study Person Address:STUDY CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
     </field>
     <field>
-        <name>Study Person Affiliation</name>
+        <name>Study Person Affiliation:STUDY CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Person Roles</name>
+        <name>Study Person Roles:STUDY CONTACTS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -317,7 +318,7 @@
 
     <!--for Investigation file -> Study Design section!-->
     <field>
-        <name>Study Design Type</name>
+        <name>Study Design Type:STUDY DESIGN DESCRIPTORS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -326,14 +327,14 @@
 
     <!--for Investigation file -> Study Factors section!-->
     <field>
-        <name>Study Factor Name</name>
+        <name>Study Factor Name:STUDY FACTORS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Factor Type</name>
+        <name>Study Factor Type:STUDY FACTORS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -343,28 +344,28 @@
     <!--for Investigation file -> Study Assay section!-->
 
     <field>
-        <name>Study Assay Measurement Type</name>
+        <name>Study Assay Measurement Type:STUDY ASSAYS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Assay Technology Type</name>
+        <name>Study Assay Technology Type:STUDY ASSAYS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Assay Technology Platform</name>
+        <name>Study Assay Technology Platform:STUDY ASSAYS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Assay File Name</name>
+        <name>Study Assay File Name:STUDY ASSAYS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
@@ -373,56 +374,56 @@
 
     <!--for Investigation file -> Study Protocol section!-->
     <field>
-        <name>Study Protocol Name</name>
+        <name>Study Protocol Name:STUDY PROTOCOLS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Protocol Type</name>
+        <name>Study Protocol Type:STUDY PROTOCOLS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Protocol Description</name>
+        <name>Study Protocol Description:STUDY PROTOCOLS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Protocol URI</name>
+        <name>Study Protocol URI:STUDY PROTOCOLS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Protocol Version</name>
+        <name>Study Protocol Version:STUDY PROTOCOLS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Protocol Parameters Name</name>
+        <name>Study Protocol Parameters Name:STUDY PROTOCOLS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Protocol Components Name</name>
+        <name>Study Protocol Components Name:STUDY PROTOCOLS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
     </field>
     <field>
-        <name>Study Protocol Components Type</name>
+        <name>Study Protocol Components Type:STUDY PROTOCOLS</name>
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
