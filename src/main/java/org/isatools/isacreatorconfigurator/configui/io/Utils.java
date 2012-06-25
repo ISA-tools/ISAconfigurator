@@ -57,46 +57,8 @@ import java.util.Map;
 
 public class Utils {
 
-    /**
-     * Saves current session to a user defined location.
-     * throws IOException - When problem occures on save file attempt
-     *
-     * @throws DataNotCompleteException - When fields are missing.
-     * @throws java.io.IOException      /
-     */
-    public static String saveSession(Map<MappingObject, List<Display>> tableFields, File toSave) throws IOException, DataNotCompleteException, InvalidFieldOrderException {
-
-
-        String path = toSave.getPath();
-
-        if (!ConfigurationFileFilter.getExtension(toSave).equals("tcf")) {
-            if (path.contains(".")) {
-                path = path.substring(0, path.lastIndexOf("."));
-            }
-
-            path += ".tcf";
-            toSave = new File(path);
-        }
-
-        FileOutputStream fos = new FileOutputStream(toSave);
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(Utils.createTableConfigurationObject(tableFields));
-        oos.close();
-        fos.close();
-
-        String message = "Files have been saved in ";
-
-        if (path.equals("")) {
-            message += "this programs directory";
-        } else {
-            message += path;
-        }
-
-        return message;
-
-    }
-
-
+    public static String utf8CharacterEncoding = "utf-8";
+    
     public static Configuration createTableConfigurationObject(Map<MappingObject, List<Display>> tableFields)
             throws DataNotCompleteException, InvalidFieldOrderException {
 
@@ -142,7 +104,7 @@ public class Utils {
 
                 FileOutputStream fos = new FileOutputStream(outputDir + File.separator + mo.getAssayName().replace("\\s", "") + ".xml");
 
-                PrintStream ps = new PrintStream(fos);
+                PrintStream ps = new PrintStream(fos, true, utf8CharacterEncoding);
                 ps.print(xmlToWrite);
                 ps.close();
                 fos.close();
