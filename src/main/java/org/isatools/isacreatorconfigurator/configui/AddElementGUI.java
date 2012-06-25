@@ -393,7 +393,8 @@ public class AddElementGUI extends JDialog {
         String[] fieldsCopy = fields.clone();
 
         for (String fc : fieldsCopy) {
-            fieldValue.addItem(fc);
+            String fieldName = fc.contains(":") ? fc.substring(0, fc.lastIndexOf(":")) : fc;
+            fieldValue.addItem(fieldName);
         }
     }
 

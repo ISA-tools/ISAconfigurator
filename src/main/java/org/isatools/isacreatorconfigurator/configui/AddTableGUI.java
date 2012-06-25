@@ -396,6 +396,7 @@ public class AddTableGUI extends JDialog {
                 String sectionName = "";
                 if(fieldName.lastIndexOf(":") > -1) {
                     String[] fieldInfo = fieldName.split(":");
+                    fieldName = fieldInfo[0];
                     sectionName = fieldInfo[1];
                 }
                 FieldObject tfo = new FieldObject(fieldName, "", DataTypes.STRING, "", true, false, false);
