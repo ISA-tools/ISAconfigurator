@@ -1160,7 +1160,6 @@ public class DataEntryPanel extends JLayeredPane {
 
             if (initialFields != null) {
                 for (FieldObject field : initialFields) {
-                    // todo add section information...
                     if (!addedSections.contains(field.getSection())) {
                         if (!field.getSection().equals("")) {
                             tableFields.get(mo).add(new SectionDisplay(field.getSection()));
