@@ -51,6 +51,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -116,12 +117,14 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
 
         try {
             root = ontologyTreeCreator.createTree(Collections.singletonMap(ontologyToQuery.getOntologyAbbreviation(), new RecommendedOntology(ontologyToQuery, null)));
-            ontologyToQuery.setView(root);
+            ontologyTree.setModel(new DefaultTreeModel(root));
         } catch (FileNotFoundException e) {
             log.error(e.getMessage());
         } catch (RuntimeException re) {
             log.error(re.getMessage());
         }
+
+
 
         ontologyTree.setCellRenderer(new OntologyTreeRenderer());
         ontologyTree.setShowsRootHandles(false);
@@ -152,7 +155,6 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
 
                             OntologyTreeItem treeItem = (OntologyTreeItem) selectedNode.getUserObject();
                             selectedTreePart = treeItem.getBranch();
-
 
                             System.out.println("Setting subsection to query as " + selectedTreePart.getBranchName());
                             ontologyToQuery.setSubsectionToQuery(selectedTreePart);
