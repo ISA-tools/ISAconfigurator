@@ -5,13 +5,13 @@
  ISAconfigurator is licensed under the Common Public Attribution License version 1.0 (CPAL)
 
  EXHIBIT A. CPAL version 1.0
- ÒThe contents of this file are subject to the CPAL version 1.0 (the ÒLicenseÓ); you may not use this file except
+ ï¿½The contents of this file are subject to the CPAL version 1.0 (the ï¿½Licenseï¿½); you may not use this file except
  in compliance with the License. You may obtain a copy of the License at http://isa-tools.org/licenses/ISAconfigurator-license.html.
  The License is based on the Mozilla Public License version 1.1 but Sections 14 and 15 have been added to cover use of software over
  a computer network and provide for limited attribution for the Original Developer. In addition, Exhibit A has been modified to be
  consistent with Exhibit B.
 
- Software distributed under the License is distributed on an ÒAS ISÓ basis, WITHOUT WARRANTY OF ANY KIND, either express
+ Software distributed under the License is distributed on an ï¿½AS ISï¿½ basis, WITHOUT WARRANTY OF ANY KIND, either express
  or implied. See the License for the specific language governing rights and limitations under the License.
 
  The Original Code is ISAconfigurator.
@@ -81,11 +81,11 @@ public class AddElementGUI extends JDialog {
 
     static {
         try {
-            SimpleXMLParser structureFileParser = new SimpleXMLParser(AddElementGUI.class.getResourceAsStream(File.separator + "config" + File.separator + "structure_fields.xml"));
+            SimpleXMLParser structureFileParser = new SimpleXMLParser(AddElementGUI.class.getResourceAsStream("/config/structure_fields.xml"));
             structureFileParser.parseStructureFile();
             structureElements = structureFileParser.getParsedValues();
 
-            SimpleXMLParser sectionFileParser = new SimpleXMLParser(AddElementGUI.class.getResourceAsStream(File.separator + "config" + File.separator + "section_fields.xml"));
+            SimpleXMLParser sectionFileParser = new SimpleXMLParser(AddElementGUI.class.getResourceAsStream("/config/section_fields.xml"));
             sectionFileParser.parseStructureFile();
             sectionElements = sectionFileParser.getParsedValues();
 
