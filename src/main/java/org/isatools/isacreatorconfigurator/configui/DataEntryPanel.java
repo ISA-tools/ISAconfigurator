@@ -221,7 +221,7 @@ public class DataEntryPanel extends JLayeredPane {
                     updateFieldOrder();
                     saveCurrentField(true, true);
                     if (sourceFile == null) {
-                        createOutput();
+                        createOutput(OutputOptions.CONFIGURATION_XML);
                     } else {
                         save();
                     }
@@ -238,7 +238,7 @@ public class DataEntryPanel extends JLayeredPane {
             public void actionPerformed(ActionEvent e) {
                 try {
                     saveCurrentField(true, true);
-                    createOutput();
+                    createOutput(OutputOptions.CONFIGURATION_XML);
                 } catch (DataNotCompleteException dce) {
                     showMessagePane(dce.getMessage(), JOptionPane.ERROR_MESSAGE);
                 } catch (IOException e1) {
@@ -248,6 +248,40 @@ public class DataEntryPanel extends JLayeredPane {
                 }
             }
         });
+
+        JMenuItem saveAsExcel = new JMenuItem("Save As Excel template");
+        saveAsExcel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    saveCurrentField(true, true);
+                    createOutput(OutputOptions.EXCEL);
+                } catch (DataNotCompleteException dce) {
+                    showMessagePane(dce.getMessage(), JOptionPane.ERROR_MESSAGE);
+                } catch (IOException e1) {
+                    showMessagePane("IO error occurred when saving file!", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e1) {
+                    showMessagePane(e1.getMessage(), JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        //PLACEHOLDER:
+        //        JMenuItem saveAsGoogledoc = new JMenuItem("Save As Googledoc template");
+//        saveAsGoogledoc.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    saveCurrentField(true, true);
+//                    createOutput(OutputOptions.GDOC);
+//                } catch (DataNotCompleteException dce) {
+//                    showMessagePane(dce.getMessage(), JOptionPane.ERROR_MESSAGE);
+//                } catch (IOException e1) {
+//                    showMessagePane("IO error occurred when saving file!", JOptionPane.ERROR_MESSAGE);
+//                } catch (Exception e1) {
+//                    showMessagePane(e1.getMessage(), JOptionPane.ERROR_MESSAGE);
+//                }
+//            }
+//        });
+
 
 
         JMenuItem closeSession = new JMenuItem("Close session without saving");
@@ -260,6 +294,7 @@ public class DataEntryPanel extends JLayeredPane {
 
         file.add(save);
         file.add(createFile);
+        file.add(saveAsExcel);
         file.add(closeSession);
 
         JMenu mappingMenu = new JMenu("Mappings");
@@ -418,7 +453,7 @@ public class DataEntryPanel extends JLayeredPane {
      *
      * @throws IOException - When file cannot be found. Should never be thrown
      */
-    private void createOutput() throws IOException {
+    private void createOutput(final OutputOptions outputOption) throws IOException {
 
         ExportConfigurationDialog exportDialog = new ExportConfigurationDialog();
         exportDialog.createGUI();
@@ -432,7 +467,15 @@ public class DataEntryPanel extends JLayeredPane {
                     public void run() {
                         applicationContainer.hideSheet();
                         try {
-                            showMessagePane(Utils.createTableConfigurationXML(saveIn, tableFields), JOptionPane.INFORMATION_MESSAGE);
+                            if (outputOption == OutputOptions.CONFIGURATION_XML) {
+                                showMessagePane(Utils.createTableConfigurationXML(saveIn, tableFields), JOptionPane.INFORMATION_MESSAGE);
+                            }
+                            else if(outputOption == OutputOptions.EXCEL) {
+                                showMessagePane(Utils.createTableConfigurationEXL(saveIn, tableFields), JOptionPane.INFORMATION_MESSAGE);
+                            }
+//                            else if(outputOption == OutputOptions.GDOC) {
+//                                showMessagePane(Utils.createTableConfigurationGDOC(saveIn, tableFields), JOptionPane.INFORMATION_MESSAGE);
+//                            }
                             sourceFile = new File(saveIn);
                         } catch (DataNotCompleteException e) {
                             showMessagePane(e.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -472,6 +515,33 @@ public class DataEntryPanel extends JLayeredPane {
         }
     }
 
+
+        private void saveAsExcel() {
+        try {
+            updateFieldOrder();
+            showMessagePane(Utils.createTableConfigurationEXL(sourceFile.getAbsolutePath(), tableFields), JOptionPane.INFORMATION_MESSAGE);
+        } catch (DataNotCompleteException e) {
+            showMessagePane(e.getMessage(), JOptionPane.ERROR_MESSAGE);
+        } catch (InvalidFieldOrderException ifoe) {
+            showMessagePane(ifoe.getMessage(), JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ioe) {
+            showMessagePane(ioe.getMessage(), JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+//    private void saveAsGoogledoc() {
+//        try {
+//            updateFieldOrder();
+//            showMessagePane(Utils.createTableConfigurationGDOC(sourceFile.getAbsolutePath(), tableFields), JOptionPane.INFORMATION_MESSAGE);
+//        } catch (DataNotCompleteException e) {
+//            showMessagePane(e.getMessage(), JOptionPane.ERROR_MESSAGE);
+//        } catch (InvalidFieldOrderException ifoe) {
+//            showMessagePane(ifoe.getMessage(), JOptionPane.ERROR_MESSAGE);
+//        } catch (IOException ioe) {
+//            showMessagePane(ioe.getMessage(), JOptionPane.ERROR_MESSAGE);
+//        }
+//    }
 
     private void createMainSector() {
 

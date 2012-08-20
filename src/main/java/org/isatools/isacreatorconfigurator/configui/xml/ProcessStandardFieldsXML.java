@@ -18,9 +18,8 @@ import java.io.File;
  */
 public class ProcessStandardFieldsXML {
 
-    public static final String STANDARD_FIELDS_XML = File.separator + "config" + File.separator + "std_isa_fields.xml";
-    public static final String CUSTOM_FIELDS_XML = File.separator + "config" + File.separator + "custom_isa_fields.xml";
-
+    public static final String STANDARD_FIELDS_XML =  "/config/std_isa_fields.xml";
+    public static final String CUSTOM_FIELDS_XML =  "/config/custom_isa_fields.xml";
 
     public Fields loadFieldsFromFile(String fileName) {
 
