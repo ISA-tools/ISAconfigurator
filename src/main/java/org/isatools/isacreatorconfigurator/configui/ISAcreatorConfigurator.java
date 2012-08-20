@@ -128,7 +128,7 @@ public class ISAcreatorConfigurator extends AnimatableJFrame {
     }
 
     public void creatGUI() {
-        setTitle("ISAcreator Configurator 1.5");
+        setTitle("ISAcreator Configurator 1.6");
         setIconImage(isaConfigLogo);
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(APP_WIDTH, APP_HEIGHT));
