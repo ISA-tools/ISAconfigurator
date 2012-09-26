@@ -94,6 +94,7 @@
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
+        <fixedDataType>Ontology term</fixedDataType>
     </field>
 
     <!--for Investigation file -> Investigation contacts section!-->
@@ -160,6 +161,7 @@
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
+        <fixedDataType>Ontology term</fixedDataType>
     </field>
 
     <!--for Investigation file -> study section!-->
@@ -248,6 +250,8 @@
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
+        <!--This will ensure that the data type for this field cannot be changed. Works on any field here-->
+        <fixedDataType>Ontology term</fixedDataType>
         <invDefault>true</invDefault>
     </field>
 
@@ -314,6 +318,7 @@
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
+        <fixedDataType>Ontology term</fixedDataType>
     </field>
 
     <!--for Investigation file -> Study Design section!-->
@@ -322,6 +327,7 @@
         <appearsIn>
             <location>Investigation file</location>
         </appearsIn>
+        <fixedDataType>Ontology term</fixedDataType>
         <invDefault>true</invDefault>
     </field>
 
@@ -339,6 +345,7 @@
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
+        <fixedDataType>Ontology term</fixedDataType>
     </field>
 
     <!--for Investigation file -> Study Assay section!-->
@@ -386,6 +393,7 @@
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
+        <fixedDataType>Ontology term</fixedDataType>
     </field>
     <field>
         <name>Study Protocol Description:STUDY PROTOCOLS</name>
@@ -414,6 +422,7 @@
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
+        <fixedDataType>Ontology term</fixedDataType>
     </field>
     <field>
         <name>Study Protocol Components Name:STUDY PROTOCOLS</name>
@@ -428,6 +437,7 @@
             <location>Investigation file</location>
         </appearsIn>
         <invDefault>true</invDefault>
+        <fixedDataType>Ontology term</fixedDataType>
     </field>
 
     <!--for general assays!-->
@@ -691,6 +701,7 @@
             <location>Study Sample</location>
             <location>Assay</location>
         </appearsIn>
+        <fixedDataType>Ontology term</fixedDataType>
     </field>
 
     <field>

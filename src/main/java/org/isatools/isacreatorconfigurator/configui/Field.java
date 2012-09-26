@@ -36,6 +36,8 @@
 
 package org.isatools.isacreatorconfigurator.configui;
 
+import org.isatools.isacreator.configuration.DataTypes;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +53,7 @@ public class Field {
     private boolean isStudyDefault = false;
     private boolean isAssayDefault = false;
     private boolean isInvDefault = false;
+    private DataTypes fixedDataType = null;
     private String defaultWizardTemplate = "";
 
     public Field() {
@@ -68,6 +71,10 @@ public class Field {
 
     public String getName() {
         return name;
+    }
+
+    public String getName(boolean clean) {
+        return clean ? name.contains(":") ? name.substring(0, name.indexOf(":")) : name : name;
     }
 
     public void addAppearsIn(Location ai) {
@@ -112,5 +119,13 @@ public class Field {
 
     public void setInvDefault(boolean invDefault) {
         isInvDefault = invDefault;
+    }
+
+    public DataTypes getFixedDataType() {
+        return fixedDataType;
+    }
+
+    public void setFixedDataType(DataTypes fixedDataType) {
+        this.fixedDataType = fixedDataType;
     }
 }

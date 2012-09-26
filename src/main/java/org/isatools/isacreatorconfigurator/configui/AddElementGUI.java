@@ -43,6 +43,7 @@ import org.isatools.isacreator.configuration.FieldObject;
 import org.isatools.isacreator.configuration.RecommendedOntology;
 import org.isatools.isacreator.effects.components.RoundedJTextField;
 import org.isatools.isacreator.ontologyselectiontool.OntologySelectionTool;
+import org.isatools.isacreatorconfigurator.configui.io.xml.SimpleXMLParser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,7 +53,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.Map;
 
 
