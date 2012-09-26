@@ -621,6 +621,15 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         populateFields();
     }
 
+    private DataTypes doesFieldHaveFixedType() {
+        for (Field stdFields : DataEntryPanel.standardISAFields.getFields()) {
+            if (stdFields.getName(true).equals(field.getFieldDetails().getFieldName())) {
+                return stdFields.getFixedDataType();
+            }
+        }
+        return null;
+    }
+
     /**
      * Populates fields with info contained in FieldObject
      */
@@ -633,21 +642,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 description.setText(tfo.getDescription());
 
                 // set the data type variable!
-                if (tfo.getFieldName().equals(UNIT_STR)) {
-                    // set data type to ontology term since this is all it should be!
-                    datatype.removeAllItems();
-                    datatype.addItem(DataTypes.ONTOLOGY_TERM);
-
-                } else {
-                    if (datatype.getItemCount() == 1) {
-                        datatype.removeAllItems();
-                        for (DataTypes d : DataTypes.values()) {
-                            datatype.addItem(d);
-                        }
-                    }
-
-                    datatype.setSelectedItem(tfo.getDatatype());
-                }
+                populateDataTypeSection(tfo);
 
                 if (tfo.getFieldName().equals(PROTOCOL_STR)) {
                     defaultValLabStd.setText(PROTOCOL_TYPE_STR);
@@ -727,6 +722,23 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
             revalidate();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void populateDataTypeSection(FieldObject tfo) {
+        DataTypes fixedDataType = doesFieldHaveFixedType();
+        System.out.println("Fixed data type is: " + fixedDataType);
+        if (fixedDataType != null) {
+            datatype.removeAllItems();
+            datatype.addItem(fixedDataType);
+        } else {
+            if (datatype.getItemCount() == 1) {
+                datatype.removeAllItems();
+                for (DataTypes d : DataTypes.values()) {
+                    datatype.addItem(d);
+                }
+            }
+            datatype.setSelectedItem(tfo.getDatatype());
         }
     }
 

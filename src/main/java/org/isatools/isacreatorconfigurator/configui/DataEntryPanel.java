@@ -45,7 +45,7 @@ import org.isatools.isacreator.configuration.MappingObject;
 import org.isatools.isacreator.effects.CustomSplitPaneDivider;
 import org.isatools.isacreatorconfigurator.configui.io.Utils;
 import org.isatools.isacreatorconfigurator.configui.mappingviewer.TableMappingViewer;
-import org.isatools.isacreatorconfigurator.configui.xml.ProcessStandardFieldsXML;
+import org.isatools.isacreatorconfigurator.configui.io.xml.ProcessStandardFieldsXML;
 import org.isatools.isacreatorconfigurator.validation.ConfigurationValidationUtils;
 import org.isatools.isacreatorconfigurator.validation.ReportType;
 import org.isatools.isacreatorconfigurator.validation.ValidationReport;
@@ -79,8 +79,8 @@ public class DataEntryPanel extends JLayeredPane {
     private static final int HEIGHT = 700;
     private static final TableElementInfo tableInfo = new TableElementInfo();
 
-    private static Fields standardISAFields;
-    private static Fields customISAFields;
+    public static Fields standardISAFields;
+    public static Fields customISAFields;
 
     static {
         ProcessStandardFieldsXML processStdFields = new ProcessStandardFieldsXML();
@@ -298,7 +298,6 @@ public class DataEntryPanel extends JLayeredPane {
         file.add(closeSession);
 
         JMenu mappingMenu = new JMenu("Mappings");
-
         JMenuItem viewMappings = new JMenuItem("View Mappings",
                 viewMappingsIcon);
         viewMappings.addActionListener(new ActionListener() {
@@ -314,7 +313,6 @@ public class DataEntryPanel extends JLayeredPane {
         mappingMenu.add(viewMappings);
 
         JMenu validation = new JMenu("Validation");
-
         JMenuItem viewErrors = new JMenuItem("Show Validation Errors",
                 viewMappingsIcon);
         viewErrors.addActionListener(new ActionListener() {
@@ -340,7 +338,6 @@ public class DataEntryPanel extends JLayeredPane {
         validation.add(viewErrors);
 
         JMenu helpMenu = new JMenu("Help");
-
         JMenuItem about = new JMenuItem("About", aboutIcon);
         about.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -1291,7 +1288,7 @@ public class DataEntryPanel extends JLayeredPane {
         try {
             saveCurrentField(false, false);
         } catch (DataNotCompleteException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         tableModel.clear();
 

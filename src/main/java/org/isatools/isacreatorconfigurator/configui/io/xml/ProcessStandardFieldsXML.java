@@ -1,5 +1,6 @@
-package org.isatools.isacreatorconfigurator.configui.xml;
+package org.isatools.isacreatorconfigurator.configui.io.xml;
 
+import org.isatools.isacreator.configuration.DataTypes;
 import org.isatools.isacreatorconfigurator.configui.Field;
 import org.isatools.isacreatorconfigurator.configui.Fields;
 import org.isatools.isacreatorconfigurator.configui.Location;
@@ -7,7 +8,6 @@ import org.w3c.dom.NodeList;
 import uk.ac.ebi.utils.xml.XPathReader;
 
 import javax.xml.xpath.XPathConstants;
-import java.io.File;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,8 +18,8 @@ import java.io.File;
  */
 public class ProcessStandardFieldsXML {
 
-    public static final String STANDARD_FIELDS_XML =  "/config/std_isa_fields.xml";
-    public static final String CUSTOM_FIELDS_XML =  "/config/custom_isa_fields.xml";
+    public static final String STANDARD_FIELDS_XML = "/config/std_isa_fields.xml";
+    public static final String CUSTOM_FIELDS_XML = "/config/custom_isa_fields.xml";
 
     public Fields loadFieldsFromFile(String fileName) {
 
@@ -54,6 +54,14 @@ public class ProcessStandardFieldsXML {
                 boolean assayDefault = (Boolean) reader.read("/fields/field[" + fieldIndex + "]/assayDefault", XPathConstants.BOOLEAN);
                 boolean studyDefault = (Boolean) reader.read("/fields/field[" + fieldIndex + "]/studyDefault", XPathConstants.BOOLEAN);
                 boolean invDefault = (Boolean) reader.read("/fields/field[" + fieldIndex + "]/invDefault", XPathConstants.BOOLEAN);
+                String fixedType = (String) reader.read("/fields/field[" + fieldIndex + "]/fixedDataType", XPathConstants.STRING);
+
+                if (fixedType != null && !fixedType.isEmpty()) {
+                    DataTypes dataType = DataTypes.resolveDataType(fixedType);
+                    if (dataType != null) {
+                        newField.setFixedDataType(dataType);
+                    }
+                }
 
                 newField.setAssayDefault(assayDefault);
                 newField.setStudyDefault(studyDefault);
