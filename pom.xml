@@ -184,24 +184,24 @@
                 <!--</executions>-->
             <!--</plugin>-->
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>osxappbundle-maven-plugin</artifactId>
-                <version>1.0-alpha-1</version>
-                <configuration>
-                    <mainClass>org.isatools.isacreatorconfigurator.configui.ISAcreatorConfigurator</mainClass>
-                    <iconFile>target/classes/images/icon/isaconfigurator-icon.icns</iconFile>
-                    <dictionaryFile>target/classes/config/Info.plist</dictionaryFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>osxappbundle-maven-plugin</artifactId>-->
+                <!--<version>1.0-alpha-1</version>-->
+                <!--<configuration>-->
+                    <!--<mainClass>org.isatools.isacreatorconfigurator.configui.ISAcreatorConfigurator</mainClass>-->
+                    <!--<iconFile>target/classes/images/icon/isaconfigurator-icon.icns</iconFile>-->
+                    <!--<dictionaryFile>target/classes/config/Info.plist</dictionaryFile>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>bundle</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
