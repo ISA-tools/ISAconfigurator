@@ -383,19 +383,22 @@ public class AddTableGUI extends JDialog {
         List<FieldObject> initialFieldsList = null;
 
         // populate initial fields with the default fields
-        Fields fieldList = parentGUI.getFields();
-
-        System.out.println("Looking for default fields in " + typeCombo.getSelectedItem().toString());
+        Fields fieldList = parentGUI.getStandardISAFields();
 
         List<String> defaultFields = fieldList.getDefaultFieldsByLocation(Location.resolveLocationIdentifier(typeCombo.getSelectedItem().toString()));
-
-        System.out.println("Found " + defaultFields.size() + " default fields");
-
+        
         if (defaultFields.size() > 0) {
             initialFieldsList = new ArrayList<FieldObject>();
 
             for (String fieldName : defaultFields) {
+                String sectionName = "";
+                if(fieldName.lastIndexOf(":") > -1) {
+                    String[] fieldInfo = fieldName.split(":");
+                    fieldName = fieldInfo[0];
+                    sectionName = fieldInfo[1];
+                }
                 FieldObject tfo = new FieldObject(fieldName, "", DataTypes.STRING, "", true, false, false);
+                tfo.setSection(sectionName);
                 tfo.setWizardTemplate(fieldList.getDefaultWizardTemplateForField(fieldName));
                 initialFieldsList.add(tfo);
             }

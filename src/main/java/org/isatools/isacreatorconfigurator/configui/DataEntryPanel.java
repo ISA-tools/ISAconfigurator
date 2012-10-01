@@ -45,7 +45,12 @@ import org.isatools.isacreator.configuration.MappingObject;
 import org.isatools.isacreator.effects.CustomSplitPaneDivider;
 import org.isatools.isacreatorconfigurator.configui.io.Utils;
 import org.isatools.isacreatorconfigurator.configui.mappingviewer.TableMappingViewer;
-import org.isatools.isacreatorconfigurator.configui.xml.ProcessStandardFieldsXML;
+import org.isatools.isacreatorconfigurator.configui.io.xml.ProcessStandardFieldsXML;
+import org.isatools.isacreatorconfigurator.validation.ConfigurationValidationUtils;
+import org.isatools.isacreatorconfigurator.validation.ReportType;
+import org.isatools.isacreatorconfigurator.validation.ValidationReport;
+import org.isatools.isacreatorconfigurator.validation.Validator;
+import org.isatools.isacreatorconfigurator.validation.ui.ConfigurationValidationUI;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -70,55 +75,61 @@ import java.util.List;
 
 public class DataEntryPanel extends JLayeredPane {
 
-    @InjectedResource
-    private ImageIcon addTable, addTableOver, removeTable, removeTableOver, addElement,
-            addElementOver, removeElement, removeElementOver, moveUp, moveUpOver, moveDown, moveDownOver,
-            informationIcon, isaConfigLogo, viewMappingsIcon, warningIcon, aboutIcon, fieldListTitle, tableListTitle;
-
-    private static final String FIELD_XML_LOC = "/config/std_isa_fields.xml";
-    private static final String CUSTOM_XML_LOC = "/config/custom_isa_fields.xml";
-    // Map of table to fields
-    private Map<MappingObject, List<Display>> tableFields;
-
-    private AddTableGUI atGUI;
-    private AddElementGUI addElementUI;
-    private AboutPanel aboutPanel;
-
-    private JList tableList;
-    private DefaultListModel tableModel;
-    private JLabel tableCountInfo;
-    private ReOrderableJList elementList;
-    private DefaultListModel elementModel;
-    private JLabel elementCountInfo;
-    private JLabel removeElementButton;
-
-    private JLayeredPane currentPage;
-
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
     private static final TableElementInfo tableInfo = new TableElementInfo();
 
-    private Fields fields;
-    private static Fields customFields;
+    public static Fields standardISAFields;
+    public static Fields customISAFields;
 
-    private ISAcreatorConfigurator appCont;
+    static {
+        ProcessStandardFieldsXML processStdFields = new ProcessStandardFieldsXML();
+        ProcessStandardFieldsXML processCustomFields = new ProcessStandardFieldsXML();
+        standardISAFields = processStdFields.loadFieldsFromFile(ProcessStandardFieldsXML.STANDARD_FIELDS_XML);
+        customISAFields = processCustomFields.loadFieldsFromFile(ProcessStandardFieldsXML.CUSTOM_FIELDS_XML);
+    }
+
+    @InjectedResource
+    private ImageIcon addTable, addTableOver, removeTable, removeTableOver, addElement,
+            addElementOver, removeElement, removeElementOver, moveUp, moveUpOver, moveDown, moveDownOver,
+            informationIcon, isaConfigLogo, viewMappingsIcon, warningIcon, aboutIcon, fieldListTitle, tableListTitle,
+            viewErrorsIcon, viewErrorsIconOver;
+
+    private JLayeredPane currentPage;
+
+    // Map of table to fields
+    private Map<MappingObject, List<Display>> tableFields;
+    private AddTableGUI addTableUI;
+    private AddElementGUI addElementUI;
+
+    private AboutPanel aboutPanel;
+    private JList tableList;
+    private DefaultListModel tableModel;
+
+    private JLabel tableCountInfo;
+    private ReOrderableJList elementList;
+    private DefaultListModel elementModel;
+    private JLabel elementCountInfo;
+
+    private JLabel removeElementButton, viewErrorsButton;
+
+    private ISAcreatorConfigurator applicationContainer;
 
     private JLabel tableInformationDisplay;
     private FieldInterface fieldInterface;
     private StructuralElementInfo structureElement = new StructuralElementInfo();
+
     private File sourceFile;
 
-    public DataEntryPanel(ISAcreatorConfigurator appCont, File sourceFile) {
-        this(appCont, new ListOrderedMap<MappingObject, List<Display>>(), sourceFile);
+    public DataEntryPanel(ISAcreatorConfigurator applicationContainer, File sourceFile) {
+        this(applicationContainer, new ListOrderedMap<MappingObject, List<Display>>(), sourceFile);
     }
 
-    public DataEntryPanel(ISAcreatorConfigurator appCont, Map<MappingObject, List<Display>> tableFields, File sourceFile) {
+    public DataEntryPanel(ISAcreatorConfigurator applicationContainer, Map<MappingObject, List<Display>> tableFields, File sourceFile) {
         ResourceInjector.get("config-ui-package.style").inject(this);
-
-        this.appCont = appCont;
+        this.applicationContainer = applicationContainer;
         this.tableFields = tableFields;
         this.sourceFile = sourceFile;
-
     }
 
     public void setTableFields(Map<MappingObject, List<Display>> tableFields) {
@@ -130,7 +141,7 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     public void createGUI() {
-        atGUI = new AddTableGUI(this);
+        addTableUI = new AddTableGUI(this);
         addElementUI = new AddElementGUI(this);
         setupAboutPanel();
         fieldInterface = new FieldInterface(getCurrentInstance());
@@ -139,30 +150,24 @@ public class DataEntryPanel extends JLayeredPane {
         setBackground(UIHelper.BG_COLOR);
         setBorder(null);
         instantiateFrame();
-        loadPredefinedFieldNames();
+
+        validateAll();
+
         reformTableList();
         setVisible(true);
     }
-
 
     private void setupAboutPanel() {
         aboutPanel = new AboutPanel();
         aboutPanel.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent event) {
-                appCont.hideGlassPane();
+                applicationContainer.hideGlassPane();
             }
         });
     }
 
-    public Fields getFields() {
-        return fields;
-    }
-
-    private void loadPredefinedFieldNames() {
-        ProcessStandardFieldsXML processStdFields = new ProcessStandardFieldsXML();
-        ProcessStandardFieldsXML processCustomFields = new ProcessStandardFieldsXML();
-        fields = processStdFields.loadFieldsFromFile(ProcessStandardFieldsXML.STANDARD_FIELDS_XML);
-        customFields = processCustomFields.loadFieldsFromFile(ProcessStandardFieldsXML.CUSTOM_FIELDS_XML);
+    public Fields getStandardISAFields() {
+        return standardISAFields;
     }
 
     private void instantiateFrame() {
@@ -184,14 +189,14 @@ public class DataEntryPanel extends JLayeredPane {
             public void propertyChange(PropertyChangeEvent event) {
                 if (event.getPropertyName()
                         .equals(JOptionPane.VALUE_PROPERTY)) {
-                    appCont.hideSheet();
+                    applicationContainer.hideSheet();
                 }
             }
         });
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                appCont.showJDialogAsSheet(optionPane.createDialog(getThis(),
+                applicationContainer.showJDialogAsSheet(optionPane.createDialog(getThis(),
                         "Message"));
             }
         });
@@ -260,8 +265,8 @@ public class DataEntryPanel extends JLayeredPane {
             }
         });
 
-
-//        JMenuItem saveAsGoogledoc = new JMenuItem("Save As Googledoc template");
+        //PLACEHOLDER:
+        //        JMenuItem saveAsGoogledoc = new JMenuItem("Save As Googledoc template");
 //        saveAsGoogledoc.addActionListener(new ActionListener() {
 //            public void actionPerformed(ActionEvent e) {
 //                try {
@@ -277,22 +282,22 @@ public class DataEntryPanel extends JLayeredPane {
 //            }
 //        });
 
+
+
         JMenuItem closeSession = new JMenuItem("Close session without saving");
         closeSession.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 tableFields.clear();
-                appCont.setCurrentPage(appCont.getMp());
+                applicationContainer.setCurrentPage(applicationContainer.getMp());
             }
         });
 
         file.add(save);
         file.add(createFile);
         file.add(saveAsExcel);
-       // file.add(saveAsGoogledoc);
         file.add(closeSession);
 
         JMenu mappingMenu = new JMenu("Mappings");
-
         JMenuItem viewMappings = new JMenuItem("View Mappings",
                 viewMappingsIcon);
         viewMappings.addActionListener(new ActionListener() {
@@ -302,20 +307,43 @@ public class DataEntryPanel extends JLayeredPane {
                         getApplicationContainer().showJDialogAsSheet(new TableMappingViewer(getThis(), getTableTypeMapping()));
                     }
                 });
-
             }
         });
 
         mappingMenu.add(viewMappings);
 
-        JMenu helpMenu = new JMenu("Help");
+        JMenu validation = new JMenu("Validation");
+        JMenuItem viewErrors = new JMenuItem("Show Validation Errors",
+                viewMappingsIcon);
+        viewErrors.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        Validator validator = new Validator();
+                        validateAll(validator);
 
+                        ValidationReport report = validator.getReport();
+
+                        ConfigurationValidationUI validationUI = new ConfigurationValidationUI(tableFields.keySet(), report);
+                        validationUI.createGUI();
+                        validationUI.setLocationRelativeTo(getApplicationContainer());
+                        validationUI.setAlwaysOnTop(true);
+                        validationUI.setVisible(true);
+                    }
+                });
+
+            }
+        });
+
+        validation.add(viewErrors);
+
+        JMenu helpMenu = new JMenu("Help");
         JMenuItem about = new JMenuItem("About", aboutIcon);
         about.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        appCont.setGlassPanelContents(aboutPanel);
+                        applicationContainer.setGlassPanelContents(aboutPanel);
                     }
                 });
 
@@ -326,11 +354,91 @@ public class DataEntryPanel extends JLayeredPane {
 
         menu_container.add(file);
         menu_container.add(mappingMenu);
+        menu_container.add(validation);
         menu_container.add(helpMenu);
 
         topPanel.add(menu_container);
         return topPanel;
     }
+
+    public void validateAll() {
+        Validator validator = new Validator();
+        validateAll(validator, false);
+    }
+
+    private void validateAll(Validator validator) {
+        validateAll(validator, true);
+    }
+
+    private void validateAll(Validator validator, Boolean updateFields) {
+        if (updateFields) updateFieldOrder();
+
+        ApplicationManager.getFileErrors().clear();
+
+        for (MappingObject mappingObject : tableFields.keySet()) {
+            if (mappingObject != null) {
+                validateFormOrTable(validator, mappingObject);
+            }
+        }
+        updateErrorReports(validator.getReport().getReports());
+    }
+
+    private void validateFormOrTable(MappingObject mappingObject) {
+        Validator validator = new Validator();
+        validateAll(validator, false);
+        validateFormOrTable(validator, mappingObject);
+        updateErrorReports(validator.getReport().getReports());
+    }
+
+    private void validateFormOrTable(Validator validator, MappingObject mappingObject) {
+        if (mappingObject != null) {
+            String tableType = mappingObject.getAssayType() == null || mappingObject.getAssayType().equals("")
+                    ? mappingObject.getTableType() : mappingObject.getAssayType();
+
+            if (mappingObject.getAssayName().equalsIgnoreCase("investigation")) {
+                tableType = "investigation";
+            }
+
+            List<FieldObject> fields = new ArrayList<FieldObject>();
+            for (Display display : tableFields.get(mappingObject)) {
+                if (display.getFieldDetails() != null)
+                    fields.add(display.getFieldDetails());
+            }
+
+            validator.validate(mappingObject.getAssayName(), tableType, fields);
+        }
+    }
+
+    private void updateErrorReports(Map<String, Map<ReportType, Set<String>>> validationReport) {
+
+        for (String fileName : validationReport.keySet()) {
+            MappingObject mappingObject = ConfigurationValidationUtils.findMappingObjectForTable(fileName, tableFields.keySet());
+            ApplicationManager.getFileErrors().put(mappingObject, new HashMap<String, Set<String>>());
+
+            for (ReportType reportType : validationReport.get(fileName).keySet()) {
+                for (String message : validationReport.get(fileName).get(reportType)) {
+                    // process the message to resolve the index either from the string itself or through use of table fields
+                    String key = reportType.getSalientFieldOrIndex(message);
+
+                    if (key != null) {
+                        if (!ApplicationManager.getFileErrors().get(mappingObject).containsKey(key)) {
+                            ApplicationManager.getFileErrors().get(mappingObject).put(key, new HashSet<String>());
+                        }
+                        ApplicationManager.getFileErrors().get(mappingObject).get(key).add(message);
+                    }
+                }
+            }
+            // process each of the messages to find the indexes which have errors.
+        }
+
+        viewErrorsButton.setVisible(areThereErrorsInThisCurrentObject());
+        tableList.getParent().repaint();
+    }
+
+    private boolean areThereErrorsInThisCurrentObject() {
+        return ApplicationManager.getFileErrors().containsKey(ApplicationManager.getCurrentMappingObject());
+    }
+
 
     private DataEntryPanel getThis() {
         return this;
@@ -347,14 +455,14 @@ public class DataEntryPanel extends JLayeredPane {
         ExportConfigurationDialog exportDialog = new ExportConfigurationDialog();
         exportDialog.createGUI();
 
-        appCont.showJDialogAsSheet(exportDialog);
+        applicationContainer.showJDialogAsSheet(exportDialog);
         exportDialog.addPropertyChangeListener("save", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 final String saveIn = propertyChangeEvent.getNewValue().toString();
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        appCont.hideSheet();
+                        applicationContainer.hideSheet();
                         try {
                             if (outputOption == OutputOptions.CONFIGURATION_XML) {
                                 showMessagePane(Utils.createTableConfigurationXML(saveIn, tableFields), JOptionPane.INFORMATION_MESSAGE);
@@ -382,13 +490,13 @@ public class DataEntryPanel extends JLayeredPane {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        appCont.hideSheet();
+                        applicationContainer.hideSheet();
                     }
                 });
             }
         });
 
-        appCont.showJDialogAsSheet(exportDialog);
+        applicationContainer.showJDialogAsSheet(exportDialog);
     }
 
     private void save() {
@@ -405,18 +513,18 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
 
-//    private void saveAsExcel() {
-//        try {
-//            updateFieldOrder();
-//            showMessagePane(Utils.createTableConfigurationEXL(sourceFile.getAbsolutePath(), tableFields), JOptionPane.INFORMATION_MESSAGE);
-//        } catch (DataNotCompleteException e) {
-//            showMessagePane(e.getMessage(), JOptionPane.ERROR_MESSAGE);
-//        } catch (InvalidFieldOrderException ifoe) {
-//            showMessagePane(ifoe.getMessage(), JOptionPane.ERROR_MESSAGE);
-//        } catch (IOException ioe) {
-//            showMessagePane(ioe.getMessage(), JOptionPane.ERROR_MESSAGE);
-//        }
-//    }
+        private void saveAsExcel() {
+        try {
+            updateFieldOrder();
+            showMessagePane(Utils.createTableConfigurationEXL(sourceFile.getAbsolutePath(), tableFields), JOptionPane.INFORMATION_MESSAGE);
+        } catch (DataNotCompleteException e) {
+            showMessagePane(e.getMessage(), JOptionPane.ERROR_MESSAGE);
+        } catch (InvalidFieldOrderException ifoe) {
+            showMessagePane(ifoe.getMessage(), JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ioe) {
+            showMessagePane(ioe.getMessage(), JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
 
 //    private void saveAsGoogledoc() {
@@ -432,7 +540,6 @@ public class DataEntryPanel extends JLayeredPane {
 //        }
 //    }
 
-
     private void createMainSector() {
 
         JPanel topContainer = new JPanel();
@@ -445,7 +552,7 @@ public class DataEntryPanel extends JLayeredPane {
         JPanel headerImagePanel = new JPanel(new GridLayout(1, 2));
         headerImagePanel.setOpaque(false);
 
-        JLabel logo = new JLabel(isaConfigLogo, JLabel.LEFT);
+        JLabel logo = new JLabel("");
         logo.setOpaque(false);
 
         headerImagePanel.add(logo);
@@ -460,10 +567,12 @@ public class DataEntryPanel extends JLayeredPane {
         topContainer.add(headerImagePanel);
         topContainer.add(Box.createVerticalStrut(10));
 
+
         add(topContainer, BorderLayout.NORTH);
 
         // create central console with majority of content!
         createNavigationPanel();
+
 
         JPanel bottomContainer = new JPanel();
         bottomContainer.setLayout(new BoxLayout(bottomContainer, BoxLayout.PAGE_AXIS));
@@ -528,6 +637,11 @@ public class DataEntryPanel extends JLayeredPane {
                 }
 
                 MappingObject currentlyEditedTable = getCurrentlySelectedTable();
+                ApplicationManager.setCurrentMappingObject(currentlyEditedTable);
+
+                // update the view error button visibility depending on selected tables error state.
+                viewErrorsButton.setVisible(areThereErrorsInThisCurrentObject());
+
                 updateTableInfoDisplay(currentlyEditedTable);
                 reformFieldList(currentlyEditedTable);
             }
@@ -573,7 +687,7 @@ public class DataEntryPanel extends JLayeredPane {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         addTableButton.setIcon(addTable);
-                        appCont.showJDialogAsSheet(atGUI);
+                        applicationContainer.showJDialogAsSheet(addTableUI);
                     }
                 });
 
@@ -623,8 +737,40 @@ public class DataEntryPanel extends JLayeredPane {
 
         removeTableButton.setToolTipText("<html><b>Remove table</b><p>Remove table from definitions?</p></html>");
 
+        viewErrorsButton = new JLabel(viewErrorsIcon);
+        viewErrorsButton.setVisible(false);
+        viewErrorsButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                viewErrorsButton.setIcon(viewErrorsIcon);
+                // show error pane for current table only.
+
+                Validator validator = new Validator();
+                validateFormOrTable(validator, ApplicationManager.getCurrentMappingObject());
+
+                ValidationReport report = validator.getReport();
+
+                ConfigurationValidationUI validationUI = new ConfigurationValidationUI(tableFields.keySet(), report);
+                validationUI.createGUI();
+                validationUI.setLocationRelativeTo(getApplicationContainer());
+                validationUI.setAlwaysOnTop(true);
+                validationUI.setVisible(true);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+                viewErrorsButton.setIcon(viewErrorsIconOver);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+                viewErrorsButton.setIcon(viewErrorsIcon);
+            }
+        });
+
         buttonPanel.add(addTableButton);
         buttonPanel.add(removeTableButton);
+        buttonPanel.add(viewErrorsButton);
         buttonPanel.add(Box.createHorizontalGlue());
 
         container.add(buttonPanel);
@@ -642,7 +788,7 @@ public class DataEntryPanel extends JLayeredPane {
             if (sourceFile != null) {
                 message.append("<html><div align=\"right\">Currently editing <strong>").append(sourceFile.getName()).append("</strong><br/>");
             } else {
-                message.append("<html><div align=\"right\">New Configuration file<strong></br>");
+                message.append("<html><div align=\"right\">New Configuration file <strong></br>");
             }
 
             if (currentTable.getTableType().contains("sample")) {
@@ -665,6 +811,8 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     private String[] filterAvailableFieldsByTableType(Fields fieldList, Location type) {
+
+        System.out.println("Type is " + type);
 
         List<String> result = fieldList.getFieldsByLocation(type);
 
@@ -712,7 +860,7 @@ public class DataEntryPanel extends JLayeredPane {
                         if (currentPage != fieldInterface) {
                             setCurrentPage(fieldInterface);
                         }
-                        removeElementButton.setEnabled(!fields.isFieldRequired(selectedNode.toString()));
+                        removeElementButton.setEnabled(!standardISAFields.isFieldRequired(selectedNode.toString()));
                     } else {
                         setCurrentPage(structureElement);
                     }
@@ -723,6 +871,10 @@ public class DataEntryPanel extends JLayeredPane {
         elementList.addPropertyChangeListener("orderChanged", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 updateFieldOrder();
+
+                if (tableList.getSelectedValue() instanceof MappingObject) {
+                    validateFormOrTable(ApplicationManager.getCurrentMappingObject());
+                }
             }
         });
 
@@ -762,28 +914,7 @@ public class DataEntryPanel extends JLayeredPane {
 
             public void mousePressed(MouseEvent event) {
                 addFieldButton.setIcon(addElement);
-                if (getCurrentlySelectedTable() != null) {
-
-                    System.out.println();
-
-                    addElementUI.updateFieldList(filterAvailableFieldsByTableType(fields,
-                            Location.resolveLocationIdentifier(getCurrentlySelectedTable().getTableType())));
-
-                    String tableType = getCurrentlySelectedTable().getTableType().equalsIgnoreCase("[investigation]")
-                            ? "Investigation file"
-                            : getCurrentlySelectedTable().getTableType();
-
-                    addElementUI.updateCustomFieldList(filterAvailableFieldsByTableType(customFields,
-                            Location.resolveLocationIdentifier(tableType)));
-
-                    addElementUI.setCurrentTableType(Location.resolveLocationIdentifier(tableType));
-
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            appCont.showJDialogAsSheet(addElementUI);
-                        }
-                    });
-                }
+                showAddFieldUI();
             }
 
         });
@@ -808,26 +939,7 @@ public class DataEntryPanel extends JLayeredPane {
             public void mousePressed(MouseEvent event) {
                 removeElementButton.setIcon(removeElement);
                 if (removeElementButton.isEnabled()) {
-                    if (elementList.getSelectedValue() != null) {
-                        int selectedIndex = elementList.getSelectedIndex();
-
-                        updateFieldOrder();
-
-                        if (selectedIndex != -1) {
-                            Display fd = getCurrentlySelectedField();
-                            if (fd != null) {
-                                if (tableFields.get(getCurrentlySelectedTable()).contains(fd)) {
-                                    tableFields.get(getCurrentlySelectedTable()).remove(fd);
-                                } else {
-                                    Display field = findTableFieldToRemove(fd.getFieldDetails());
-                                    if (field != null) {
-                                        tableFields.get(getCurrentlySelectedTable()).remove(field);
-                                    }
-                                }
-                                reformFieldList(getCurrentlySelectedTable());
-                            }
-                        }
-                    }
+                    removeSelectedElement();
                 }
             }
 
@@ -857,6 +969,9 @@ public class DataEntryPanel extends JLayeredPane {
                     if (toMoveDown != (elementModel.getSize() - 1)) {
                         swapElements(elementList, elementModel, toMoveDown, toMoveDown + 1);
                     }
+
+                    updateFieldOrder();
+                    validateFormOrTable(ApplicationManager.getCurrentMappingObject());
                 }
             }
         });
@@ -885,6 +1000,10 @@ public class DataEntryPanel extends JLayeredPane {
                     if (toMoveUp != 0) {
                         swapElements(elementList, elementModel, toMoveUp, toMoveUp - 1);
                     }
+
+                    updateFieldOrder();
+                    validateFormOrTable(ApplicationManager.getCurrentMappingObject());
+
                 }
             }
 
@@ -902,6 +1021,54 @@ public class DataEntryPanel extends JLayeredPane {
         container.add(Box.createVerticalGlue());
 
         return container;
+    }
+
+    private void removeSelectedElement() {
+        if (elementList.getSelectedValue() != null) {
+            int selectedIndex = elementList.getSelectedIndex();
+
+            updateFieldOrder();
+
+            if (selectedIndex != -1) {
+                Display fd = getCurrentlySelectedField();
+                if (fd != null) {
+                    if (tableFields.get(getCurrentlySelectedTable()).contains(fd)) {
+                        tableFields.get(getCurrentlySelectedTable()).remove(fd);
+                    } else {
+                        Display field = findTableFieldToRemove(fd.getFieldDetails());
+                        if (field != null) {
+                            tableFields.get(getCurrentlySelectedTable()).remove(field);
+                        }
+                    }
+                    reformFieldList(getCurrentlySelectedTable());
+                }
+            }
+        }
+    }
+
+    private void showAddFieldUI() {
+        if (getCurrentlySelectedTable() != null) {
+
+            System.out.println("Table type: " + getCurrentlySelectedTable().getTableType());
+
+            String tableType = getCurrentlySelectedTable().getTableType().contains("investigation")
+                    ? "Investigation File"
+                    : getCurrentlySelectedTable().getTableType();
+
+            addElementUI.updateFieldList(filterAvailableFieldsByTableType(standardISAFields,
+                    Location.resolveLocationIdentifier(tableType)));
+
+            addElementUI.updateCustomFieldList(filterAvailableFieldsByTableType(customISAFields,
+                    Location.resolveLocationIdentifier(tableType)));
+
+            addElementUI.setCurrentTableType(Location.resolveLocationIdentifier(tableType));
+
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    applicationContainer.showJDialogAsSheet(addElementUI);
+                }
+            });
+        }
     }
 
     /**
@@ -996,7 +1163,6 @@ public class DataEntryPanel extends JLayeredPane {
         fields.set(a, e2);
         fields.set(b, e1);
 
-
         list.setSelectedIndex(b);
         list.ensureIndexIsVisible(b);
     }
@@ -1056,8 +1222,17 @@ public class DataEntryPanel extends JLayeredPane {
             mo.setDispatchTarget(dispatchTarget);
             tableFields.put(mo, new ArrayList<Display>());
             // reform table list
+
+            Set<String> addedSections = new HashSet<String>();
+
             if (initialFields != null) {
                 for (FieldObject field : initialFields) {
+                    if (!addedSections.contains(field.getSection())) {
+                        if (!field.getSection().equals("")) {
+                            tableFields.get(mo).add(new SectionDisplay(field.getSection()));
+                            addedSections.add(field.getSection());
+                        }
+                    }
                     tableFields.get(mo).add(new FieldElement(field));
                 }
             }
@@ -1110,7 +1285,13 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     private void reformTableList() {
+        try {
+            saveCurrentField(false, false);
+        } catch (DataNotCompleteException e) {
+            e.printStackTrace();
+        }
         tableModel.clear();
+
         for (MappingObject mo : tableFields.keySet()) {
             tableModel.addElement(mo);
         }
@@ -1165,6 +1346,7 @@ public class DataEntryPanel extends JLayeredPane {
         }
 
         elementCountInfo.setText("<html><strong>" + elementModel.getSize() + "</strong> elements...</html>");
+        validateFormOrTable(ApplicationManager.getCurrentMappingObject());
     }
 
 
@@ -1223,8 +1405,6 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     public ISAcreatorConfigurator getApplicationContainer() {
-        return appCont;
+        return applicationContainer;
     }
-
-
 }

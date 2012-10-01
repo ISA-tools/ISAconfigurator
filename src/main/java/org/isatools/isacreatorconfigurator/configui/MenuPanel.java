@@ -38,6 +38,7 @@ package org.isatools.isacreatorconfigurator.configui;
 
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlException;
 import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Configuration;
 import org.isatools.isacreator.configuration.FieldObject;
@@ -46,8 +47,7 @@ import org.isatools.isacreator.configuration.TableConfiguration;
 import org.isatools.isacreator.configuration.io.ConfigXMLParser;
 import org.isatools.isacreator.configuration.io.ConfigurationLoadingSource;
 import org.isatools.isacreator.effects.GenericPanel;
-import org.isatools.isacreator.spreadsheet.TableReferenceObject;
-import org.isatools.isacreatorconfigurator.model.TableObject;
+import org.isatools.isacreator.spreadsheet.model.TableReferenceObject;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -100,14 +100,10 @@ public class MenuPanel extends JLayeredPane {
                 generic = new BackgroundPanel();
                 add(generic, JLayeredPane.DEFAULT_LAYER);
                 startAnimation();
-
                 menu = new CreateMenu();
                 menu.createGUI();
-
                 setGlassPaneToMenu();
-
                 setVisible(true);
-
             }
         });
     }
@@ -189,17 +185,14 @@ public class MenuPanel extends JLayeredPane {
                                 try {
                                     loadSession();
                                 } catch (IOException e) {
-                                    status.setIcon(null);
-                                    status.setForeground(UIHelper.RED_COLOR);
-                                    status.setText("<html>problem with the selected file! please try again...</html>");
+                                    showErrorInStatus("<html>Invalid selection made. Please choose a valid ISA configuration directory...</html>");
                                     e.printStackTrace();
                                 } catch (ClassNotFoundException e) {
-                                    status.setIcon(null);
-                                    status.setForeground(UIHelper.RED_COLOR);
-                                    status.setText("<html>the table configuration file you have loaded is incorrectly formed!</html>");
+                                    showErrorInStatus("<html>The table configuration file you have loaded is incorrectly formed!</html>");
                                     e.printStackTrace();
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    showErrorInStatus("<html>Invalid selection made. Please choose a valid ISA configuration directory...</html>");
                                 }
                             }
                         });
@@ -289,8 +282,8 @@ public class MenuPanel extends JLayeredPane {
      * @throws java.io.IOException    - When file not found
      * @throws ClassNotFoundException - When object being read in from input stream doesn't read in properly
      */
-    private boolean loadSession() throws IOException, ClassNotFoundException {
-        jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+    private boolean loadSession() throws IOException, ClassNotFoundException, XmlException {
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         jfc.setFileFilter(new ConfigurationFileFilter());
         jfc.setDialogTitle("Select configuration file directory");
         jfc.setApproveButtonText("load configuration");
@@ -302,7 +295,7 @@ public class MenuPanel extends JLayeredPane {
 
             toLoad = jfc.getSelectedFile();
 
-            if (toLoad != null) {
+            if (toLoad != null && checkDirectoryContentIsOk(toLoad)) {
                 DataEntryPanel dep = new DataEntryPanel(appCont, toLoad);
 
 
@@ -344,15 +337,14 @@ public class MenuPanel extends JLayeredPane {
                         ois.close();
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-
                                 status.setText("<html>connecting to ontology resources...</html>");
                             }
                         });
                         loadTFO(c, dep);
                     } else {
                         log.info("This format is not supported...");
-                        status.setIcon(null);
-                        status.setText("<html>This file format is not supported...</html>");
+                        showErrorInStatus("<html>This file format is not supported...</html>");
+
                     }
                 }
 
@@ -363,13 +355,21 @@ public class MenuPanel extends JLayeredPane {
                 appCont.setCurrentPage(dep);
                 return true;
 
+            } else {
+                showErrorInStatus("<html>Invalid selection made. Please choose a valid ISA configuration directory...</html>");
             }
         }
-        status.setForeground(UIHelper.RED_COLOR);
-        status.setText("<html>no file was selected...</html>");
+        showErrorInStatus("<html>Invalid selection made. Please choose a valid ISA configuration directory...</html>");
 
         return false;
     }
+
+    private void showErrorInStatus(String message) {
+        status.setForeground(UIHelper.RED_COLOR);
+        status.setIcon(null);
+        status.setText(message);
+    }
+
 
     private void loadTFO(Configuration tfo, DataEntryPanel dep) {
         for (TableConfiguration to : tfo.getTableData()) {
@@ -402,6 +402,18 @@ public class MenuPanel extends JLayeredPane {
 
 
         dep.setTableFields(tableFields);
+    }
+
+    private boolean checkDirectoryContentIsOk(File directory) {
+        File[] files = directory.listFiles();
+
+        for(File file : files) {
+            if(ConfigurationFileFilter.getExtension(file).equalsIgnoreCase("xml")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

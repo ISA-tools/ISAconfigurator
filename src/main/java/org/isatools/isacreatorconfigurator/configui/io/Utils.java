@@ -45,7 +45,10 @@ import org.isatools.isacreator.configuration.*;
 import org.isatools.isacreatorconfigurator.configui.*;
 import org.isatools.isacreatorconfigurator.xml.FieldXMLCreator;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.*;
 
 import static org.apache.poi.ss.util.CellReference.convertNumToColString;
@@ -58,45 +61,7 @@ import static org.apache.poi.ss.util.CellReference.convertNumToColString;
 
 public class Utils {
 
-    /**
-     * Saves current session to a user defined location.
-     * throws IOException - When problem occures on save file attempt
-     *
-     * @throws DataNotCompleteException - When fields are missing.
-     * @throws java.io.IOException      /
-     */
-    public static String saveSession(Map<MappingObject, List<Display>> tableFields, File toSave) throws IOException, DataNotCompleteException, InvalidFieldOrderException {
-
-
-        String path = toSave.getPath();
-
-        if (!ConfigurationFileFilter.getExtension(toSave).equals("tcf")) {
-            if (path.contains(".")) {
-                path = path.substring(0, path.lastIndexOf("."));
-            }
-
-            path += ".tcf";
-            toSave = new File(path);
-        }
-
-        FileOutputStream fos = new FileOutputStream(toSave);
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(Utils.createTableConfigurationObject(tableFields));
-        oos.close();
-        fos.close();
-
-        String message = "Files have been saved in ";
-
-        if (path.equals("")) {
-            message += "this programs directory";
-        } else {
-            message += path;
-        }
-
-        return message;
-
-    }
-
+    public static String utf8CharacterEncoding = "utf-8";
 
     public static Configuration createTableConfigurationObject(Map<MappingObject, List<Display>> tableFields)
             throws DataNotCompleteException, InvalidFieldOrderException {
@@ -143,7 +108,7 @@ public class Utils {
 
                 FileOutputStream fos = new FileOutputStream(outputDir + File.separator + mo.getAssayName().replace("\\s", "") + ".xml");
 
-                PrintStream ps = new PrintStream(fos);
+                PrintStream ps = new PrintStream(fos, true, utf8CharacterEncoding);
                 ps.print(xmlToWrite);
                 ps.close();
                 fos.close();
@@ -160,6 +125,7 @@ public class Utils {
 
         return message;
     }
+
 
     public static Map<Integer, String[]> createTableStructure(Map<MappingObject, List<Display>> tableFields, MappingObject mo) throws InvalidFieldOrderException {
         if (mo != null) {
@@ -203,9 +169,9 @@ public class Utils {
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet hiddenSheet = workbook.createSheet("hiddenCV");
 
-        Map<String,List<String>>   nodups = new HashMap<String, List<String>>();
+        Map<String, List<String>> nodups = new HashMap<String, List<String>>();
         XSSFSheet ontologyRestriction = workbook.createSheet("Restrictions");
-        XSSFRow ontorow0 =ontologyRestriction.createRow((short) 0);
+        XSSFRow ontorow0 = ontologyRestriction.createRow((short) 0);
 
         ontorow0.createCell(0).setCellValue("Column Name");
         ontorow0.createCell(1).setCellValue("Ontology");
@@ -215,228 +181,215 @@ public class Utils {
 
         CreationHelper factory = workbook.getCreationHelper();
 
-        int counting=0;
-        int ontocounter=0;
-        int lastposition=0;
-        
+        //  int counting=0;
+        //  int ontocounter=0;
+        int lastposition = 0;
+
 
         for (MappingObject mo : tableFields.keySet()) {
-            
+
             tableName = mo.getAssayName().replace("\\s", "");
 
             List<Display> elements = tableFields.get(mo);
 
             System.out.println("creating worksheet: " + tableName);
 
-            if (!tableName.contains("investigation"))   {
+            //we create a table with 50 records by default for anything that is not an investigation file
+            if (!tableName.contains("investigation")) {
 
                 XSSFSheet tableSheet = workbook.createSheet(tableName);
-
-                if (tableName.toLowerCase().contains("studysample")) {
-                    workbook.setSheetOrder(tableName, 1);
-                }
-
                 Drawing drawing = tableSheet.createDrawingPatriarch();
                 CellStyle style = workbook.createCellStyle();
+                XSSFRow rowAtIndex;
 
-
-                for (int i=0; i<=50; i++) {
-                    XSSFRow rowi =tableSheet.createRow((short) i);
+                //we create 51 rows by default for each table
+                for (int index = 0; index <= 50; index++) {
+                    rowAtIndex = tableSheet.createRow((short) index);
                 }
 
-                XSSFRow row = tableSheet.getRow(0);
+                //the first row is the header we need to build from the configuration declaration
+                XSSFRow header = tableSheet.getRow(0);
 
+                //we now iterated through the element found in the xml table configuration
                 for (int fieldIndex = 0; fieldIndex < elements.size(); fieldIndex++) {
 
-                if (elements.get(fieldIndex).getFieldDetails() != null) {
+                    if (elements.get(fieldIndex).getFieldDetails() != null) {
 
+                        if (elements.get(fieldIndex).getFieldDetails().isRequired() == true) {
 
+                            XSSFCell cell = header.createCell(fieldIndex);
+                            Font font = workbook.createFont();
+                            font.setBoldweight(Font.BOLDWEIGHT_BOLD);
 
-//                    if (elements.get(fieldIndex).getFieldDetails().isRequired() == true) {
+                            style.setFont(font);
+                            style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+                            style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+                            font.setColor(IndexedColors.RED.index);
+                            cell.setCellStyle(style);
+                            //create the header field by setting to FieldName as Cell name
+                            cell.setCellValue(elements.get(fieldIndex).getFieldDetails().getFieldName());
+                            System.out.println("REQUIRED field number " + fieldIndex + " is: " + elements.get(fieldIndex).getFieldDetails().getFieldName());
 
+                            //using the ISA field description to create a Comment attached to the set
+                            ClientAnchor anchor = factory.createClientAnchor();
+                            Comment comment = drawing.createCellComment(anchor);
+                            RichTextString rts = factory.createRichTextString(elements.get(fieldIndex).getFieldDetails().getDescription());
+                            comment.setString(rts);
+                            cell.setCellComment(comment);
+                            tableSheet.autoSizeColumn(fieldIndex);
 
-                        XSSFCell cell = row.createCell(fieldIndex);
-                        Font font = workbook.createFont();
-                        font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+                        } else {
+                            XSSFCell cell = header.createCell(fieldIndex);
+                            Font font = workbook.createFont();
+                            font.setBoldweight(Font.BOLDWEIGHT_BOLD);
 
-                        style.setFont(font);
-                        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
-                        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-                        font.setColor(IndexedColors.RED.index);
-                        cell.setCellStyle(style);
-                        //create the header field by setting to FieldName as Cell name
-                        cell.setCellValue(elements.get(fieldIndex).getFieldDetails().getFieldName());
-                        System.out.println("REQUIRED field number " + fieldIndex + " is: " + elements.get(fieldIndex).getFieldDetails().getFieldName());
-
-                        //using the ISA field description to create a Comment attached to the set
-                        ClientAnchor anchor = factory.createClientAnchor();
-                        Comment comment = drawing.createCellComment(anchor);
-                        RichTextString rts = factory.createRichTextString(elements.get(fieldIndex).getFieldDetails().getDescription());
-                        comment.setString(rts);
-                        cell.setCellComment(comment);
-                        tableSheet.autoSizeColumn(fieldIndex) ;
-
-//                    } else {
-//                        XSSFCell cell = row.createCell(fieldIndex);
-//                        Font font = workbook.createFont();
-//                        font.setBoldweight(Font.BOLDWEIGHT_BOLD);
-//
-//                        style.setFont(font);
-//                        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
-//                        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-//                        font.setColor(IndexedColors.BLACK.index);
-//                        cell.setCellStyle(style);
-//                        //create the header field by setting to FieldName as Cell name
-//                        cell.setCellValue(elements.get(fieldIndex).getFieldDetails().getFieldName());
-//                        //using the ISA field description to create a Comment attached to the set
-//                        ClientAnchor anchor = factory.createClientAnchor();
-//                        Comment comment = drawing.createCellComment(anchor);
-//                        RichTextString rts = factory.createRichTextString(elements.get(fieldIndex).getFieldDetails().getDescription());
-//                        comment.setString(rts);
-//                        cell.setCellComment(comment);
-//                        tableSheet.autoSizeColumn(fieldIndex) ;
-//                    }
-
-
-                    //checking if the field requires controled values, i.e ISA datatype is List
-
-                    if (elements.get(fieldIndex).getFieldDetails().getDatatype()== DataTypes.LIST) {
-
-                        //create a hidden spreadsheet and named range with the list of val
-                        counting++; //incrementing the counter defining the position where to start the new namedrange in the hidden spreadsheet
-
-                        //obtain the name of the ISA fields and extracting key information needed to create a unique name for the Named Range to be
-                        String rangeName = elements.get(fieldIndex).getFieldDetails().getFieldName().replace("'","").replace(" ","").replace("Comment[","").replace("ParameterValue[","").replace("Characteristics[","").replace("]","").replace("(","").replace(")","") ;
-
-                        //getting all the values allowed by the List Field
-                        String[] fieldValues =  elements.get(fieldIndex).getFieldDetails().getFieldList();
-
-                        //System.out.println("CV : "+elements.get(fieldIndex).getFieldDetails().getFieldName()+ " values: "  + Arrays.asList(fieldValues).toString()+ "size :" +fieldValues.length);
-
-                        //iterating through the values and creating a cell for each
-                        for (int j=0; j<fieldValues.length; j++) {
-                            hiddenSheet.createRow(lastposition + j).createCell(0).setCellValue(fieldValues[j]);
+                            style.setFont(font);
+                            style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+                            style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+                            font.setColor(IndexedColors.BLACK.index);
+                            cell.setCellStyle(style);
+                            //create the header field by setting to FieldName as Cell name
+                            cell.setCellValue(elements.get(fieldIndex).getFieldDetails().getFieldName());
+                            //using the ISA field description to create a Comment attached to the set
+                            ClientAnchor anchor = factory.createClientAnchor();
+                            Comment comment = drawing.createCellComment(anchor);
+                            RichTextString rts = factory.createRichTextString(elements.get(fieldIndex).getFieldDetails().getDescription());
+                            comment.setString(rts);
+                            cell.setCellComment(comment);
+                            tableSheet.autoSizeColumn(fieldIndex);
                         }
 
-                        Name namedCell = workbook.createName();
 
-                        workbook.getNumberOfNames();
+                        //checking if the field requires controled values, i.e ISA datatype is List
 
-                        int k=0;
-                        int position=0;
-                        //this is to handle ISA Fields sharing the same name (in different assays)
-                        //namedRanges in Excel must be unique
+                        if (elements.get(fieldIndex).getFieldDetails().getDatatype() == DataTypes.LIST) {
 
-                               while  (k<workbook.getNumberOfNames()) {  //we can the total number of field to type list we have found so far.
+                            //create a hidden spreadsheet and named range with the list of val
+                            //counting++; //incrementing the counter defining the position where to start the new namedrange in the hidden spreadsheet
 
-                                   //something already exists...
-                                            if (workbook.getNameAt(k).equals(rangeName)) {
-                                               // namedCell.setNameName(workbook.getNameAt(k).toString());
-                                               //no need to go further, we exit here and set the parameter position to use the value
-                                                position=k;
-                                                k=-1;
-                                            }
-                                            else { k++;}
-                               }
+                            //obtain the name of the ISA fields and extracting key information needed to create a unique name for the Named Range to be
+                            String rangeName = elements.get(fieldIndex).getFieldDetails().getFieldName().replace("'", "").replace(" ", "").replace("Comment[", "").replace("ParameterValue[", "").replace("Characteristics[", "").replace("]", "").replace("(", "").replace(")", "");
 
+                            //getting all the values allowed by the List Field
+                            String[] fieldValues = elements.get(fieldIndex).getFieldDetails().getFieldList();
 
-                                if ( k > 0) {   //this means this field already existed list of that type
-                                    //we name the new cell after it
-                                            namedCell.setNameName(rangeName+k);
-                                    System.out.println("Name Name: " + namedCell.getNameName());
+                            //System.out.println("CV : "+elements.get(fieldIndex).getFieldDetails().getFieldName()+ " values: "  + Arrays.asList(fieldValues).toString()+ "size :" +fieldValues.length);
+
+                            //iterating through the values and creating a cell for each
+                            for (int j = 0; j < fieldValues.length; j++) {
+                                hiddenSheet.createRow(lastposition + j).createCell(0).setCellValue(fieldValues[j]);
+                            }
+
+                            Name namedCell = workbook.createName();
+
+                            workbook.getNumberOfNames();
+
+                            int k = 0;
+                            int position = 0;
+
+                            //this is to handle ISA Fields sharing the same name (in different assays)
+                            //namedRanges in Excel must be unique
+
+                            while (k < workbook.getNumberOfNames()) {  //we can the total number of field to type list we have found so far.
+
+                                //something already exists...
+                                if (workbook.getNameAt(k).equals(rangeName)) {
+                                    // namedCell.setNameName(workbook.getNameAt(k).toString());
+                                    //no need to go further, we exit here and set the parameter position to use the value
+                                    position = k;
+                                    k = -1;
+                                } else {
+                                    k++;
                                 }
+                            }
 
-                                else  {      //there is already one, so we just point back to it using the position parameter
-                                            namedCell.setNameName(workbook.getNameAt(k).toString());       //workbook.getNameAt(position).toString()
-                                    System.out.println("Name Name: " + namedCell.getNameName());
-                                }
+                            if (k > 0) {   //this means this field already existed list of that type
+                                //we name the new cell after it
+                                namedCell.setNameName(rangeName + k);
+                                System.out.println("Name Name: " + namedCell.getNameName());
+                            } else {      //there is already one, so we just point back to it using the position parameter
+                                namedCell.setNameName(workbook.getNameAt(k).toString());       //workbook.getNameAt(position).toString()
+                                System.out.println("Name Name: " + namedCell.getNameName());
+                            }
 
-                        int start=0;
-                        start=lastposition+1;
-                        int end=0;
+                            int start = 0;
+                            int end = 0;
+                            start = lastposition + 1;
+                            System.out.println("start: + " + start);
+                            end = lastposition + fieldValues.length;
+                            System.out.println("end: + " + end);
 
-                        end=lastposition+fieldValues.length   ;
-                        String reference ="hiddenCV"+"!"+convertNumToColString(0)+start+":"+ convertNumToColString(0)+end;
-                        namedCell.setRefersToFormula(reference);
+//                                    String reference ="hiddenCV"+"!"+convertNumToColString(0)+start+":"+ convertNumToColString(0)+end;
+                            String reference = "hiddenCV" + "!$" + convertNumToColString(0) + "$" + start + ":$" + convertNumToColString(0) + "$" + end;
+                            namedCell.setRefersToFormula(reference);
 
-                         lastposition=lastposition+fieldValues.length;
-                        System.out.println("reference: "+reference);
+                            start = 0;
+                            end = 0;
+                            DataValidationHelper validationHelper = new XSSFDataValidationHelper(tableSheet);
+                            DataValidationConstraint constraint = validationHelper.createFormulaListConstraint(reference);
+                            CellRangeAddressList addressList = new CellRangeAddressList(1, 50, fieldIndex, fieldIndex);
 
-                        DataValidationHelper validationHelper = new XSSFDataValidationHelper(tableSheet);
-                        DataValidationConstraint constraint=validationHelper.createFormulaListConstraint(reference);
-                        CellRangeAddressList addressList = new CellRangeAddressList(1,50,fieldIndex,fieldIndex);
-                        DataValidation dataValidation =  validationHelper.createValidation(constraint, addressList);
-                        tableSheet.addValidationData(dataValidation);
-                    }
+                            System.out.println("field index: " + fieldIndex);
+                            DataValidation dataValidation = validationHelper.createValidation(constraint, addressList);
 
+                            tableSheet.addValidationData(dataValidation);
 
-                    if (elements.get(fieldIndex).getFieldDetails().getDatatype()== DataTypes.DATE) {
+                            lastposition = lastposition + fieldValues.length;
+                            System.out.println("lastposition: + " + lastposition);
+                            System.out.println("reference: " + reference);
+                        }
 
-                              //do something
-                    }
+//                                //TODO: reformat date but this is pain in Excel
+//                                if (elements.get(fieldIndex).getFieldDetails().getDatatype()== DataTypes.DATE) {
+//                                    //do something
+//                                }
 
-                    if (elements.get(fieldIndex).getFieldDetails().getDefaultVal() != null) {
-
-                      // System.out.println("DEFAULT VALUE: " + elements.get(fieldIndex).getFieldDetails().getDefaultVal());
-
-                       for (int i=1; i<51; i++) {
-                           XSSFRow rowi = tableSheet.getRow(i);                         
-                           XSSFCell cellThere = rowi.createCell(fieldIndex);
-                                  cellThere.setCellValue(elements.get(fieldIndex).getFieldDetails().getDefaultVal());
-                       }
-                    }
-
-
-
-                    if (elements.get(fieldIndex).getFieldDetails().getDatatype()==DataTypes.ONTOLOGY_TERM) {
-
-
-                        int count= elements.get(fieldIndex).getFieldDetails().getRecommmendedOntologySource().values().size();
-                        Collection<RecommendedOntology> myList= elements.get(fieldIndex).getFieldDetails().getRecommmendedOntologySource().values();
+                        //  If a default value has been specified in the ISAconfiguration, we set it in the Excel spreadsheet
+                        if (elements.get(fieldIndex).getFieldDetails().getDefaultVal() != null) {
+                            for (int i=1; i<51; i++) {
+                            rowAtIndex = tableSheet.getRow(i);
+                            XSSFCell cellThere = rowAtIndex.createCell(fieldIndex);
+                            cellThere.setCellValue(elements.get(fieldIndex).getFieldDetails().getDefaultVal());
+                            }
+                        }
 
 
-                        for(RecommendedOntology recommendedOntology : myList){
-
-                            System.out.println("ONTOLOGY :" + recommendedOntology.getOntology());
-
-                                      try {
-                                          if (recommendedOntology.getOntology() != null)  {
-
-                                              ArrayList<String> ontoAttributes = new ArrayList<String>();
-                                              ontoAttributes.add(recommendedOntology.getOntology().getOntologyID()) ;
-                                              ontoAttributes.add(recommendedOntology.getOntology().getOntologyVersion()) ;
-
-                                            //  ontocounter++;
+                        if (elements.get(fieldIndex).getFieldDetails().getDatatype() == DataTypes.ONTOLOGY_TERM) {
+                            int count = elements.get(fieldIndex).getFieldDetails().getRecommmendedOntologySource().values().size();
+                            Collection<RecommendedOntology> myList = elements.get(fieldIndex).getFieldDetails().getRecommmendedOntologySource().values();
+                            for (RecommendedOntology recommendedOntology : myList) {
+                                System.out.println("ONTOLOGY :" + recommendedOntology.getOntology());
+                                try {
+                                    if (recommendedOntology.getOntology() != null) {
+                                        ArrayList<String> ontoAttributes = new ArrayList<String>();
+                                        ontoAttributes.add(recommendedOntology.getOntology().getOntologyID());
+                                        ontoAttributes.add(recommendedOntology.getOntology().getOntologyVersion());
+                                        //  ontocounter++;
 //                                              XSSFRow ontoRowj = ontologyRestriction.createRow(ontocounter);
 //                                              ontoRowj.createCell(0).setCellValue(elements.get(fieldIndex).getFieldDetails().getFieldName());
 //                                              ontoRowj.createCell(1).setCellValue(recommendedOntology.getOntology().getOntologyID());
 //                                              ontoRowj.createCell(3).setCellValue(recommendedOntology.getOntology().getOntologyVersion());
 
-                                              if (recommendedOntology.getBranchToSearchUnder() != null) {
-
-                                              System.out.println("ONTOLOGY BRANCH :" + recommendedOntology.getBranchToSearchUnder()) ;
-
+                                        if (recommendedOntology.getBranchToSearchUnder() != null) {
+                                            System.out.println("ONTOLOGY BRANCH :" + recommendedOntology.getBranchToSearchUnder());
 //                                                  ontoRowj.createCell(2).setCellValue(recommendedOntology.getBranchToSearchUnder().toString());
+                                            ontoAttributes.add(recommendedOntology.getBranchToSearchUnder().toString());
+                                        } else {
+                                            ontoAttributes.add("");
+                                        }
 
-                                                  ontoAttributes.add(recommendedOntology.getBranchToSearchUnder().toString()) ;
-                                              }
-                                              else { ontoAttributes.add("") ; }
-
-                                              nodups.put(elements.get(fieldIndex).getFieldDetails().getFieldName(),ontoAttributes);
-
-                                         }
-                         } catch (NullPointerException npe)  {
-                                          System.out.println(npe);
-                                      }
+                                        nodups.put(elements.get(fieldIndex).getFieldDetails().getFieldName(), ontoAttributes);
+                                    }
+                                } catch (NullPointerException npe) {
+                                    System.out.println(npe);
+                                }
+                            }
                         }
                     }
-
-
                 }
+            } else {
 
-                }
-            }
-            else {
+                //we now create with the Investigation Sheet
                 XSSFSheet tableSheet = workbook.createSheet(tableName);
 
                 Drawing drawing = tableSheet.createDrawingPatriarch();
@@ -461,12 +414,12 @@ public class Utils {
                         comment.setString(rts);
                         cell.setCellComment(comment);
                         cell.setCellStyle(style);
-                        tableSheet.autoSizeColumn(fieldIndex) ;
+                        tableSheet.autoSizeColumn(fieldIndex);
 
                         SheetConditionalFormatting sheetCF = tableSheet.getSheetConditionalFormatting();
 
                         //condition: if the output of the FIND function is equal to 1, then, set cell to a blue font
-                        ConditionalFormattingRule rule = sheetCF.createConditionalFormattingRule("FIND(Investigation,$A$1:$A$21)>1")  ;
+                        ConditionalFormattingRule rule = sheetCF.createConditionalFormattingRule("FIND(Investigation,$A$1:$A$21)>1");
                         //ConditionalFormattingRule rule = sheetCF.createConditionalFormattingRule(ComparisonOperator.) ;
                         FontFormatting font1 = rule.createFontFormatting();
                         font1.setFontStyle(false, true);
@@ -477,22 +430,22 @@ public class Utils {
                         };
 
                         sheetCF.addConditionalFormatting(regions, rule);
+                    }
                 }
-            }
                 tableSheet.setSelected(true);
-                workbook.setSheetOrder(tableName,0);
-           
-         }
+                workbook.setSheetOrder(tableName, 0);
+
+            }
         }
 
         //writes the values of ontology resources used to restrict selection in ISA fields
-        int compteur=1;
+        int compteur = 1;
 
         for (Map.Entry<String, List<String>> entry : nodups.entrySet()) {
             String key = entry.getKey();
             // Object value = entry.getValue();
 
-            System.out.println("UNIQUE RESOURCE: "+key);
+            System.out.println("UNIQUE RESOURCE: " + key);
             XSSFRow ontoRowj = ontologyRestriction.createRow(compteur);
             ontoRowj.createCell(0).setCellValue(key);
             ontoRowj.createCell(1).setCellValue(entry.getValue().get(0));
@@ -504,8 +457,12 @@ public class Utils {
         }
 
         //moving support worksheet to be the rightmost sheets in the workbook.
-        workbook.setSheetOrder("hiddenCV",tableFields.keySet().size()+1 );
-        workbook.setSheetOrder("Restrictions",tableFields.keySet().size()+1 );
+        //if the table corresponds to the study sample table, we move it to first position
+        if (tableName.toLowerCase().contains("studysample")) {
+            workbook.setSheetOrder(tableName, 1);
+        }
+        workbook.setSheetOrder("hiddenCV", tableFields.keySet().size() + 1);
+        workbook.setSheetOrder("Restrictions", tableFields.keySet().size() + 1);
         workbook.write(fos);
         fos.close();
 
@@ -519,7 +476,5 @@ public class Utils {
 
         return message;
     }
-
-
 
 }

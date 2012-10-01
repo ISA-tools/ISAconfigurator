@@ -21,7 +21,6 @@
 **Build dependencies:**
     These are all managed by Maven <http://maven.apache.org/>. 
 
-
 ### Refreshing your clone
 
 A simple `git pull` will suffice!
