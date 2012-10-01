@@ -55,15 +55,14 @@ import java.awt.*;
 public class TableListRenderer implements ListCellRenderer {
 
     private JPanel contents;
-    private JLabel icon;
-    private JLabel text;
+    private JLabel icon, validationFlag, text;
     private Color unselectedBG = UIHelper.BG_COLOR;
     private Color selectedBG = UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR;
 
     @InjectedResource
     private ImageIcon sampleNode, sampleNodeNS, microarrayNode, microarrayNodeNS,
             msNode, msNodeNS, nmrNode, nmrNodeNS, uhtsNode, uhtsNodeNS, genericNode, genericNodeNS,
-            gelElec, gelElecNS, flowCyt, flowCytNS, histology, histologyNS, separator;
+            gelElec, gelElecNS, flowCyt, flowCytNS, histology, histologyNS, invalidFlag, validFlag;
 
 
     public TableListRenderer() {
@@ -76,12 +75,13 @@ public class TableListRenderer implements ListCellRenderer {
         icon = new JLabel();
         text = UIHelper.createLabel("", UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
 
+        validationFlag = new JLabel();
 
         JPanel iconContainer = new JPanel();
         iconContainer.setLayout(new BoxLayout(iconContainer, BoxLayout.LINE_AXIS));
 
         iconContainer.add(icon);
-        iconContainer.add(new JLabel(separator));
+        iconContainer.add(validationFlag);
 
         contents.add(iconContainer, BorderLayout.WEST);
         contents.add(text, BorderLayout.CENTER);
@@ -114,13 +114,16 @@ public class TableListRenderer implements ListCellRenderer {
                 icon.setIcon(selected ? genericNode : genericNodeNS);
             }
 
+
+            validationFlag.setIcon(ApplicationManager.getFileErrors().containsKey(mo) ? invalidFlag : validFlag);
+
         }
 
         text.setForeground(UIHelper.DARK_GREEN_COLOR);
-
         contents.setBackground(selected ? selectedBG : unselectedBG);
-
-        text.setText(value.toString());
+        if (value != null) {
+            text.setText(value.toString());
+        }
 
         return contents;
     }

@@ -34,7 +34,7 @@
  (http://www.nugo.org/everyone).
  */
 
-package org.isatools.isacreatorconfigurator.configui;
+package org.isatools.isacreatorconfigurator.configui.io.xml;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;

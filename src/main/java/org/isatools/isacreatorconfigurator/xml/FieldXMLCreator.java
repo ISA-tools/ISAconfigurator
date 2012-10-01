@@ -156,7 +156,10 @@ public class FieldXMLCreator {
 
         // output fields default value
         String defaultValue = field.getDefaultVal() == null ? "" : field.getDefaultVal();
-        xmlRep.append("<default-value>").append("<![CDATA[").append(defaultValue).append("]]>").append("</default-value>");
+
+        defaultValue = field.getDatatype() == DataTypes.ONTOLOGY_TERM ? "" : "<![CDATA[" + defaultValue + "]]>";
+        
+        xmlRep.append("<default-value>").append(defaultValue).append("</default-value>");
 
         // output the regex formatting for the field...default is .*
         if (field.isInputFormatted()) {
