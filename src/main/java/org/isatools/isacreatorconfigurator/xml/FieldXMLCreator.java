@@ -156,7 +156,10 @@ public class FieldXMLCreator {
 
         // output fields default value
         String defaultValue = field.getDefaultVal() == null ? "" : field.getDefaultVal();
-        xmlRep.append("<default-value>").append("<![CDATA[").append(defaultValue).append("]]>").append("</default-value>");
+
+        defaultValue = field.getDatatype() == DataTypes.ONTOLOGY_TERM ? "" : "<![CDATA[" + defaultValue + "]]>";
+
+        xmlRep.append("<default-value>").append(defaultValue).append("</default-value>");
 
         // output the regex formatting for the field...default is .*
         if (field.isInputFormatted()) {
@@ -199,8 +202,8 @@ public class FieldXMLCreator {
 
         xmlRep.append("<unit-field data-type=\"").append(field.getDatatype()).
                 append("\" is-multiple-value=\"").append(String.valueOf(field.isAcceptsMultipleValues())).
-                append("\" is-required=\"").append(String.valueOf(field.isRequired())).append("\">").
-        append("\" is-forced-ontology=\"").append(String.valueOf(field.isForceOntologySelection()));
+                append("\" is-required=\"").append(String.valueOf(field.isRequired())).
+                append("\" is-forced-ontology=\"").append(String.valueOf(field.isForceOntologySelection())).append("\">");
 
         // output field description
         xmlRep.append("<description>").append(StringUtils.cleanUpString(field.getDescription())).append("\"</description>");
