@@ -50,9 +50,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -62,10 +60,10 @@ import java.util.Set;
  * @author Eamonn Maguire
  */
 public class AddTableGUI extends JDialog {
-    private static final String MEASEND_DEFAULT = "e.g. Gene Expression";
-    private static final String TECHTYPE_DEFAULT = "e.g. DNA microarray";
-    private static final String SOURCE_DEFAULT = "e.g. OBI";
-    private static final String ACCESSION_DEFAULT = "e.g. 12345";
+    private static final String MEASEND_DEFAULT = "";
+    private static final String TECHTYPE_DEFAULT = "";
+    private static final String SOURCE_DEFAULT = "";
+    private static final String ACCESSION_DEFAULT = "";
 
     private DataEntryPanel parentGUI;
     private JLabel status;
@@ -135,6 +133,7 @@ public class AddTableGUI extends JDialog {
 
         measEndText = new RoundedJTextField(10);
         measEndText.setText(MEASEND_DEFAULT);
+        measEndText.setToolTipText("<html>The <strong>type of measurement made</strong> with this assay, e.g. Gene Expression </html>");
         UIHelper.renderComponent(measEndText, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         measEndText.setEnabled(false);
 
@@ -144,6 +143,7 @@ public class AddTableGUI extends JDialog {
 
         measEndSourceText = new RoundedJTextField(10);
         measEndSourceText.setText(SOURCE_DEFAULT);
+        measEndSourceText.setToolTipText("<html>The <strong>ontology source</strong> with this measurement term, e.g. OBI </html>");
         UIHelper.renderComponent(measEndSourceText, UIHelper.VER_11_PLAIN, UIHelper.LIGHT_GREY_COLOR, false);
         measEndSourceText.setEnabled(false);
 
@@ -153,6 +153,8 @@ public class AddTableGUI extends JDialog {
 
         measEndAccessionText = new RoundedJTextField(10);
         measEndAccessionText.setText(ACCESSION_DEFAULT);
+        measEndAccessionText.setToolTipText("<html>The <strong>ontology accession</strong> with this measurement term, e.g. 12345 </html>");
+
         UIHelper.renderComponent(measEndAccessionText, UIHelper.VER_11_PLAIN, UIHelper.LIGHT_GREY_COLOR, false);
         measEndAccessionText.setEnabled(false);
 
@@ -162,6 +164,7 @@ public class AddTableGUI extends JDialog {
 
         techTypeText = new RoundedJTextField(10);
         techTypeText.setText(TECHTYPE_DEFAULT);
+        techTypeText.setToolTipText("<html>The <strong>type of technology used made</strong> with this assay, e.g. e.g. DNA microarray</html>");
         UIHelper.renderComponent(techTypeText, UIHelper.VER_11_BOLD, UIHelper.GREY_COLOR, false);
         techTypeText.setEnabled(false);
 
@@ -171,6 +174,7 @@ public class AddTableGUI extends JDialog {
 
         techSourceText = new RoundedJTextField(10);
         techSourceText.setText(SOURCE_DEFAULT);
+        techSourceText.setToolTipText("<html>The <strong>ontology source</strong> with this technology term, e.g. OBI </html>");
         UIHelper.renderComponent(techSourceText, UIHelper.VER_11_PLAIN, UIHelper.LIGHT_GREY_COLOR, false);
         techSourceText.setEnabled(false);
 
@@ -181,6 +185,8 @@ public class AddTableGUI extends JDialog {
         techAccessionText = new RoundedJTextField(10);
         UIHelper.renderComponent(techAccessionText, UIHelper.VER_11_PLAIN, UIHelper.LIGHT_GREY_COLOR, false);
         techAccessionText.setText(ACCESSION_DEFAULT);
+        techAccessionText.setToolTipText("<html>The <strong>ontology accession</strong> with this technology term, e.g. 12345 </html>");
+
         techAccessionText.setEnabled(false);
 
         assayTypeLab = UIHelper.createLabel("assay type :",
