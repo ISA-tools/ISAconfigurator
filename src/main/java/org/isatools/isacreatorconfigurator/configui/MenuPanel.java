@@ -220,7 +220,8 @@ public class MenuPanel extends JLayeredPane {
             exit.addMouseListener(new MouseAdapter() {
 
                 public void mousePressed(MouseEvent event) {
-
+                    appCont.dispose();
+                    System.exit(0);
                 }
 
                 public void mouseEntered(MouseEvent event) {
@@ -232,33 +233,6 @@ public class MenuPanel extends JLayeredPane {
                 }
             });
             menuItems.add(exit);
-
-
-
-//            final JLabel proxySettings = new JLabel(proxySettingsIcon);
-//
-//            proxySettings.addMouseListener(new MouseAdapter() {
-//
-//                public void mousePressed(MouseEvent event) {
-//                    try {
-//                          new SettingsUI();
-//                    } catch (Exception e) {
-//                        log.error("e " + e.getMessage());
-//                    }
-//
-//                }
-//
-//                public void mouseEntered(MouseEvent event) {
-//                    proxySettings.setIcon(proxySettingsOverIcon);
-//                }
-//
-//                public void mouseExited(MouseEvent event) {
-//                    proxySettings.setIcon(proxySettingsIcon);
-//                }
-//            });
-//            menuItems.add(proxySettings);
-//            menuItems.add(Box.createHorizontalStrut(20));
-
 
 
 
