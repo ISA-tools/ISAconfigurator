@@ -76,7 +76,7 @@ public class MenuPanel extends JLayeredPane {
     public static final ImageIcon CONFIG_LOAD = new ImageIcon(MenuPanel.class.getResource("/images/effects/load_config.gif"));
 
     @InjectedResource
-    private ImageIcon createNewICOIcon, createNewICOIconOver, openExistingIcon, openExistingOverIcon, exitIcon, exitOverIcon, proxySettingsIcon,proxySettingsOverIcon;
+    private ImageIcon createNewICOIcon, createNewICOIconOver, openExistingIcon, openExistingOverIcon, exitIcon, exitOverIcon;
 
     // Map of table to fields
     private Map<MappingObject, List<Display>> tableFields;
@@ -232,36 +232,6 @@ public class MenuPanel extends JLayeredPane {
                 }
             });
             menuItems.add(exit);
-
-
-
-//            final JLabel proxySettings = new JLabel(proxySettingsIcon);
-//
-//            proxySettings.addMouseListener(new MouseAdapter() {
-//
-//                public void mousePressed(MouseEvent event) {
-//                    try {
-//                          new SettingsUI();
-//                    } catch (Exception e) {
-//                        log.error("e " + e.getMessage());
-//                    }
-//
-//                }
-//
-//                public void mouseEntered(MouseEvent event) {
-//                    proxySettings.setIcon(proxySettingsOverIcon);
-//                }
-//
-//                public void mouseExited(MouseEvent event) {
-//                    proxySettings.setIcon(proxySettingsIcon);
-//                }
-//            });
-//            menuItems.add(proxySettings);
-//            menuItems.add(Box.createHorizontalStrut(20));
-
-
-
-
 
             JPanel menuItemContainer = new JPanel();
             menuItemContainer.setLayout(new BoxLayout(menuItemContainer, BoxLayout.PAGE_AXIS));

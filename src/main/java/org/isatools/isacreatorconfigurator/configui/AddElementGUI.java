@@ -53,6 +53,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -318,12 +319,15 @@ public class AddElementGUI extends JDialog {
                             status.setText("<html><b>Problem</b>: invalid qualifier specified</html>");
                             return;
                         }
-                        toAdd = new FieldElement(
-                                new FieldObject(parentGUI.getTableFields().get(parentGUI.getCurrentlySelectedTable()).size(), customFieldType.getSelectedItem().toString() + "[" + fieldName + "]",
-                                        "", DataTypes.STRING, "", false, false, false));
+                        FieldObject fieldObject = new FieldObject(parentGUI.getTableFields().get(parentGUI.getCurrentlySelectedTable()).size(), customFieldType.getSelectedItem().toString() + "[" + fieldName + "]",
+                                "", DataTypes.STRING, "", false, false, false);
+                        fieldObject.setRecommmendedOntologySource(new HashMap<String, RecommendedOntology>());
+                        toAdd = new FieldElement(fieldObject);
                     } else {
-                        toAdd = new FieldElement(new FieldObject(parentGUI.getTableFields().get(parentGUI.getCurrentlySelectedTable()).size(), fieldValue.getSelectedItem().toString(),
-                                "", DataTypes.STRING, "", false, false, false));
+                        FieldObject fieldObject = new FieldObject(parentGUI.getTableFields().get(parentGUI.getCurrentlySelectedTable()).size(),
+                                fieldValue.getSelectedItem().toString(), "", DataTypes.STRING, "", false, false, false);
+                        fieldObject.setRecommmendedOntologySource(new HashMap<String, RecommendedOntology>());
+                        toAdd = new FieldElement(fieldObject);
                     }
                 } else {
                     if (currentTableType == Location.INVESTIGATION) {
