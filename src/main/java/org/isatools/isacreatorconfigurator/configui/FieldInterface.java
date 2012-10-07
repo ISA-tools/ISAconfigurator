@@ -758,7 +758,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     datatype.addItem(d);
                 }
             }
-            System.out.println("Data type: " + tfo.getDatatype());
+
             datatype.setSelectedItem(tfo.getDatatype());
         }
     }
@@ -971,9 +971,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 defaultValAsString = defaultValBool.getSelectedItem().toString();
             }
 
-            System.out.println("Data type for " + fieldName.getText() + 
-                    " is " + DataTypes.resolveDataType(datatype.getSelectedItem().toString()).name());
-            
             FieldObject tfo = new FieldObject(field.getFieldDetails().getColNo(), fieldName.getText(), description.getText(),
                     DataTypes.resolveDataType(datatype.getSelectedItem().toString()), defaultValAsString, "",
                     required.isSelected(),
@@ -1023,7 +1020,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 if (recommendOntologySource.isSelected()) {
                     if (ontologiesToUseModel.getRowCount() > 0) {
                         Map<String, RecommendedOntology> toBeUpdated = new HashMap<String, RecommendedOntology>(selectedOntologies);
-                        System.out.println("Selected ontologies for " + tfo.getFieldName() + " is of size " + toBeUpdated.size());
                         tfo.setRecommmendedOntologySource(toBeUpdated);
                     }
                 }
