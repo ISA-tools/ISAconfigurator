@@ -812,14 +812,9 @@ public class DataEntryPanel extends JLayeredPane {
 
     private String[] filterAvailableFieldsByTableType(Fields fieldList, Location type) {
 
-        System.out.println("Type is " + type);
-
         List<String> result = fieldList.getFieldsByLocation(type);
-
         //List<String> result= fieldList.getFields().toString();
         Collections.sort(result);
-
-        System.out.println("-----" + result.toString());
         return result.toArray(new String[result.size()]);
     }
 
@@ -1049,8 +1044,6 @@ public class DataEntryPanel extends JLayeredPane {
     private void showAddFieldUI() {
         if (getCurrentlySelectedTable() != null) {
 
-            System.out.println("Table type: " + getCurrentlySelectedTable().getTableType());
-
             String tableType = getCurrentlySelectedTable().getTableType().contains("investigation")
                     ? "Investigation File"
                     : getCurrentlySelectedTable().getTableType();
@@ -1084,7 +1077,6 @@ public class DataEntryPanel extends JLayeredPane {
 
         if (currentPage == fieldInterface) {
             FieldInterface currentField = (FieldInterface) currentPage;
-            System.out.println("Saving field " + currentField);
             currentField.saveFieldObject();
         }
 
@@ -1311,7 +1303,6 @@ public class DataEntryPanel extends JLayeredPane {
 
     private void reformFieldList(MappingObject selectedTable) {
         // get MappingObject corresponding to index entered.
-        System.out.println("Reforming field list");
         Set<String> sectionsAdded = new HashSet<String>();
 
         if (selectedTable != null) {
