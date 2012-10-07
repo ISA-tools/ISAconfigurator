@@ -212,30 +212,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         datatypeCont.add(datatype);
         container.add(datatypeCont);
 
-        defaultValContStd = new JPanel(new GridLayout(1, 2));
-        defaultValContStd.setBackground(UIHelper.BG_COLOR);
-
-        defaultValCont = Box.createHorizontalBox();
-        defaultValCont.setPreferredSize(new Dimension(150, 25));
-
-        defaultValStd = new RoundedFormattedTextField(null, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.DARK_GREEN_COLOR);
-        defaultValCont.setPreferredSize(new Dimension(120, 25));
-        defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                new RegExFormatter(".*", defaultValStd, false, UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
-        defaultValStd.setForeground(UIHelper.DARK_GREEN_COLOR);
-        defaultValStd.setFont(UIHelper.VER_11_PLAIN);
-
-        defaultValCont.add(defaultValStd);
-
-        defaultValLabStd = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
-
-        defaultValContStd.add(defaultValLabStd);
-        defaultValContStd.add(defaultValCont);
-        container.add(defaultValContStd);
-
-        defaultValContBool = new JPanel(new GridLayout(1, 2));
-        defaultValContBool.setBackground(UIHelper.BG_COLOR);
-        defaultValContBool.setVisible(false);
+        createDefaultValueInfoContainer(container);
 
         listDataSourceCont = new JPanel(new GridLayout(2, 1));
         listDataSourceCont.setBackground(UIHelper.BG_COLOR);
@@ -261,6 +238,43 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         IAppWidgetFactory.makeIAppScrollPane(listScroll);
 
+        createOntologySourceEntryPanel();
+        container.add(preferredOntologySource);
+
+        String[] contents = new String[]{"true", "false"};
+        defaultValBool = new
+
+                JComboBox(contents);
+
+        UIHelper.renderComponent(defaultValBool, UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, UIHelper.BG_COLOR);
+
+        JLabel defaultValLabBool = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_12_BOLD, UIHelper.DARK_GREEN_COLOR);
+
+        defaultValContBool.add(defaultValLabBool);
+        defaultValContBool.add(defaultValBool);
+        container.add(defaultValContBool);
+
+        createFormattedInputContainer(container);
+        container.add(inputFormatCont);
+
+        createWizardTemplatePanel(container);
+        container.add(wizardTemplatePanel);
+
+        JPanel checkCont = createAdditionalFieldOptionsContainer();
+        container.add(checkCont);
+
+        JScrollPane contScroll = new JScrollPane(container,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        contScroll.setBorder(null);
+        contScroll.setAutoscrolls(true);
+
+        IAppWidgetFactory.makeIAppScrollPane(contScroll);
+
+        add(contScroll, BorderLayout.NORTH);
+    }
+
+    private void createOntologySourceEntryPanel() {
         sourceEntryPanel = new JPanel(new BorderLayout());
         sourceEntryPanel.setSize(new Dimension(125, 190));
         sourceEntryPanel.setOpaque(false);
@@ -369,21 +383,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         sourceEntryPanel.add(buttonCont, BorderLayout.SOUTH);
         preferredOntologySource.add(sourceEntryPanel);
-        container.add(preferredOntologySource);
+    }
 
-        String[] contents = new String[]{"true", "false"};
-        defaultValBool = new
-
-                JComboBox(contents);
-
-        UIHelper.renderComponent(defaultValBool, UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, UIHelper.BG_COLOR);
-
-        JLabel defaultValLabBool = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_12_BOLD, UIHelper.DARK_GREEN_COLOR);
-
-        defaultValContBool.add(defaultValLabBool);
-        defaultValContBool.add(defaultValBool);
-        container.add(defaultValContBool);
-
+    private void createFormattedInputContainer(JPanel container) {
         // RegExp data entry
         isInputFormatted = new JCheckBox("Is the input formatted?", false);
         isInputFormatted.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -443,8 +445,36 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         );
         inputFormatCont.add(checkRegExp);
-        container.add(inputFormatCont);
+    }
 
+    private void createDefaultValueInfoContainer(JPanel container) {
+        defaultValContStd = new JPanel(new GridLayout(1, 2));
+        defaultValContStd.setBackground(UIHelper.BG_COLOR);
+
+        defaultValCont = Box.createHorizontalBox();
+        defaultValCont.setPreferredSize(new Dimension(150, 25));
+
+        defaultValStd = new RoundedFormattedTextField(null, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.DARK_GREEN_COLOR);
+        defaultValCont.setPreferredSize(new Dimension(120, 25));
+        defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
+                new RegExFormatter(".*", defaultValStd, false, UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
+        defaultValStd.setForeground(UIHelper.DARK_GREEN_COLOR);
+        defaultValStd.setFont(UIHelper.VER_11_PLAIN);
+
+        defaultValCont.add(defaultValStd);
+
+        defaultValLabStd = UIHelper.createLabel(DEFAULT_VAL_STR, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR);
+
+        defaultValContStd.add(defaultValLabStd);
+        defaultValContStd.add(defaultValCont);
+        container.add(defaultValContStd);
+
+        defaultValContBool = new JPanel(new GridLayout(1, 2));
+        defaultValContBool.setBackground(UIHelper.BG_COLOR);
+        defaultValContBool.setVisible(false);
+    }
+
+    private void createWizardTemplatePanel(JPanel container) {
         usesTemplateForWizard = new JCheckBox("Requires template for wizard?", false);
         usesTemplateForWizard.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         usesTemplateForWizard.setHorizontalAlignment(SwingConstants.LEFT);
@@ -477,9 +507,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         wizardTemplatePanel.add(wizardTemplateLab);
         wizardTemplatePanel.add(wizScroll);
+    }
 
-        container.add(wizardTemplatePanel);
-
+    private JPanel createAdditionalFieldOptionsContainer() {
         JPanel checkCont = new JPanel(new GridLayout(3, 2));
         checkCont.setBackground(UIHelper.BG_COLOR);
         checkCont.setBorder(new TitledBorder(new RoundedBorder(UIHelper.DARK_GREEN_COLOR, 4),
@@ -517,18 +547,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         UIHelper.renderComponent(forceOntologySelection, UIHelper.VER_11_BOLD, UIHelper.DARK_GREEN_COLOR, false);
 
         checkCont.add(forceOntologySelection);
-
-        container.add(checkCont);
-
-        JScrollPane contScroll = new JScrollPane(container,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        contScroll.setBorder(null);
-        contScroll.setAutoscrolls(true);
-
-        IAppWidgetFactory.makeIAppScrollPane(contScroll);
-
-        add(contScroll, BorderLayout.NORTH);
+        return checkCont;
     }
 
     private void updateTable() {
@@ -616,7 +635,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     }
 
     public void setCurrentField(FieldElement field) {
-        this.selectedOntologies.clear();
+
         this.field = field;
         populateFields();
     }
@@ -674,7 +693,8 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                         sourceEntryPanel.setVisible(true);
                         usesTemplateForWizard.setVisible(false);
 
-                        selectedOntologies = tfo.getRecommmendedOntologySource();
+                        selectedOntologies = new HashMap<String, RecommendedOntology>(tfo.getRecommmendedOntologySource());
+
                         updateTable();
                     }
                 }
@@ -727,7 +747,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
     private void populateDataTypeSection(FieldObject tfo) {
         DataTypes fixedDataType = doesFieldHaveFixedType();
-        System.out.println("Fixed data type is: " + fixedDataType);
+
         if (fixedDataType != null) {
             datatype.removeAllItems();
             datatype.addItem(fixedDataType);
@@ -738,6 +758,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     datatype.addItem(d);
                 }
             }
+            System.out.println("Data type: " + tfo.getDatatype());
             datatype.setSelectedItem(tfo.getDatatype());
         }
     }
@@ -950,6 +971,9 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 defaultValAsString = defaultValBool.getSelectedItem().toString();
             }
 
+            System.out.println("Data type for " + fieldName.getText() + 
+                    " is " + DataTypes.resolveDataType(datatype.getSelectedItem().toString()).name());
+            
             FieldObject tfo = new FieldObject(field.getFieldDetails().getColNo(), fieldName.getText(), description.getText(),
                     DataTypes.resolveDataType(datatype.getSelectedItem().toString()), defaultValAsString, "",
                     required.isSelected(),
@@ -972,7 +996,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
             if (isInputFormatted.isSelected()) {
                 String s = inputFormat.getText();
-
                 if (!s.equals("Input Format as RegExp")) {
                     tfo.setInputFormat(inputFormat.getText());
                     finalInputFormat += s;
@@ -999,13 +1022,12 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
             if (datatype.getSelectedItem() == DataTypes.ONTOLOGY_TERM) {
                 if (recommendOntologySource.isSelected()) {
                     if (ontologiesToUseModel.getRowCount() > 0) {
-                        Map<String, RecommendedOntology> toBeUpdated = new HashMap<String, RecommendedOntology>();
-                        toBeUpdated.putAll(selectedOntologies);
+                        Map<String, RecommendedOntology> toBeUpdated = new HashMap<String, RecommendedOntology>(selectedOntologies);
+                        System.out.println("Selected ontologies for " + tfo.getFieldName() + " is of size " + toBeUpdated.size());
                         tfo.setRecommmendedOntologySource(toBeUpdated);
                     }
                 }
             }
-
             field.setFieldObject(tfo);
         }
     }
