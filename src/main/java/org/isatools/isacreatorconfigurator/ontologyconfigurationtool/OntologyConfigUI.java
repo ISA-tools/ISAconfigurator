@@ -41,20 +41,18 @@ import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreator.autofilteringlist.ExtendedJList;
 import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Ontology;
-import org.isatools.isacreator.configuration.OntologyFormats;
 import org.isatools.isacreator.configuration.RecommendedOntology;
 import org.isatools.isacreator.effects.FooterPanel;
 import org.isatools.isacreator.effects.HUDTitleBar;
 import org.isatools.isacreator.effects.InfiniteProgressPanel;
-import org.isatools.isacreator.effects.TitlePanel;
 import org.isatools.isacreator.effects.borders.RoundedBorder;
 import org.isatools.isacreator.ontologybrowsingutils.TreeObserver;
 import org.isatools.isacreator.ontologymanager.BioPortalClient;
 import org.isatools.isacreator.ontologymanager.OLSClient;
 import org.isatools.isacreator.ontologymanager.OntologyService;
-import org.isatools.isacreator.ontologymanager.OntologySourceRefObject;
 import org.isatools.isacreator.ontologymanager.bioportal.model.OntologyPortal;
 import org.isatools.isacreator.ontologymanager.utils.OntologyUtils;
+import org.isatools.isacreatorconfigurator.configui.notifications.NotificationWindow;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -65,7 +63,10 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
@@ -98,6 +99,8 @@ public class OntologyConfigUI extends JFrame {
     private Map<String, RecommendedOntology> selectedOntologies = new ListOrderedMap<String, RecommendedOntology>();
 
     private JLabel removeRestrictionButton, viewOntologyButton, removeOntologyButton;
+
+    private Set<String> removedOntologies;
 
     private List<Ontology> ontologiesToBrowseOn;
     // only want to create one instance in memory of the glass pane.
@@ -232,10 +235,28 @@ public class OntologyConfigUI extends JFrame {
                 }
 
                 // remove deprecated ontologies :)
+                removedOntologies = new HashSet<String>();
                 for (String ontology : ontLabelsToRemove) {
                     if (selectedOntologies.containsKey(ontology)) {
+
+                        removedOntologies.add(ontology);
                         selectedOntologies.remove(ontology);
                     }
+                }
+
+                if (removedOntologies.size() > 0) {
+                    StringBuilder message = new StringBuilder();
+
+                    message.append("<html>The following ontologies are not supported in ISA tools and have been removed from the recommended ontologies:<strong>");
+                    int count = 0;
+                    for (String removedOntology : removedOntologies) {
+                        message.append(removedOntology);
+                        if (count < removedOntologies.size() - 1) message.append(",");
+                        count++;
+                    }
+                    message.append("</strong></html>");
+
+                    new NotificationWindow("Unsupported ontologies removed", message.toString());
                 }
 
                 firePropertyChange("ontologySelected", "", selectedOntologies);
@@ -487,7 +508,7 @@ public class OntologyConfigUI extends JFrame {
     }
 
     private boolean showRemoveRestrictionButton(boolean selectionEmpty) {
-        if(selectionEmpty) {
+        if (selectionEmpty) {
             return !selectionEmpty;
         }
 
