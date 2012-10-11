@@ -835,14 +835,9 @@ public class DataEntryPanel extends JLayeredPane {
 
     private String[] filterAvailableFieldsByTableType(Fields fieldList, Location type) {
 
-        System.out.println("Type is " + type);
-
         List<String> result = fieldList.getFieldsByLocation(type);
-
         //List<String> result= fieldList.getFields().toString();
         Collections.sort(result);
-
-        System.out.println("-----" + result.toString());
         return result.toArray(new String[result.size()]);
     }
 
@@ -1072,8 +1067,6 @@ public class DataEntryPanel extends JLayeredPane {
     private void showAddFieldUI() {
         if (getCurrentlySelectedTable() != null) {
 
-            System.out.println("Table type: " + getCurrentlySelectedTable().getTableType());
-
             String tableType = getCurrentlySelectedTable().getTableType().contains("investigation")
                     ? "Investigation File"
                     : getCurrentlySelectedTable().getTableType();
@@ -1269,6 +1262,12 @@ public class DataEntryPanel extends JLayeredPane {
 
     public boolean addField(Display element) {
         MappingObject currentlySelectedTable = getCurrentlySelectedTable();
+        try {
+            saveCurrentField(false, false);
+        } catch (DataNotCompleteException e) {
+            System.err.println(e.getMessage());
+            // ignore
+        }
         if (currentlySelectedTable != null) {
             if (!checkPreExistingFields(currentlySelectedTable, element.toString())
                     || element.toString().equals("Unit")
@@ -1327,17 +1326,14 @@ public class DataEntryPanel extends JLayeredPane {
 
     private void reformFieldList(MappingObject selectedTable) {
         // get MappingObject corresponding to index entered.
-
         Set<String> sectionsAdded = new HashSet<String>();
 
         if (selectedTable != null) {
             Iterator<Display> fields = tableFields.get(selectedTable).iterator();
 
             elementModel.clear();
-
             while (fields.hasNext()) {
                 Display d = fields.next();
-
 
                 if (d.getFieldDetails() != null) {
                     if (d.getFieldDetails().getSection() != null && !d.getFieldDetails().getSection().equals("")) {
@@ -1349,7 +1345,6 @@ public class DataEntryPanel extends JLayeredPane {
                         }
                     }
                 }
-
                 if (d instanceof SectionDisplay) {
                     if (!sectionsAdded.contains(d.toString())) {
                         elementModel.addElement(d);
@@ -1358,7 +1353,6 @@ public class DataEntryPanel extends JLayeredPane {
                 } else {
                     elementModel.addElement(d);
                 }
-
             }
             if (elementList.getModel().getSize() > 0) {
                 elementList.setSelectedIndex(0);
@@ -1371,7 +1365,6 @@ public class DataEntryPanel extends JLayeredPane {
         elementCountInfo.setText("<html><strong>" + elementModel.getSize() + "</strong> elements...</html>");
         validateFormOrTable(ApplicationManager.getCurrentMappingObject());
     }
-
 
     private boolean checkPreExistingFields(MappingObject tableUsed, String fieldName) {
 

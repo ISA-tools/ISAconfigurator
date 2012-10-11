@@ -76,7 +76,7 @@ public class MenuPanel extends JLayeredPane {
     public static final ImageIcon CONFIG_LOAD = new ImageIcon(MenuPanel.class.getResource("/images/effects/load_config.gif"));
 
     @InjectedResource
-    private ImageIcon createNewICOIcon, createNewICOIconOver, openExistingIcon, openExistingOverIcon, exitIcon, exitOverIcon, proxySettingsIcon,proxySettingsOverIcon;
+    private ImageIcon createNewICOIcon, createNewICOIconOver, openExistingIcon, openExistingOverIcon, exitIcon, exitOverIcon;
 
     // Map of table to fields
     private Map<MappingObject, List<Display>> tableFields;
@@ -233,8 +233,6 @@ public class MenuPanel extends JLayeredPane {
                 }
             });
             menuItems.add(exit);
-
-
 
 
             JPanel menuItemContainer = new JPanel();
