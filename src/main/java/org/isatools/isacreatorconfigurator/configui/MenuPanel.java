@@ -220,7 +220,7 @@ public class MenuPanel extends JLayeredPane {
             exit.addMouseListener(new MouseAdapter() {
 
                 public void mousePressed(MouseEvent event) {
-
+                     System.exit(1);
                 }
 
                 public void mouseEntered(MouseEvent event) {

@@ -93,6 +93,7 @@ public class OntologyListRenderer extends JPanel
      */
     public Component getListCellRendererComponent(JList jList, Object val,
                                                   int index, boolean selected, boolean cellGotFocus) {
+        String stringRepresentation = val.toString();
         if (val instanceof Ontology) {
 
             Ontology o = (Ontology) val;
@@ -103,9 +104,11 @@ public class OntologyListRenderer extends JPanel
             } else {
                 icon.setIcon(bioPortalIcon);
             }
+
+            stringRepresentation = o.getOntologyAbbreviation() + " - " + o.getOntologyDisplayLabel();
         }
 
-        text.setText(val.toString());
+        text.setText(stringRepresentation);
         text.setFont(selected ? UIHelper.VER_10_BOLD : UIHelper.VER_10_PLAIN);
         return this;
     }
