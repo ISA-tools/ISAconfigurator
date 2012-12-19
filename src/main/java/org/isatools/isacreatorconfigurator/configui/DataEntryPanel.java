@@ -44,8 +44,9 @@ import org.isatools.isacreator.configuration.FieldObject;
 import org.isatools.isacreator.configuration.MappingObject;
 import org.isatools.isacreator.effects.CustomSplitPaneDivider;
 import org.isatools.isacreatorconfigurator.configui.io.Utils;
-import org.isatools.isacreatorconfigurator.configui.mappingviewer.TableMappingViewer;
 import org.isatools.isacreatorconfigurator.configui.io.xml.ProcessStandardFieldsXML;
+import org.isatools.isacreatorconfigurator.configui.mappingviewer.TableMappingViewer;
+import org.isatools.isacreatorconfigurator.configui.settings.SettingsUI;
 import org.isatools.isacreatorconfigurator.validation.ConfigurationValidationUtils;
 import org.isatools.isacreatorconfigurator.validation.ReportType;
 import org.isatools.isacreatorconfigurator.validation.ValidationReport;
@@ -337,6 +338,27 @@ public class DataEntryPanel extends JLayeredPane {
 
         validation.add(viewErrors);
 
+        JMenu settings = new JMenu("Settings");
+        JMenuItem proxySettings = new JMenuItem("Proxy Settings");
+        proxySettings.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    new SettingsUI();
+
+//                } catch (DataNotCompleteException dce) {
+//                    showMessagePane(dce.getMessage(), JOptionPane.ERROR_MESSAGE);
+//                } catch (IOException e1) {
+//                    showMessagePane("IO error occurred when saving file!", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e1) {
+                    showMessagePane(e1.getMessage(), JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        settings.add(proxySettings);
+
+
+
         JMenu helpMenu = new JMenu("Help");
         JMenuItem about = new JMenuItem("About", aboutIcon);
         about.addActionListener(new ActionListener() {
@@ -355,6 +377,7 @@ public class DataEntryPanel extends JLayeredPane {
         menu_container.add(file);
         menu_container.add(mappingMenu);
         menu_container.add(validation);
+        menu_container.add(settings);
         menu_container.add(helpMenu);
 
         topPanel.add(menu_container);

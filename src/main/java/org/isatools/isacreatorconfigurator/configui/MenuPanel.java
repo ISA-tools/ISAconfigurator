@@ -90,7 +90,7 @@ public class MenuPanel extends JLayeredPane {
     }
 
     public void createGUI() {
-         ResourceInjector.get("config-ui-package.style").inject(this);
+        ResourceInjector.get("config-ui-package.style").inject(this);
 
         setLayout(new OverlayLayout(this));
         setOpaque(false);
@@ -232,6 +232,7 @@ public class MenuPanel extends JLayeredPane {
                 }
             });
             menuItems.add(exit);
+
 
             JPanel menuItemContainer = new JPanel();
             menuItemContainer.setLayout(new BoxLayout(menuItemContainer, BoxLayout.PAGE_AXIS));

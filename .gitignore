@@ -1,0 +1,6 @@
+*.xls*
+*.iml
+*.ipr
+*.iws
+*.log
+target
