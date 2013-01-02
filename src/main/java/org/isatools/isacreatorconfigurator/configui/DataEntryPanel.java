@@ -1042,12 +1042,12 @@ public class DataEntryPanel extends JLayeredPane {
                         if (fe.getFieldDetails().getDefaultVal().trim().equals("")) {
                             throw new DataNotCompleteException("<p><b>" + fe.getFieldDetails().getFieldName() +
                                     "</b> in table <b>" + mo.getAssayName() +
-                                    "</p></b><p> is missing it's <b>protocol type</b>.</p>");
+                                    "</p></b><p> is missing its <b>protocol type</b>.</p>");
                         }
                     } else if (fe.getFieldDetails().getDescription().trim().equals("")) {
                         throw new DataNotCompleteException("<p><b>" + fe.getFieldDetails().getFieldName() +
                                 "</b> in table <b>" + mo.getAssayName() +
-                                "</p></b><p> is missing it's <b>description</b>.</p>");
+                                "</p></b><p> is missing its <b>description</b>.</p>");
                     }
                 }
             }
