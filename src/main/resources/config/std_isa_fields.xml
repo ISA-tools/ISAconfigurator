@@ -606,13 +606,6 @@
         </appearsIn>
     </field>
 
-    <field>
-        <name>Spot Picking File</name>
-        <appearsIn>
-            <location>Assay</location>
-        </appearsIn>
-    </field>
-
     <!--for mass spectrometry!-->
 
     <field>
