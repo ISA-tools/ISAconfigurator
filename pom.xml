@@ -65,13 +65,6 @@
 
     </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>akathist-repository</id>
-            <name>Akathist Repository</name>
-            <url>http://www.9stmaryrd.com/maven</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <build>
         <plugins>
