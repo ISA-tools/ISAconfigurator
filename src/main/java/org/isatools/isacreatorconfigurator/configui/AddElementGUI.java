@@ -362,6 +362,7 @@ public class AddElementGUI extends JDialog {
      */
     protected DropDownComponent createOntologyDropDown(final JTextField field,
                                                        boolean allowsMultiple, Map<String, RecommendedOntology> recommendedOntologySource) {
+
         final OntologySelectionTool ost = new OntologySelectionTool(
                 allowsMultiple, false, recommendedOntologySource);
         ost.createGUI();
@@ -416,8 +417,6 @@ public class AddElementGUI extends JDialog {
 
     public void setCurrentTableType(Location currentTableType) {
         this.currentTableType = currentTableType;
-
-
         addStructuralElement.setText((currentTableType == Location.INVESTIGATION) ? "sections" : "structural");
         selectStructureLab.setText("select " + ((currentTableType == Location.INVESTIGATION) ? "section:" : "structure: "));
         structuralValue.removeAllItems();

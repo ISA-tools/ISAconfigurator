@@ -27,12 +27,19 @@ public enum ReportType {
     }
 
     public String getSalientFieldOrIndex(String message) {
-        if (this == CARDINALITY) {
-            return message.substring(message.indexOf("field") + 5, message.indexOf("must")).replaceAll("\"", "").trim();
-        } else if (this == ORDER) {
-            return message.substring(0, message.lastIndexOf("should")).replaceAll("\"", "").trim();
-        } else if (this == POSITIONING) {
-            return message.substring(message.lastIndexOf("position") + 8, message.lastIndexOf("is on")).replaceAll("\"", "").trim();
+        if (message != null) {
+            if (this == CARDINALITY) {
+                return message.substring(message.indexOf("field") + 5, message.indexOf("must")).replaceAll("\"", "").trim();
+            } else if (this == ORDER) {
+                return message.substring(0, message.lastIndexOf("should")).replaceAll("\"", "").trim();
+            } else if (this == POSITIONING) {
+                System.err.println("message: " + message);
+                if (message.contains("position")) {
+                    return message.substring(message.lastIndexOf("position") + 8, message.lastIndexOf("is on")).replaceAll("\"", "").trim();
+                } else {
+                    return message;
+                }
+            }
         }
 
         return null;

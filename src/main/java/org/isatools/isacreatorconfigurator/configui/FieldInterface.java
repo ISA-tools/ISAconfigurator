@@ -52,6 +52,8 @@ import org.isatools.isacreator.ontologymanager.OLSClient;
 import org.isatools.isacreator.ontologymanager.OntologyService;
 import org.isatools.isacreator.ontologyselectiontool.OntologySelectionTool;
 import org.isatools.isacreatorconfigurator.ontologyconfigurationtool.OntologyConfigUI;
+import org.isatools.isatab.configurator.schema.UnitFieldType;
+import org.isatools.isatab.configurator.schema.impl.UnitFieldTypeImpl;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -201,7 +203,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         JPanel datatypeCont = new JPanel(new GridLayout(1, 2));
         datatypeCont.setBackground(UIHelper.BG_COLOR);
 
-        DataTypes[] allowedDataTypes = initFieldName.equals(UNIT_STR) ? new DataTypes[]{DataTypes.ONTOLOGY_TERM} : DataTypes.values();
+        DataTypes[] allowedDataTypes = initFieldName.equals(UNIT_STR) ? new DataTypes[]{DataTypes.ONTOLOGY_TERM, DataTypes.LIST} : DataTypes.values();
 
         datatype = new JComboBox(allowedDataTypes);
         datatype.addActionListener(this);
@@ -672,8 +674,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
                     defaultValCont.add(ontLookup);
                     defaultValStd.setText(tfo.getDefaultVal());
-
-
                 } else {
                     defaultValLabStd.setText(DEFAULT_VAL_STR);
                     defaultValCont.removeAll();
@@ -758,9 +758,8 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     datatype.addItem(d);
                 }
             }
-
-            datatype.setSelectedItem(tfo.getDatatype());
         }
+        datatype.setSelectedItem(tfo.getDatatype());
     }
 
     public String toString() {

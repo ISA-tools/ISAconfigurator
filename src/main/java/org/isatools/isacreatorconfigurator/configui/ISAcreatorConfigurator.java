@@ -43,6 +43,7 @@ import org.isatools.isacreator.effects.AnimatableJFrame;
 import org.isatools.isacreator.effects.FooterPanel;
 import org.isatools.isacreator.effects.TitlePanel;
 import org.isatools.isacreator.gui.ISAcreatorTitlePanel;
+import org.isatools.isacreator.launch.ISAcreatorGUIProperties;
 import org.isatools.isacreator.settings.ISAcreatorProperties;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
@@ -90,6 +91,8 @@ public class ISAcreatorConfigurator extends AnimatableJFrame {
                 ISAcreatorConfigurator.class.getResource("/dependency-injections/config-ui-package.properties"));
         ResourceInjector.get("ontologyconfigtool-package.style").load(
                 ISAcreatorConfigurator.class.getResource("/dependency-injections/ontologyconfigtool-package.properties"));
+
+        ISAcreatorGUIProperties.setProperties();
     }
 
     public ISAcreatorConfigurator() {
@@ -173,7 +176,6 @@ public class ISAcreatorConfigurator extends AnimatableJFrame {
             }
         });
     }
-
 
     /**
      * Changes JLayeredPane being shown in the center panel

@@ -44,6 +44,8 @@ import org.apache.poi.xssf.usermodel.*;
 import org.isatools.isacreator.configuration.*;
 import org.isatools.isacreatorconfigurator.configui.*;
 import org.isatools.isacreatorconfigurator.xml.FieldXMLCreator;
+import org.isatools.isatab.configurator.schema.UnitFieldType;
+import org.isatools.isatab.configurator.schema.impl.UnitFieldTypeImpl;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,11 +54,6 @@ import java.io.PrintStream;
 import java.util.*;
 
 import static org.apache.poi.ss.util.CellReference.convertNumToColString;
-
-/**
- * @author: eamonnmaguire
- * @date Aug 27, 2009
- */
 
 
 public class Utils {
@@ -67,6 +64,9 @@ public class Utils {
             throws DataNotCompleteException, InvalidFieldOrderException {
 
         List<MappingObject> mappings = new ArrayList<MappingObject>();
+
+        UnitFieldType unit = (UnitFieldTypeImpl)new Object();
+        unit.getDescription();
         mappings.addAll(tableFields.keySet());
         Configuration tco = new Configuration(mappings);
 
@@ -215,7 +215,7 @@ public class Utils {
 
                     if (elements.get(fieldIndex).getFieldDetails() != null) {
 
-                        if (elements.get(fieldIndex).getFieldDetails().isRequired() == true) {
+                        if (elements.get(fieldIndex).getFieldDetails().isRequired()) {
 
                             XSSFCell cell = header.createCell(fieldIndex);
                             Font font = workbook.createFont();
@@ -228,7 +228,6 @@ public class Utils {
                             cell.setCellStyle(style);
                             //create the header field by setting to FieldName as Cell name
                             cell.setCellValue(elements.get(fieldIndex).getFieldDetails().getFieldName());
-                            System.out.println("REQUIRED field number " + fieldIndex + " is: " + elements.get(fieldIndex).getFieldDetails().getFieldName());
 
                             //using the ISA field description to create a Comment attached to the set
                             ClientAnchor anchor = factory.createClientAnchor();
@@ -259,9 +258,7 @@ public class Utils {
                             tableSheet.autoSizeColumn(fieldIndex);
                         }
 
-
                         //checking if the field requires controled values, i.e ISA datatype is List
-
                         if (elements.get(fieldIndex).getFieldDetails().getDatatype() == DataTypes.LIST) {
 
                             //create a hidden spreadsheet and named range with the list of val

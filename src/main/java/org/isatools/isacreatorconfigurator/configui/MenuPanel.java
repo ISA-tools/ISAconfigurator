@@ -48,6 +48,8 @@ import org.isatools.isacreator.configuration.io.ConfigXMLParser;
 import org.isatools.isacreator.configuration.io.ConfigurationLoadingSource;
 import org.isatools.isacreator.effects.GenericPanel;
 import org.isatools.isacreator.spreadsheet.model.TableReferenceObject;
+import org.isatools.isatab.configurator.schema.UnitFieldType;
+import org.isatools.isatab.configurator.schema.impl.UnitFieldTypeImpl;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -313,7 +315,6 @@ public class MenuPanel extends JLayeredPane {
                                 });
 
                                 loadTFO(c, dep);
-
                             }
                             // otherwise, this is a legacy TFO or TCO file.
                             else {
