@@ -65,7 +65,7 @@ public class Utils {
 
         List<MappingObject> mappings = new ArrayList<MappingObject>();
 
-        UnitFieldType unit = (UnitFieldTypeImpl)new Object();
+        UnitFieldType unit = (UnitFieldTypeImpl) new Object();
         unit.getDescription();
         mappings.addAll(tableFields.keySet());
         Configuration tco = new Configuration(mappings);
@@ -102,17 +102,20 @@ public class Utils {
         for (MappingObject mo : tableFields.keySet()) {
 
             List<Display> elements = tableFields.get(mo);
-            for (int fieldIndex = 0; fieldIndex < elements.size(); fieldIndex++) {
-                fieldXMLcreator = new FieldXMLCreator(elements, mo);
-                StringBuffer xmlToWrite = fieldXMLcreator.createTableXML();
+            System.out.println("Outputting " + mo.getAssayName());
 
-                FileOutputStream fos = new FileOutputStream(outputDir + File.separator + mo.getAssayName().replace("\\s", "") + ".xml");
+            fieldXMLcreator = new FieldXMLCreator(elements, mo);
+            StringBuffer xmlToWrite = fieldXMLcreator.createTableXML();
 
-                PrintStream ps = new PrintStream(fos, true, utf8CharacterEncoding);
-                ps.print(xmlToWrite);
-                ps.close();
-                fos.close();
-            }
+
+            FileOutputStream fos = new FileOutputStream(outputDir + File.separator + mo.getAssayName().replace("\\s", "") + ".xml");
+
+            PrintStream ps = new PrintStream(fos, true, utf8CharacterEncoding);
+            ps.print(xmlToWrite);
+            ps.close();
+            fos.close();
+
+            System.out.println("XML is " + xmlToWrite);
         }
 
         String message = "Files have been saved in ";
@@ -343,10 +346,10 @@ public class Utils {
 
                         //  If a default value has been specified in the ISAconfiguration, we set it in the Excel spreadsheet
                         if (elements.get(fieldIndex).getFieldDetails().getDefaultVal() != null) {
-                            for (int i=1; i<51; i++) {
-                            rowAtIndex = tableSheet.getRow(i);
-                            XSSFCell cellThere = rowAtIndex.createCell(fieldIndex);
-                            cellThere.setCellValue(elements.get(fieldIndex).getFieldDetails().getDefaultVal());
+                            for (int i = 1; i < 51; i++) {
+                                rowAtIndex = tableSheet.getRow(i);
+                                XSSFCell cellThere = rowAtIndex.createCell(fieldIndex);
+                                cellThere.setCellValue(elements.get(fieldIndex).getFieldDetails().getDefaultVal());
                             }
                         }
 

@@ -172,6 +172,16 @@ public class FieldXMLCreator {
             xmlRep.append("<generated-value-template>").append(field.getWizardTemplate()).append("</generated-value-template>");
         }
 
+        createListContent(field, xmlRep);
+
+
+        xmlRep.append(createValidationXMLForField(field));
+
+        xmlRep.append("</field>");
+        return xmlRep;
+    }
+
+    private void createListContent(FieldObject field, StringBuffer xmlRep) {
         if (field.getDatatype() == DataTypes.LIST) {
             if (field.getFieldList() != null) {
 
@@ -189,12 +199,6 @@ public class FieldXMLCreator {
                 xmlRep.append("<list-values>").append(toAdd).append("</list-values>");
             }
         }
-
-
-        xmlRep.append(createValidationXMLForField(field));
-
-        xmlRep.append("</field>");
-        return xmlRep;
     }
 
     private StringBuffer createUnitFieldXML(FieldObject field) {
@@ -206,8 +210,15 @@ public class FieldXMLCreator {
                 append("\" is-forced-ontology=\"").append(String.valueOf(field.isForceOntologySelection())).append("\">");
 
         // output field description
+        String defaultValue = field.getDefaultVal() == null ? "" : field.getDefaultVal();
+
+        xmlRep.append("<default-value>").append(defaultValue).append("</default-value>");
         xmlRep.append("<description>").append(StringUtils.cleanUpString(field.getDescription())).append("\"</description>");
+        createListContent(field, xmlRep);
         xmlRep.append(createValidationXMLForField(field));
+
+        System.out.println("XML for unit field is " + xmlRep.toString());
+
         xmlRep.append("</unit-field>");
 
         return xmlRep;
