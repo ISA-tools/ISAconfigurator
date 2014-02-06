@@ -98,6 +98,9 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                     </archive>
+                    <archiverConfig>
+                        <duplicateBehavior>skip</duplicateBehavior>
+                    </archiverConfig>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
