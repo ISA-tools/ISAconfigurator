@@ -5,13 +5,13 @@
  ISAconfigurator is licensed under the Common Public Attribution License version 1.0 (CPAL)
 
  EXHIBIT A. CPAL version 1.0
- ÒThe contents of this file are subject to the CPAL version 1.0 (the ÒLicenseÓ); you may not use this file except
+ ï¿½The contents of this file are subject to the CPAL version 1.0 (the ï¿½Licenseï¿½); you may not use this file except
  in compliance with the License. You may obtain a copy of the License at http://isa-tools.org/licenses/ISAconfigurator-license.html.
  The License is based on the Mozilla Public License version 1.1 but Sections 14 and 15 have been added to cover use of software over
  a computer network and provide for limited attribution for the Original Developer. In addition, Exhibit A has been modified to be
  consistent with Exhibit B.
 
- Software distributed under the License is distributed on an ÒAS ISÓ basis, WITHOUT WARRANTY OF ANY KIND, either express
+ Software distributed under the License is distributed on an ï¿½AS ISï¿½ basis, WITHOUT WARRANTY OF ANY KIND, either express
  or implied. See the License for the specific language governing rights and limitations under the License.
 
  The Original Code is ISAconfigurator.
@@ -39,6 +39,7 @@ package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import org.apache.commons.collections15.map.ListOrderedMap;
 import org.isatools.isacreator.autofilteringlist.ExtendedJList;
+import org.isatools.isacreator.common.CommonMouseAdapter;
 import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Ontology;
 import org.isatools.isacreator.configuration.RecommendedOntology;
@@ -47,11 +48,8 @@ import org.isatools.isacreator.effects.HUDTitleBar;
 import org.isatools.isacreator.effects.InfiniteProgressPanel;
 import org.isatools.isacreator.effects.borders.RoundedBorder;
 import org.isatools.isacreator.ontologybrowsingutils.TreeObserver;
-import org.isatools.isacreator.ontologymanager.BioPortalClient;
-import org.isatools.isacreator.ontologymanager.OLSClient;
+import org.isatools.isacreator.ontologymanager.BioPortal4Client;
 import org.isatools.isacreator.ontologymanager.OntologyService;
-import org.isatools.isacreator.ontologymanager.bioportal.model.OntologyPortal;
-import org.isatools.isacreator.ontologymanager.utils.OntologyUtils;
 import org.isatools.isacreatorconfigurator.configui.notifications.NotificationWindow;
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
@@ -80,8 +78,7 @@ import java.util.List;
 
 public class OntologyConfigUI extends JFrame {
 
-    private static final BioPortalClient bioportalClient = new BioPortalClient();
-    private static final OLSClient olsClient = new OLSClient();
+    private static final BioPortal4Client bioportalClient = new BioPortal4Client();
 
     @InjectedResource
     private ImageIcon infoImage, confirmButton, confirmButtonOver, addOntologyButtonIcon, addOntologyButtonIconOver,
@@ -328,7 +325,7 @@ public class OntologyConfigUI extends JFrame {
 
                 if (!selectedOntologyList.isSelectionEmpty()) {
                     String ontologyToRemove = selectedOntologyList.getSelectedValue().toString();
-                    System.out.println("Removing  " + ontologyToRemove);
+
                     selectedOntologies.remove(ontologyToRemove);
                     setOntologySelectionPanelPlaceholder(infoImage);
 
@@ -352,20 +349,23 @@ public class OntologyConfigUI extends JFrame {
         removeOntologyButton.setVisible(false);
 
         viewOntologyButton = new JLabel(browseOntologyButtonIcon);
-        viewOntologyButton.addMouseListener(new MouseAdapter() {
+        viewOntologyButton.addMouseListener(new CommonMouseAdapter() {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
-                performTransition();
+                super.mousePressed(mouseEvent);
+                doOntologyDisplay();
                 viewOntologyButton.setIcon(browseOntologyButtonIcon);
             }
 
             @Override
             public void mouseEntered(MouseEvent mouseEvent) {
+                super.mouseEntered(mouseEvent);
                 viewOntologyButton.setIcon(browseOntologyButtonIconOver);
             }
 
             @Override
             public void mouseExited(MouseEvent mouseEvent) {
+                super.mouseExited(mouseEvent);
                 viewOntologyButton.setIcon(browseOntologyButtonIcon);
             }
         });
@@ -464,11 +464,10 @@ public class OntologyConfigUI extends JFrame {
 
         if (ontologiesToBrowseOn == null) {
             ontologiesToBrowseOn = new ArrayList<Ontology>();
-            List<Ontology> bioportalQueryResult = bioportalClient.getAllOntologies();
+            Collection<Ontology> bioportalQueryResult = bioportalClient.getAllOntologies();
             if (bioportalQueryResult != null) {
                 ontologiesToBrowseOn.addAll(bioportalQueryResult);
             }
-            ontologiesToBrowseOn.addAll(olsClient.getAllOntologies());
         }
 
         // precautionary check in case of having no ontologies available to search on.
@@ -527,7 +526,7 @@ public class OntologyConfigUI extends JFrame {
         repaint();
     }
 
-    private void performTransition() {
+    private void doOntologyDisplay() {
 
         Thread performer = new Thread(new Runnable() {
             public void run() {
@@ -553,15 +552,10 @@ public class OntologyConfigUI extends JFrame {
                             ontology.setSubsectionToQuery(selectedOntologies.get(ontology.getOntologyDisplayLabel()).getBranchToSearchUnder());
                         }
 
-                        if (OntologyUtils.getSourceOntologyPortal(ontology) == OntologyPortal.BIOPORTAL) {
-                            currentlyActiveBrowser = new OntologyBrowser(ontology, bioportalClient, getMaxBrowserSize());
-                            configureSearchAndTermDefinitionPanel(ontology, bioportalClient);
-                            ontologyViewContainer.add(currentlyActiveBrowser);
-                        } else {
-                            currentlyActiveBrowser = new OntologyBrowser(ontology, olsClient, getMaxBrowserSize());
-                            configureSearchAndTermDefinitionPanel(ontology, olsClient);
-                            ontologyViewContainer.add(currentlyActiveBrowser);
-                        }
+
+                        currentlyActiveBrowser = new OntologyBrowser(ontology, getMaxBrowserSize());
+                        configureSearchAndTermDefinitionPanel(ontology, bioportalClient);
+                        ontologyViewContainer.add(currentlyActiveBrowser);
 
                         currentlyActiveBrowser.setPreferredSize(getMaxBrowserSize());
                         glassPane.stop();

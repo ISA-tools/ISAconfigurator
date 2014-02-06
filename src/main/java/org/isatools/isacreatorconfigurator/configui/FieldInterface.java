@@ -47,13 +47,11 @@ import org.isatools.isacreator.effects.borders.RoundedBorder;
 import org.isatools.isacreator.effects.components.RoundedFormattedTextField;
 import org.isatools.isacreator.effects.components.RoundedJTextArea;
 import org.isatools.isacreator.effects.components.RoundedJTextField;
-import org.isatools.isacreator.ontologymanager.BioPortalClient;
-import org.isatools.isacreator.ontologymanager.OLSClient;
+import org.isatools.isacreator.ontologymanager.BioPortal4Client;
 import org.isatools.isacreator.ontologymanager.OntologyService;
 import org.isatools.isacreator.ontologyselectiontool.OntologySelectionTool;
 import org.isatools.isacreatorconfigurator.ontologyconfigurationtool.OntologyConfigUI;
-import org.isatools.isatab.configurator.schema.UnitFieldType;
-import org.isatools.isatab.configurator.schema.impl.UnitFieldTypeImpl;
+
 import org.jdesktop.fuse.InjectedResource;
 import org.jdesktop.fuse.ResourceInjector;
 
@@ -131,15 +129,12 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     private FieldElement field;
 
     static {
-        OntologyService bpc = new BioPortalClient();
+        OntologyService bpc = new BioPortal4Client();
         ontologiesToQuery = new ArrayList<Ontology>();
         if (bpc.getAllOntologies() != null) {
             ontologiesToQuery.addAll(bpc.getAllOntologies());
         }
 
-        OntologyService olsClient = new OLSClient();
-
-        ontologiesToQuery.addAll(olsClient.getAllOntologies());
         ontologyColumnHeaders = new String[]{"ontology", "search under"};
     }
 

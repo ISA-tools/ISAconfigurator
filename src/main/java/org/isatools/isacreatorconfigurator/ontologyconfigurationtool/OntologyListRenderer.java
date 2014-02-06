@@ -5,13 +5,13 @@
  ISAconfigurator is licensed under the Common Public Attribution License version 1.0 (CPAL)
 
  EXHIBIT A. CPAL version 1.0
- ÒThe contents of this file are subject to the CPAL version 1.0 (the ÒLicenseÓ); you may not use this file except
+ ï¿½The contents of this file are subject to the CPAL version 1.0 (the ï¿½Licenseï¿½); you may not use this file except
  in compliance with the License. You may obtain a copy of the License at http://isa-tools.org/licenses/ISAconfigurator-license.html.
  The License is based on the Mozilla Public License version 1.1 but Sections 14 and 15 have been added to cover use of software over
  a computer network and provide for limited attribution for the Original Developer. In addition, Exhibit A has been modified to be
  consistent with Exhibit B.
 
- Software distributed under the License is distributed on an ÒAS ISÓ basis, WITHOUT WARRANTY OF ANY KIND, either express
+ Software distributed under the License is distributed on an ï¿½AS ISï¿½ basis, WITHOUT WARRANTY OF ANY KIND, either express
  or implied. See the License for the specific language governing rights and limitations under the License.
 
  The Original Code is ISAconfigurator.
@@ -58,8 +58,7 @@ public class OntologyListRenderer extends JPanel
     static Color listForeground = UIHelper.DARK_GREEN_COLOR;
 
     @InjectedResource
-    private ImageIcon olsIcon, bioPortalIcon;
-
+    private ImageIcon bioPortalIcon;
 
     private JLabel icon;
     private JLabel text;
@@ -72,7 +71,7 @@ public class OntologyListRenderer extends JPanel
 
         setLayout(new BorderLayout());
 
-        icon = new JLabel(olsIcon);
+        icon = new JLabel(bioPortalIcon);
         add(icon, BorderLayout.WEST);
 
         text = UIHelper.createLabel("", UIHelper.VER_10_PLAIN, listForeground);
@@ -99,12 +98,6 @@ public class OntologyListRenderer extends JPanel
             Ontology o = (Ontology) val;
 
             // ols versions are now like Jun 2010 rather than their previous version format 1.26
-            if (o.getOntologyVersion().length() > 5) {
-                icon.setIcon(olsIcon);
-            } else {
-                icon.setIcon(bioPortalIcon);
-            }
-
             stringRepresentation = o.getOntologyAbbreviation() + " - " + o.getOntologyDisplayLabel();
         }
 

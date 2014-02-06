@@ -4,7 +4,7 @@
     <groupId>org.isatools</groupId>
     <artifactId>ISACreatorConfigurator</artifactId>
     <packaging>jar</packaging>
-    <version>1.6</version>
+    <version>1.6.1</version>
     <name>ISACreator Configurator</name>
     <url>http://isa-tools.org/isaconfig.html</url>
 
@@ -263,8 +263,10 @@
         <dependency>
             <groupId>org.isatools</groupId>
             <artifactId>ISAcreator</artifactId>
-            <version>1.7.3</version>
+            <version>1.7.6</version>
+
         </dependency>
+
 
         <dependency>
             <groupId>org.apache.poi</groupId>

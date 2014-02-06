@@ -5,13 +5,13 @@
  ISAconfigurator is licensed under the Common Public Attribution License version 1.0 (CPAL)
 
  EXHIBIT A. CPAL version 1.0
- ÒThe contents of this file are subject to the CPAL version 1.0 (the ÒLicenseÓ); you may not use this file except
+ ï¿½The contents of this file are subject to the CPAL version 1.0 (the ï¿½Licenseï¿½); you may not use this file except
  in compliance with the License. You may obtain a copy of the License at http://isa-tools.org/licenses/ISAconfigurator-license.html.
  The License is based on the Mozilla Public License version 1.1 but Sections 14 and 15 have been added to cover use of software over
  a computer network and provide for limited attribution for the Original Developer. In addition, Exhibit A has been modified to be
  consistent with Exhibit B.
 
- Software distributed under the License is distributed on an ÒAS ISÓ basis, WITHOUT WARRANTY OF ANY KIND, either express
+ Software distributed under the License is distributed on an ï¿½AS ISï¿½ basis, WITHOUT WARRANTY OF ANY KIND, either express
  or implied. See the License for the specific language governing rights and limitations under the License.
 
  The Original Code is ISAconfigurator.
@@ -37,12 +37,9 @@
 package org.isatools.isacreatorconfigurator.ontologyconfigurationtool;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
-import org.geneontology.swing.SwingUtil;
 import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Ontology;
 import org.isatools.isacreator.configuration.OntologyBranch;
-import org.isatools.isacreator.ontologymanager.OLSClient;
-import org.isatools.isacreator.ontologymanager.OntologyQueryAdapter;
 import org.isatools.isacreator.ontologymanager.OntologyService;
 import org.isatools.isacreatorconfigurator.informationwindow.InformationPane;
 
@@ -145,11 +142,11 @@ public class ViewTermDefinitionUI extends InformationPane {
 
                     System.out.println("Searching for " + term.getBranchIdentifier() + " in " +
                             searchOntology.getOntologyAbbreviation() + " version " +
-                            new OntologyQueryAdapter(searchOntology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
+                           searchOntology.getOntologyVersion());
 
-                    System.out.println("Ontology service is " + (ontologyService instanceof OLSClient ? "OLS client" : "BioPortal Client"));
+                    System.out.println("Ontology service is BioPortal Client");
 
-                    properties = ontologyService.getTermMetadata(term.getBranchIdentifier(), new OntologyQueryAdapter(searchOntology).getOntologyQueryString(OntologyQueryAdapter.GET_VERSION));
+                    properties = ontologyService.getTermMetadata(term.getBranchIdentifier(), searchOntology.getOntologyID());
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             setCurrentPage(createOntologyInformationPane(term));

@@ -5,13 +5,13 @@
  ISAconfigurator is licensed under the Common Public Attribution License version 1.0 (CPAL)
 
  EXHIBIT A. CPAL version 1.0
- ÒThe contents of this file are subject to the CPAL version 1.0 (the ÒLicenseÓ); you may not use this file except
+ ï¿½The contents of this file are subject to the CPAL version 1.0 (the ï¿½Licenseï¿½); you may not use this file except
  in compliance with the License. You may obtain a copy of the License at http://isa-tools.org/licenses/ISAconfigurator-license.html.
  The License is based on the Mozilla Public License version 1.1 but Sections 14 and 15 have been added to cover use of software over
  a computer network and provide for limited attribution for the Original Developer. In addition, Exhibit A has been modified to be
  consistent with Exhibit B.
 
- Software distributed under the License is distributed on an ÒAS ISÓ basis, WITHOUT WARRANTY OF ANY KIND, either express
+ Software distributed under the License is distributed on an ï¿½AS ISï¿½ basis, WITHOUT WARRANTY OF ANY KIND, either express
  or implied. See the License for the specific language governing rights and limitations under the License.
 
  The Original Code is ISAconfigurator.
@@ -87,7 +87,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
      *
      * @param ontologyToQuery - the Ontology object representing the Ontology to be queried
      */
-    public OntologyBrowser(Ontology ontologyToQuery, OntologyService ontologyClient, Dimension browserSize) {
+    public OntologyBrowser(Ontology ontologyToQuery, Dimension browserSize) {
         this.ontologyToQuery = ontologyToQuery;
         this.browserSize = browserSize;
         this.observers = new ArrayList<TreeObserver>();
@@ -99,8 +99,7 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
         // add event change listener to detect when nodes are being selected in the tree. we can then update the definition in
         // the ViewTermDefinitionUI to show the currently selected term.
 
-        ontologyTreeCreator = ontologyToQuery.getFormat() == OntologyFormats.OBO ? new WSOntologyTreeCreator(this, ontologyTree) :
-                new WSOntologyTreeCreator(this, ontologyTree);
+        ontologyTreeCreator = new WSOntologyTreeCreator(this, ontologyTree);
 
         ((WSOntologyTreeCreator) ontologyTreeCreator).registerObserver(this);
 
@@ -116,6 +115,12 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
         DefaultMutableTreeNode root;
 
         try {
+            System.out.println("Querying... ");
+            System.out.println(ontologyToQuery.getOntologyAbbreviation());
+            System.out.println(ontologyToQuery.getOntologyID());
+
+            System.out.println();
+            ontologyToQuery.setOntologyVersion(ontologyToQuery.getOntologyAbbreviation());
             root = ontologyTreeCreator.createTree(Collections.singletonMap(ontologyToQuery.getOntologyAbbreviation(), new RecommendedOntology(ontologyToQuery, null)));
             ontologyTree.setModel(new DefaultTreeModel(root));
         } catch (FileNotFoundException e) {
@@ -123,8 +128,6 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
         } catch (RuntimeException re) {
             log.error(re.getMessage());
         }
-
-
 
         ontologyTree.setCellRenderer(new OntologyTreeRenderer());
         ontologyTree.setShowsRootHandles(false);
@@ -167,7 +170,6 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
                     }
                 }
             }
-
         });
 
         JScrollPane ontologyTreeScroller = new JScrollPane(ontologyTree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -184,8 +186,6 @@ public class OntologyBrowser extends JPanel implements TreeObserver, TreeSubject
         selectedTreePartInfo = UIHelper.createLabel("", UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, SwingConstants.LEFT);
         selectedTreePartInfoCont.add(selectedTreePartInfo);
         add(selectedTreePartInfoCont, BorderLayout.SOUTH);
-
-
     }
 
     private JPanel createInfoPanel() {
