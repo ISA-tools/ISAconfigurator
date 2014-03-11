@@ -70,6 +70,10 @@ public class FieldXMLCreator {
         entireTableDef.append("<isatab-config-file xmlns=\"http://www.ebi.ac.uk/bii/isatab_configuration#\">");
         entireTableDef.append("<isatab-configuration table-name=\"").append(mo.getAssayName()).append("\"");
 
+        System.out.println(mo.getAssayType());
+        System.out.println(mo.getAssayName());
+        System.out.println(mo.getTableType());
+        System.out.println(mo.getDispatchTarget());
 
         String finalMeasurement = mo.getTableType().equalsIgnoreCase(MappingObject.ASSAY_TYPE) ? mo.getMeasurementEndpointType() :
                 mo.getTableType().equalsIgnoreCase(MappingObject.STUDY_SAMPLE) ? SAMPLE : INVESTIGATION;

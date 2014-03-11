@@ -47,8 +47,7 @@ import org.isatools.isacreator.effects.borders.RoundedBorder;
 import org.isatools.isacreator.effects.components.RoundedFormattedTextField;
 import org.isatools.isacreator.effects.components.RoundedJTextArea;
 import org.isatools.isacreator.effects.components.RoundedJTextField;
-import org.isatools.isacreator.ontologymanager.BioPortal4Client;
-import org.isatools.isacreator.ontologymanager.OntologyService;
+import org.isatools.isacreator.ontologymanager.bioportal.io.AcceptedOntologies;
 import org.isatools.isacreator.ontologyselectiontool.OntologySelectionTool;
 import org.isatools.isacreatorconfigurator.ontologyconfigurationtool.OntologyConfigUI;
 
@@ -129,12 +128,10 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     private FieldElement field;
 
     static {
-        OntologyService bpc = new BioPortal4Client();
-        ontologiesToQuery = new ArrayList<Ontology>();
-        if (bpc.getAllOntologies() != null) {
-            ontologiesToQuery.addAll(bpc.getAllOntologies());
-        }
 
+        ontologiesToQuery = new ArrayList<Ontology>();
+        Collection<Ontology> ontologies = AcceptedOntologies.getAcceptedOntologies().values();
+        ontologiesToQuery.addAll(ontologies);
         ontologyColumnHeaders = new String[]{"ontology", "search under"};
     }
 
@@ -177,6 +174,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         description = new RoundedJTextArea();
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
+        description.setText(initFieldName);
         UIHelper.renderComponent(description, UIHelper.VER_11_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
 
         JScrollPane descScroll = new JScrollPane(description,
@@ -655,6 +653,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
             if (tfo != null) {
 
                 fieldName.setText(tfo.getFieldName());
+
                 description.setText(tfo.getDescription());
 
                 // set the data type variable!

@@ -41,11 +41,8 @@ import org.apache.log4j.Logger;
 import org.isatools.isacreator.common.UIHelper;
 import org.isatools.isacreator.configuration.Ontology;
 import org.isatools.isacreator.configuration.OntologyBranch;
-import org.isatools.isacreator.configuration.OntologyFormats;
 import org.isatools.isacreator.configuration.RecommendedOntology;
 import org.isatools.isacreator.ontologybrowsingutils.*;
-import org.isatools.isacreator.ontologymanager.BioPortalClient;
-import org.isatools.isacreator.ontologymanager.OntologyService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

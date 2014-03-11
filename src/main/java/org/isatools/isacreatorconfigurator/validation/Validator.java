@@ -44,6 +44,9 @@ public class Validator {
     public ValidationReport validate(String tableName, String tableType, List<FieldObject> fieldHeaders) {
         tableType = convertInconsistentTableTypes(tableType);
 
+        System.out.println("Table name: " + tableName);
+        System.out.println("Table type: " + tableType);
+
         for (Format format : isatabSchema.getFormats()) {
             for (Section section : format.getSections()) {
                 if (format.getId().equalsIgnoreCase(tableType)) {
@@ -58,7 +61,7 @@ public class Validator {
                         report.addToReport(ReportType.ORDER, tableName, orderErrors);
                     }
 
-                    if (!format.getId().equalsIgnoreCase("investigation")) {
+                    if (!format.getId().contains("investigation")) {
 
                         Set<String> positioningErrors = validatePositioning(fieldHeaders);
                         if (positioningErrors.size() > 0) {

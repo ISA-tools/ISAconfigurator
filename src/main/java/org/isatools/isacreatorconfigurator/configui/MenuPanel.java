@@ -269,7 +269,7 @@ public class MenuPanel extends JLayeredPane {
      * @throws java.io.IOException    - When file not found
      * @throws ClassNotFoundException - When object being read in from input stream doesn't read in properly
      */
-    private void loadSession()  {
+    private void loadSession() {
         jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         jfc.setFileFilter(new ConfigurationFileFilter());
         jfc.setDialogTitle("Select configuration file directory");
@@ -288,7 +288,7 @@ public class MenuPanel extends JLayeredPane {
                     public void run() {
 
                         try {
-                            DataEntryPanel dep = new DataEntryPanel(appCont, toLoad);
+                            final DataEntryPanel dep = new DataEntryPanel(appCont, toLoad);
 
                             SwingUtilities.invokeLater(new Runnable() {
                                 public void run() {
@@ -308,6 +308,8 @@ public class MenuPanel extends JLayeredPane {
                                     c.addTableObject(tc.getTableFields());
                                 }
 
+                                System.out.println("We have " + c.getTableData().size() + " tables...");
+
                                 SwingUtilities.invokeLater(new Runnable() {
                                     public void run() {
                                         status.setText("<html>connecting to ontology resources...</html>");
@@ -315,6 +317,7 @@ public class MenuPanel extends JLayeredPane {
                                 });
 
                                 loadTFO(c, dep);
+                                System.out.println("Finished loading TFOs...");
                             }
                             // otherwise, this is a legacy TFO or TCO file.
                             else {
@@ -337,13 +340,16 @@ public class MenuPanel extends JLayeredPane {
                                 }
                             }
 
-                            dep.createGUI();
-                            status.setText("");
-                            status.setIcon(null);
-                            appCont.hideGlassPane();
-                            appCont.setCurrentPage(dep);
-
-
+                            SwingUtilities.invokeLater(new Runnable() {
+                                public void run() {
+                                    System.out.println("Now going to create GUI...");
+                                    dep.createGUI();
+                                    status.setText("");
+                                    status.setIcon(null);
+                                    appCont.hideGlassPane();
+                                    appCont.setCurrentPage(dep);
+                                }
+                            });
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -399,7 +405,7 @@ public class MenuPanel extends JLayeredPane {
             tableFields.put(to.getMappingObject(), fields);
         }
 
-
+        System.out.println("Setting table fields...");
         dep.setTableFields(tableFields);
     }
 

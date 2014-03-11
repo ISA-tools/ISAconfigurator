@@ -144,6 +144,7 @@ public class DataEntryPanel extends JLayeredPane {
     public void createGUI() {
         addTableUI = new AddTableGUI(this);
         addElementUI = new AddElementGUI(this);
+
         setupAboutPanel();
         fieldInterface = new FieldInterface(getCurrentInstance());
         fieldInterface.createGUI();
@@ -176,8 +177,7 @@ public class DataEntryPanel extends JLayeredPane {
     }
 
     private void showMessagePane(String message, int messageType) {
-        final JOptionPane optionPane = new JOptionPane("<html>" + message + "</html>",
-                JOptionPane.OK_OPTION);
+        final JOptionPane optionPane = new JOptionPane("<html>" + message + "</html>", JOptionPane.OK_OPTION);
         UIHelper.renderComponent(optionPane, UIHelper.VER_12_PLAIN, UIHelper.DARK_GREEN_COLOR, false);
 
         if (messageType == JOptionPane.ERROR_MESSAGE) {
@@ -1249,6 +1249,7 @@ public class DataEntryPanel extends JLayeredPane {
                             addedSections.add(field.getSection());
                         }
                     }
+                    if(field.getDescription().isEmpty()) field.setDescription(field.getFieldName());
                     tableFields.get(mo).add(new FieldElement(field));
                 }
             }
