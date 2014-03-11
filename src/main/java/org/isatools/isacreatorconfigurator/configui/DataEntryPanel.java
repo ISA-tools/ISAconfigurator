@@ -1367,21 +1367,17 @@ public class DataEntryPanel extends JLayeredPane {
      * @param newPage - JLayeredPane to change to
      */
     public void setCurrentPage(final JLayeredPane newPage) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                if (currentPage == null) {
-                    currentPage = newPage;
-                } else {
-                    remove(currentPage);
-                    currentPage = newPage;
-                }
 
-                add(currentPage, BorderLayout.CENTER);
-                repaint();
-                validate();
-            }
-        });
+        if (currentPage == null) {
+            currentPage = newPage;
+        } else {
+            remove(currentPage);
+            currentPage = newPage;
+        }
 
+        add(currentPage, BorderLayout.CENTER);
+        repaint();
+        validate();
     }
 
     public ISAcreatorConfigurator getApplicationContainer() {

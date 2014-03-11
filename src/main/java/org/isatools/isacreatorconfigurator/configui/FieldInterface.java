@@ -657,13 +657,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
                     if (tfo != null) {
 
-                        System.out.println(tfo.getFieldName());
-                        System.out.println("Data type " + tfo.getDatatype());
-                        System.out.println("Description " + tfo.getDescription());
-                        System.out.println("Hidden " + tfo.isHidden());
-                        System.out.println("Field list...");
-                        System.out.println("List values " + Arrays.toString(tfo.getFieldList()));
-
                         fieldName.setText(tfo.getFieldName());
                         description.setText(tfo.getDescription());
                         required.setSelected(tfo.isRequired());
@@ -673,8 +666,6 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                         forceOntologySelection.setSelected(tfo.isForceOntologySelection());
 
                         if (tfo.getDatatype() == DataTypes.LIST) {
-                            System.out.println("List values...");
-                            System.out.println(Arrays.toString(tfo.getFieldList()));
                             if (tfo.getFieldList() != null) {
                                 String s = "";
 
@@ -761,18 +752,21 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     private void populateDataTypeSection(FieldObject tfo) {
         DataTypes fixedDataType = doesFieldHaveFixedType();
 
+        datatype.removeActionListener(this);
+        datatype.removeAllItems();
+        System.out.println(fixedDataType);
         if (fixedDataType != null) {
-            datatype.removeAllItems();
             datatype.addItem(fixedDataType);
+            System.out.println("There are " + datatype.getItemCount() + " items in datatype...");
         } else {
-            if (datatype.getItemCount() == 1) {
-                datatype.removeAllItems();
-                for (DataTypes d : DataTypes.values()) {
-                    datatype.addItem(d);
-                }
+            for (DataTypes d : DataTypes.values()) {
+                datatype.addItem(d);
             }
         }
+        datatype.revalidate();
+        datatype.addActionListener(this);
         datatype.setSelectedItem(tfo.getDatatype());
+//        updateUIBasedOnDataType();
     }
 
     public String toString() {
@@ -781,182 +775,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == datatype) {
-            DataTypes selected;
-            if (datatype.getSelectedItem() == null) {
-                selected = DataTypes.ONTOLOGY_TERM;
-            } else {
-                selected = DataTypes.resolveDataType(datatype.getSelectedItem().toString());
-            }
-
-            // Need to remove dependencies if a change has occurred which results in differing datatypes
-            if (selected == DataTypes.STRING || selected == DataTypes.LONG_STRING) {
-                preferredOntologySource.setVisible(false);
-                // initialise the default value field to be specific for String values
-                defaultValStd.setText("");
-                defaultValStd.setEditable(true);
-                defaultValStd.setEnabled(true);
-
-                //isFixedLength.setVisible(true);
-                isInputFormatted.setVisible(true);
-                //fixedLengthCont.setVisible(false);
-                inputFormatCont.setVisible(false);
-
-                usesTemplateForWizard.setVisible(true);
-
-                // show default value field for standard inputs and hide default value combo for boolean values.
-                defaultValContStd.setVisible(true);
-                defaultValContBool.setVisible(false);
-
-                // hide list data source fields. no use here!
-                listDataSourceCont.setVisible(false);
-
-                acceptsFileLocations.setEnabled(true);
-
-
-                // set regex for any valid character.
-                defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                        new RegExFormatter(".*", defaultValStd, true, UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
-            }
-
-            if (selected == DataTypes.INTEGER) {
-                preferredOntologySource.setVisible(false);
-                // initialise the default value field to be specific for integer values
-                defaultValStd.setText("0");
-                defaultValStd.setEditable(true);
-                defaultValStd.setEnabled(true);
-
-                // hide all options for length and regular expressions
-                isInputFormatted.setVisible(false);
-                isInputFormatted.setSelected(false);
-
-                usesTemplateForWizard.setVisible(false);
-                wizardTemplatePanel.setVisible(false);
-
-                inputFormatCont.setVisible(false);
-                acceptsFileLocations.setEnabled(false);
-
-                defaultValContStd.setVisible(true);
-                defaultValContBool.setVisible(false);
-
-                // hide list data source fields. no use here!
-                listDataSourceCont.setVisible(false);
-
-                // set regex for default value to only accept integers.
-                defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                        new RegExFormatter("[0-9]+", defaultValStd, true, UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
-            }
-
-            if (selected == DataTypes.DOUBLE) {
-                preferredOntologySource.setVisible(false);
-                // initialise the default value field to be specific for double values
-                defaultValStd.setText("0.0");
-                defaultValStd.setEditable(true);
-                defaultValStd.setEnabled(true);
-
-                // hide all options for length and regular expressions
-                isInputFormatted.setVisible(false);
-                isInputFormatted.setSelected(false);
-                usesTemplateForWizard.setVisible(false);
-                wizardTemplatePanel.setVisible(false);
-
-                inputFormatCont.setVisible(false);
-
-                // show the standard default value for text etc. and hide default value showing boolean options
-                defaultValContStd.setVisible(true);
-                defaultValContBool.setVisible(false);
-
-                // hide list data source fields. no use here!
-                listDataSourceCont.setVisible(false);
-
-                acceptsFileLocations.setEnabled(false);
-
-                // set the regular expression checker to handle double values.
-                defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
-                        new RegExFormatter("[0-9]+\\.[0-9]+", defaultValStd, true,
-                                UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
-            }
-
-            if (selected == DataTypes.DATE) {
-                preferredOntologySource.setVisible(false);
-                // initialise the default value field to be specific for date values
-                defaultValStd.setText("dd-MM-yyyy");
-                defaultValStd.setEnabled(false);
-                defaultValStd.setEditable(true);
-
-                isInputFormatted.setVisible(false);
-                isInputFormatted.setSelected(false);
-                inputFormatCont.setVisible(false);
-                usesTemplateForWizard.setVisible(false);
-                wizardTemplatePanel.setVisible(false);
-
-                // show the standard default value for text etc. and hide default value showing boolean options
-                defaultValContStd.setVisible(true);
-                defaultValContBool.setVisible(false);
-
-                acceptsFileLocations.setEnabled(false);
-
-                // hide list data source fields. no use here!
-                listDataSourceCont.setVisible(false);
-            }
-
-            if (selected == DataTypes.BOOLEAN) {
-                preferredOntologySource.setVisible(false);
-
-                // hide all options for length and regular expressions
-                isInputFormatted.setVisible(false);
-                isInputFormatted.setSelected(false);
-                inputFormatCont.setVisible(false);
-                usesTemplateForWizard.setVisible(false);
-                wizardTemplatePanel.setVisible(false);
-
-                // show default value field for boolean types and hide those for all other types.
-                defaultValContStd.setVisible(false);
-                defaultValContBool.setVisible(true);
-
-                acceptsFileLocations.setEnabled(false);
-
-                // hide list data source fields. no use here!
-                listDataSourceCont.setVisible(false);
-            }
-
-            if (selected == DataTypes.LIST) {
-                preferredOntologySource.setVisible(false);
-                listDataSourceCont.setVisible(true);
-
-                // hide default value input
-                defaultValContStd.setVisible(false);
-                defaultValContBool.setVisible(false);
-
-                // hide all options for length and regular expressions
-                isInputFormatted.setVisible(false);
-                isInputFormatted.setSelected(false);
-                inputFormatCont.setVisible(false);
-                usesTemplateForWizard.setVisible(false);
-                wizardTemplatePanel.setVisible(false);
-                acceptsFileLocations.setEnabled(false);
-            }
-
-            if (selected == DataTypes.ONTOLOGY_TERM) {
-                // show preferred ontology source box
-                preferredOntologySource.setVisible(true);
-                listDataSourceCont.setVisible(false);
-
-                defaultValStd.setText("");
-
-                // hide default value input
-                defaultValContStd.setVisible(false);
-                defaultValContBool.setVisible(false);
-                usesTemplateForWizard.setVisible(false);
-                wizardTemplatePanel.setVisible(false);
-
-
-                // hide all options for length and regular expressions
-                isInputFormatted.setVisible(false);
-                isInputFormatted.setSelected(false);
-                inputFormatCont.setVisible(false);
-                acceptsFileLocations.setEnabled(false);
-
-            }
+            updateUIBasedOnDataType();
         }
 
         if (event.getSource() == isInputFormatted) {
@@ -971,6 +790,185 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
             saveFieldObject();
         } catch (DataNotCompleteException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void updateUIBasedOnDataType() {
+        DataTypes selected;
+        if (datatype.getSelectedItem() == null) {
+            selected = DataTypes.ONTOLOGY_TERM;
+        } else {
+            selected = DataTypes.resolveDataType(datatype.getSelectedItem().toString());
+        }
+
+        // Need to remove dependencies if a change has occurred which results in differing datatypes
+        if (selected == DataTypes.STRING || selected == DataTypes.LONG_STRING) {
+            preferredOntologySource.setVisible(false);
+            // initialise the default value field to be specific for String values
+            defaultValStd.setText("");
+            defaultValStd.setEditable(true);
+            defaultValStd.setEnabled(true);
+
+            //isFixedLength.setVisible(true);
+            isInputFormatted.setVisible(true);
+            //fixedLengthCont.setVisible(false);
+            inputFormatCont.setVisible(false);
+
+            usesTemplateForWizard.setVisible(true);
+
+            // show default value field for standard inputs and hide default value combo for boolean values.
+            defaultValContStd.setVisible(true);
+            defaultValContBool.setVisible(false);
+
+            // hide list data source fields. no use here!
+            listDataSourceCont.setVisible(false);
+
+            acceptsFileLocations.setEnabled(true);
+
+
+            // set regex for any valid character.
+            defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
+                    new RegExFormatter(".*", defaultValStd, true, UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
+        }
+
+        if (selected == DataTypes.INTEGER) {
+            preferredOntologySource.setVisible(false);
+            // initialise the default value field to be specific for integer values
+            defaultValStd.setText("0");
+            defaultValStd.setEditable(true);
+            defaultValStd.setEnabled(true);
+
+            // hide all options for length and regular expressions
+            isInputFormatted.setVisible(false);
+            isInputFormatted.setSelected(false);
+
+            usesTemplateForWizard.setVisible(false);
+            wizardTemplatePanel.setVisible(false);
+
+            inputFormatCont.setVisible(false);
+            acceptsFileLocations.setEnabled(false);
+
+            defaultValContStd.setVisible(true);
+            defaultValContBool.setVisible(false);
+
+            // hide list data source fields. no use here!
+            listDataSourceCont.setVisible(false);
+
+            // set regex for default value to only accept integers.
+            defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
+                    new RegExFormatter("[0-9]+", defaultValStd, true, UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
+        }
+
+        if (selected == DataTypes.DOUBLE) {
+            preferredOntologySource.setVisible(false);
+            // initialise the default value field to be specific for double values
+            defaultValStd.setText("0.0");
+            defaultValStd.setEditable(true);
+            defaultValStd.setEnabled(true);
+
+            // hide all options for length and regular expressions
+            isInputFormatted.setVisible(false);
+            isInputFormatted.setSelected(false);
+            usesTemplateForWizard.setVisible(false);
+            wizardTemplatePanel.setVisible(false);
+
+            inputFormatCont.setVisible(false);
+
+            // show the standard default value for text etc. and hide default value showing boolean options
+            defaultValContStd.setVisible(true);
+            defaultValContBool.setVisible(false);
+
+            // hide list data source fields. no use here!
+            listDataSourceCont.setVisible(false);
+
+            acceptsFileLocations.setEnabled(false);
+
+            // set the regular expression checker to handle double values.
+            defaultValStd.setFormatterFactory(new DefaultFormatterFactory(
+                    new RegExFormatter("[0-9]+\\.[0-9]+", defaultValStd, true,
+                            UIHelper.DARK_GREEN_COLOR, UIHelper.RED_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR, UIHelper.TRANSPARENT_LIGHT_GREEN_COLOR)));
+        }
+
+        if (selected == DataTypes.DATE) {
+            preferredOntologySource.setVisible(false);
+            // initialise the default value field to be specific for date values
+            defaultValStd.setText("dd-MM-yyyy");
+            defaultValStd.setEnabled(false);
+            defaultValStd.setEditable(true);
+
+            isInputFormatted.setVisible(false);
+            isInputFormatted.setSelected(false);
+            inputFormatCont.setVisible(false);
+            usesTemplateForWizard.setVisible(false);
+            wizardTemplatePanel.setVisible(false);
+
+            // show the standard default value for text etc. and hide default value showing boolean options
+            defaultValContStd.setVisible(true);
+            defaultValContBool.setVisible(false);
+
+            acceptsFileLocations.setEnabled(false);
+
+            // hide list data source fields. no use here!
+            listDataSourceCont.setVisible(false);
+        }
+
+        if (selected == DataTypes.BOOLEAN) {
+            preferredOntologySource.setVisible(false);
+
+            // hide all options for length and regular expressions
+            isInputFormatted.setVisible(false);
+            isInputFormatted.setSelected(false);
+            inputFormatCont.setVisible(false);
+            usesTemplateForWizard.setVisible(false);
+            wizardTemplatePanel.setVisible(false);
+
+            // show default value field for boolean types and hide those for all other types.
+            defaultValContStd.setVisible(false);
+            defaultValContBool.setVisible(true);
+
+            acceptsFileLocations.setEnabled(false);
+
+            // hide list data source fields. no use here!
+            listDataSourceCont.setVisible(false);
+        }
+
+        if (selected == DataTypes.LIST) {
+            preferredOntologySource.setVisible(false);
+            listDataSourceCont.setVisible(true);
+
+            // hide default value input
+            defaultValContStd.setVisible(false);
+            defaultValContBool.setVisible(false);
+
+            // hide all options for length and regular expressions
+            isInputFormatted.setVisible(false);
+            isInputFormatted.setSelected(false);
+            inputFormatCont.setVisible(false);
+            usesTemplateForWizard.setVisible(false);
+            wizardTemplatePanel.setVisible(false);
+            acceptsFileLocations.setEnabled(false);
+        }
+
+        if (selected == DataTypes.ONTOLOGY_TERM) {
+            // show preferred ontology source box
+            preferredOntologySource.setVisible(true);
+            listDataSourceCont.setVisible(false);
+
+            defaultValStd.setText("");
+
+            // hide default value input
+            defaultValContStd.setVisible(false);
+            defaultValContBool.setVisible(false);
+            usesTemplateForWizard.setVisible(false);
+            wizardTemplatePanel.setVisible(false);
+
+
+            // hide all options for length and regular expressions
+            isInputFormatted.setVisible(false);
+            isInputFormatted.setSelected(false);
+            inputFormatCont.setVisible(false);
+            acceptsFileLocations.setEnabled(false);
+
         }
     }
 
@@ -993,6 +991,8 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
             tfo.setColNo(field.getFieldDetails().getColNo());
             tfo.setFieldName(fieldName.getText());
             tfo.setDescription(description.getText());
+
+            System.out.println("**** DATATYPE = " + datatype.getSelectedItem().toString());
 
             tfo.setDatatype(DataTypes.resolveDataType(datatype.getSelectedItem().toString()));
             tfo.setDefaultVal(defaultValAsString);
