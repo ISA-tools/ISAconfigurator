@@ -43,10 +43,6 @@ public class Validator {
 
     public ValidationReport validate(String tableName, String tableType, List<FieldObject> fieldHeaders) {
         tableType = convertInconsistentTableTypes(tableType);
-
-        System.out.println("Table name: " + tableName);
-        System.out.println("Table type: " + tableType);
-
         for (Format format : isatabSchema.getFormats()) {
             for (Section section : format.getSections()) {
                 if (format.getId().equalsIgnoreCase(tableType)) {

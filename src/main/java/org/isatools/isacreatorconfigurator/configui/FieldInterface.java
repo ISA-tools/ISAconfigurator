@@ -57,6 +57,8 @@ import org.jdesktop.fuse.ResourceInjector;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.text.DefaultFormatterFactory;
@@ -123,12 +125,11 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
     private JTable ontologiesToUse;
     private DefaultTableModel ontologiesToUseModel;
     private static OntologyConfigUI ontologyConfig;
-    private Map<String, RecommendedOntology> selectedOntologies = new ListOrderedMap<String, RecommendedOntology>();
+
 
     private FieldElement field;
 
     static {
-
         ontologiesToQuery = new ArrayList<Ontology>();
         Collection<Ontology> ontologies = AcceptedOntologies.getAcceptedOntologies().values();
         ontologiesToQuery.addAll(ontologies);
@@ -357,10 +358,10 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     public void run() {
                         if (openConfigButton.isEnabled()) {
                             openConfigButton.setIcon(ontologyConfigIcon);
-                            ontologyConfig = new OntologyConfigUI(ontologiesToQuery, selectedOntologies);
+                            ontologyConfig = new OntologyConfigUI(ontologiesToQuery, field.getFieldDetails().getRecommmendedOntologySource());
                             ontologyConfig.addPropertyChangeListener("ontologySelected", new PropertyChangeListener() {
                                 public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                                    selectedOntologies = (ListOrderedMap<String, RecommendedOntology>) propertyChangeEvent.getNewValue();
+                                    field.getFieldDetails().setRecommmendedOntologySource((ListOrderedMap<String, RecommendedOntology>) propertyChangeEvent.getNewValue());
                                     updateTable();
                                 }
                             });
@@ -547,12 +548,13 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
     private void updateTable() {
 
-        String[][] data = new String[selectedOntologies.size()][2];
+        Map<String, RecommendedOntology> recommendedOntologies = field.getFieldDetails().getRecommmendedOntologySource();
+        String[][] data = new String[recommendedOntologies.size()][2];
 
         int count = 0;
-        for (String ontology : selectedOntologies.keySet()) {
+        for (String ontology : recommendedOntologies.keySet()) {
             data[count][0] = ontology;
-            data[count][1] = selectedOntologies.get(ontology).getBranchToSearchUnder() == null ? "" : selectedOntologies.get(ontology).getBranchToSearchUnder().toString();
+            data[count][1] = recommendedOntologies.get(ontology).getBranchToSearchUnder() == null ? "" : recommendedOntologies.get(ontology).getBranchToSearchUnder().toString();
             count++;
         }
         ontologiesToUseModel.setDataVector(data, ontologyColumnHeaders);
@@ -649,91 +651,108 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
      */
     private void populateFields() {
         try {
-            FieldObject tfo = field.getFieldDetails();
-            if (tfo != null) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    FieldObject tfo = field.getFieldDetails();
 
-                fieldName.setText(tfo.getFieldName());
+                    if (tfo != null) {
 
-                description.setText(tfo.getDescription());
+                        System.out.println(tfo.getFieldName());
+                        System.out.println("Data type " + tfo.getDatatype());
+                        System.out.println("Description " + tfo.getDescription());
+                        System.out.println("Hidden " + tfo.isHidden());
+                        System.out.println("Field list...");
+                        System.out.println("List values " + Arrays.toString(tfo.getFieldList()));
 
-                // set the data type variable!
-                populateDataTypeSection(tfo);
+                        fieldName.setText(tfo.getFieldName());
+                        description.setText(tfo.getDescription());
+                        required.setSelected(tfo.isRequired());
+                        acceptsMultipleValues.setSelected(tfo.isAcceptsMultipleValues());
+                        acceptsFileLocations.setSelected(tfo.isAcceptsFileLocations());
+                        hidden.setSelected(tfo.isHidden());
+                        forceOntologySelection.setSelected(tfo.isForceOntologySelection());
 
-                if (tfo.getFieldName().equals(PROTOCOL_STR)) {
-                    defaultValLabStd.setText(PROTOCOL_TYPE_STR);
-                    // create a separate panel for the default value which can be switched
-                    // with ontology lookup when the field is a protocol ref!
-                    defaultValCont.removeAll();
-                    JComponent ontLookup = createOntologyDropDown(defaultValStd, false, null);
+                        if (tfo.getDatatype() == DataTypes.LIST) {
+                            System.out.println("List values...");
+                            System.out.println(Arrays.toString(tfo.getFieldList()));
+                            if (tfo.getFieldList() != null) {
+                                String s = "";
 
-                    defaultValCont.add(ontLookup);
-                    defaultValStd.setText(tfo.getDefaultVal());
-                } else {
-                    defaultValLabStd.setText(DEFAULT_VAL_STR);
-                    defaultValCont.removeAll();
-                    defaultValCont.add(defaultValStd);
-                }
+                                for (String val : tfo.getFieldList()) {
+                                    s += (val + ", ");
+                                }
+
+                                s = s.length() > 2 ? s.substring(0, s.length() - 2) : s;
+                                listValues.setText(s);
+                            } else {
+                                listValues.setText("Value1,Value2");
+                            }
+                        }
+
+                        // set the data type variable!
+                        populateDataTypeSection(tfo);
+
+                        if (tfo.getFieldName().equals(PROTOCOL_STR)) {
+                            defaultValLabStd.setText(PROTOCOL_TYPE_STR);
+                            // create a separate panel for the default value which can be switched
+                            // with ontology lookup when the field is a protocol ref!
+                            defaultValCont.removeAll();
+                            JComponent ontLookup = createOntologyDropDown(defaultValStd, false, null);
+
+                            defaultValCont.add(ontLookup);
+                            defaultValStd.setText(tfo.getDefaultVal());
+                        } else {
+                            defaultValLabStd.setText(DEFAULT_VAL_STR);
+                            defaultValCont.removeAll();
+                            defaultValCont.add(defaultValStd);
+                        }
 
 
-                if (tfo.getDatatype() == DataTypes.BOOLEAN) {
-                    defaultValBool.setSelectedItem(tfo.getDefaultVal());
-                } else {
-                    defaultValStd.setText(tfo.getDefaultVal());
-                }
+                        if (tfo.getDatatype() == DataTypes.BOOLEAN) {
+                            defaultValBool.setSelectedItem(tfo.getDefaultVal());
+                        } else {
+                            defaultValStd.setText(tfo.getDefaultVal());
+                        }
 
-                if (tfo.getDatatype() == DataTypes.ONTOLOGY_TERM) {
-                    if (tfo.getRecommmendedOntologySource() != null) {
-                        recommendOntologySource.setSelected(true);
-                        sourceEntryPanel.setVisible(true);
-                        usesTemplateForWizard.setVisible(false);
 
-                        selectedOntologies = new HashMap<String, RecommendedOntology>(tfo.getRecommmendedOntologySource());
-
+                        if (tfo.getDatatype() == DataTypes.ONTOLOGY_TERM) {
+                            if (tfo.getRecommmendedOntologySource() != null) {
+                                recommendOntologySource.setSelected(true);
+                                sourceEntryPanel.setVisible(true);
+                                usesTemplateForWizard.setVisible(false);
+                            }
+                        }
                         updateTable();
-                    }
-                }
 
-                if (tfo.getInputFormat() != null) {
-                    if (!tfo.getInputFormat().equals("") && !tfo.getInputFormat().equals(".*")) {
-                        isInputFormatted.setSelected(true);
-                        inputFormatCont.setVisible(true);
-                        inputFormat.setText(tfo.getInputFormat());
-                    } else {
-                        isInputFormatted.setSelected(false);
-                        inputFormatCont.setVisible(false);
-                    }
-                }
+                        if (tfo.getInputFormat() != null) {
+                            if (!tfo.getInputFormat().equals("") && !tfo.getInputFormat().equals(".*")) {
+                                isInputFormatted.setSelected(true);
+                                inputFormatCont.setVisible(true);
+                                inputFormat.setText(tfo.getInputFormat());
+                            } else {
+                                isInputFormatted.setSelected(false);
+                                inputFormatCont.setVisible(false);
+                            }
+                        }
 
-                if (tfo.getWizardTemplate() != null && !tfo.getWizardTemplate().trim().equals("")
-                        && datatype.getSelectedItem() == DataTypes.STRING) {
-                    usesTemplateForWizard.setSelected(true);
-                    wizardTemplatePanel.setVisible(true);
-                    wizardTemplate.setText(tfo.getWizardTemplate());
-                } else {
-                    usesTemplateForWizard.setSelected(false);
-                    wizardTemplatePanel.setVisible(false);
-                    wizardTemplate.setText("");
-                }
+                        if (tfo.getWizardTemplate() != null && !tfo.getWizardTemplate().trim().equals("")
+                                && datatype.getSelectedItem() == DataTypes.STRING) {
+                            usesTemplateForWizard.setSelected(true);
+                            wizardTemplatePanel.setVisible(true);
+                            wizardTemplate.setText(tfo.getWizardTemplate());
+                        } else {
+                            usesTemplateForWizard.setSelected(false);
+                            wizardTemplatePanel.setVisible(false);
+                            wizardTemplate.setText("");
+                        }
 
-                required.setSelected(tfo.isRequired());
-                acceptsMultipleValues.setSelected(tfo.isAcceptsMultipleValues());
-                acceptsFileLocations.setSelected(tfo.isAcceptsFileLocations());
-                hidden.setSelected(tfo.isHidden());
-                forceOntologySelection.setSelected(tfo.isForceOntologySelection());
 
-                if (tfo.getFieldList() != null) {
-                    String s = "";
-
-                    for (String val : tfo.getFieldList()) {
-                        s += (val + ", ");
                     }
 
-                    s = s.length() > 2 ? s.substring(0, s.length() - 2) : s;
-                    listValues.setText(s);
+                    revalidate();
                 }
-            }
+            });
 
-            revalidate();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -936,6 +955,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 isInputFormatted.setSelected(false);
                 inputFormatCont.setVisible(false);
                 acceptsFileLocations.setEnabled(false);
+
             }
         }
 
@@ -945,6 +965,12 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
         if (event.getSource() == usesTemplateForWizard) {
             wizardTemplatePanel.setVisible(usesTemplateForWizard.isSelected());
+        }
+
+        try {
+            saveFieldObject();
+        } catch (DataNotCompleteException e) {
+            e.printStackTrace();
         }
     }
 
@@ -959,16 +985,22 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
         if (field != null) {
 
             String defaultValAsString = defaultValStd.getText();
-
             if (datatype.getSelectedItem() == DataTypes.BOOLEAN) {
                 defaultValAsString = defaultValBool.getSelectedItem().toString();
             }
 
-            FieldObject tfo = new FieldObject(field.getFieldDetails().getColNo(), fieldName.getText(), description.getText(),
-                    DataTypes.resolveDataType(datatype.getSelectedItem().toString()), defaultValAsString, "",
-                    required.isSelected(),
-                    acceptsMultipleValues.isSelected(),
-                    acceptsFileLocations.isSelected(), hidden.isSelected(), forceOntologySelection.isSelected());
+            FieldObject tfo = field.getFieldDetails();
+            tfo.setColNo(field.getFieldDetails().getColNo());
+            tfo.setFieldName(fieldName.getText());
+            tfo.setDescription(description.getText());
+
+            tfo.setDatatype(DataTypes.resolveDataType(datatype.getSelectedItem().toString()));
+            tfo.setDefaultVal(defaultValAsString);
+            tfo.setRequired(required.isSelected());
+            tfo.setAcceptsFileLocations(acceptsFileLocations.isSelected());
+            tfo.setHidden(hidden.isSelected());
+            tfo.setForceOntologySelection(forceOntologySelection.isSelected());
+            tfo.setAcceptsMultipleValues(acceptsMultipleValues.isSelected());
 
             if (usesTemplateForWizard.isSelected()) {
                 tfo.setWizardTemplate(wizardTemplate.getText());
@@ -999,7 +1031,7 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                 tfo.setInputFormat(finalInputFormat);
             }
 
-            if (datatype.getSelectedItem() == DataTypes.LIST) {
+            if (tfo.getDatatype() == DataTypes.LIST) {
 
                 String[] fields = listValues.getText().split(",");
 
@@ -1007,18 +1039,19 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
                     fields[i] = fields[i].trim();
                 }
                 tfo.setFieldList(fields);
+            } else {
+                tfo.setFieldList(null);
             }
 
-            if (datatype.getSelectedItem() == DataTypes.ONTOLOGY_TERM) {
-                if (recommendOntologySource.isSelected()) {
-                    if (ontologiesToUseModel.getRowCount() > 0) {
-                        Map<String, RecommendedOntology> toBeUpdated = new HashMap<String, RecommendedOntology>(selectedOntologies);
-                        tfo.setRecommmendedOntologySource(toBeUpdated);
-                    }
+            if (tfo.getDatatype() == DataTypes.ONTOLOGY_TERM) {
+                if (!recommendOntologySource.isSelected()) {
+                    tfo.getRecommmendedOntologySource().clear();
                 }
+            } else {
+                tfo.getRecommmendedOntologySource().clear();
             }
+
             field.setFieldObject(tfo);
         }
     }
-
 }
