@@ -131,8 +131,12 @@ public class FieldInterface extends JLayeredPane implements ActionListener,
 
     static {
         ontologiesToQuery = new ArrayList<Ontology>();
-        Collection<Ontology> ontologies = AcceptedOntologies.getAcceptedOntologies().values();
-        ontologiesToQuery.addAll(ontologies);
+        try {
+            Collection<Ontology> ontologies = AcceptedOntologies.getAcceptedOntologies().values();
+            ontologiesToQuery.addAll(ontologies);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
         ontologyColumnHeaders = new String[]{"ontology", "search under"};
     }
 
